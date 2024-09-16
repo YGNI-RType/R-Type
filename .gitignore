@@ -1,0 +1,9 @@
+## Build
+/build/*
+!/build/.gitkeep
+
+## Ide
+
+# Vscode
+/.vscode/c_cpp_properties.json
+/.vscode/settings.json
