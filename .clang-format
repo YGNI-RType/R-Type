@@ -1,0 +1,4 @@
+BasedOnStyle: LLVM
+RemoveBracesLLVM: true
+IndentWidth: 4
+RemoveParentheses: ReturnStatement

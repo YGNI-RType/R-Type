@@ -19,3 +19,9 @@ target_link_libraries(client PRIVATE shared_rtype)
 add_executable(server src/server/server.cpp)
 target_include_directories(server PRIVATE include/server)
 target_link_libraries(server PRIVATE shared_rtype)
+
+## Sockets
+
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} wsock32)
+endif()
