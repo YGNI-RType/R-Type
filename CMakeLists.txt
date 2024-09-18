@@ -11,11 +11,11 @@ add_library(shared_rtype src/shared/shared.cpp)
 target_include_directories(shared_rtype PUBLIC include/shared)
 
 # Add the client executable
-add_executable(client src/client/client.cpp)
-target_include_directories(client PRIVATE include/client)
-target_link_libraries(client PRIVATE shared_rtype)
+add_executable(r-type_client src/client/client.cpp)
+target_include_directories(r-type_client PRIVATE include/client)
+target_link_libraries(r-type_client PRIVATE shared_rtype)
 
 # Add the server executable
-add_executable(server src/server/server.cpp)
-target_include_directories(server PRIVATE include/server)
-target_link_libraries(server PRIVATE shared_rtype)
+add_executable(r-type_server src/server/server.cpp)
+target_include_directories(r-type_server PRIVATE include/server)
+target_link_libraries(r-type_server PRIVATE shared_rtype)
