@@ -11,8 +11,12 @@ add_library(shared_rtype src/shared/shared.cpp)
 target_include_directories(shared_rtype PUBLIC include/shared)
 
 # Add the client executable
-add_executable(r-type_client src/client/client.cpp)
+file(GLOB ENGINE_ECS_SOURCES src/client/engine/ecs/*.cpp)
+add_executable(r-type_client src/client/client.cpp ${ENGINE_ECS_SOURCES})
 target_include_directories(r-type_client PRIVATE include/client)
+target_include_directories(r-type_client PRIVATE include/client/engine/ecs)
+target_include_directories(r-type_client PRIVATE include/client/game/components)
+target_link_libraries(r-type_client PRIVATE sfml-system sfml-window sfml-graphics sfml-network sfml-audio)
 target_link_libraries(r-type_client PRIVATE shared_rtype)
 
 # Add the server executable

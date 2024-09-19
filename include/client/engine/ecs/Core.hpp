@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LYN-5-1-rtype-basile.fouquet
+** File description:
+** Core.hpp
+*/
+
 #pragma once
 
 #include "ComponentManager.hpp"
@@ -5,29 +12,46 @@
 #include <memory>
 
 namespace ecs {
-    class Core {
+    class Core : public ComponentManager, public EntityManager {
     public:
         Core();
 
-        template <typename Component>
-        void registerComponent();
+        // template <typename Component>
+        // void registerComponent();
 
-        Entity createEntity();
+        template <typename ...Components>
+        Entity spawnEntity(Components&& ...components) {
+        // Create a new entity
+        Entity entity = createEntity();
 
-        template <typename Component>
-        void setComponent(Entity entity, Component component)
-        {
-            m_componentManager->setComponent<Component>(entity, component);
-        }
+        // Set each component for the newly created entity
+        (setComponent(entity, std::forward<Components>(components)), ...);
 
-        template <typename Component, class ...Params>
-        void setComponent(Entity entity, Params &&...p)
-        {
-            m_componentManager->setComponent<Component>(entity, std::forward<Params>(p)...);
-        }
+        return entity;
+    }
 
-    private:
-        std::unique_ptr<ComponentManager> m_componentManager;
-        std::unique_ptr<EntityManager> m_entityManager;
+        // template <class ...Component, typename ...Params>
+        // Entity spawnEntity(const Params&... c)
+        // {
+        //     Entity entity = createEntity();
+
+        //     (addComponent(entity, c), ...);
+
+        //     return entity;
+        // }
+
+        void deleteEntity(Entity entity);
+
+        // template <typename Component>
+        // void setComponent(Entity entity, Component component)
+        // {
+        //     m_componentManager->setComponent<Component>(entity, component);
+        // }
+
+        // template <typename Component, class ...Params>
+        // void setComponent(Entity entity, Params &&...p)
+        // {
+        //     m_componentManager->setComponent<Component>(entity, std::forward<Params>(p)...);
+        // }
     };
 } // namespace ecs

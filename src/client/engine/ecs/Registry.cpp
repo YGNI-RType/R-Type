@@ -1,8 +1,8 @@
-#include "Registry.hpp"
+// #include "Registry.hpp"
 
-namespace ecs {
-    Registry::Registry()
-    {
-    }
+// namespace ecs {
+//     Registry::Registry()
+//     {
+//     }
 
-} // namespace ecs
+// } // namespace ecs
