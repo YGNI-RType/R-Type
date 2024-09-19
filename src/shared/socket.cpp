@@ -1,5 +1,8 @@
 #include "socket.hpp"
+#include <cerrno>
+#include <cstring>
 #include <stdexcept>
+#include <string>
 
 #ifdef _WIN32
 #ifndef _WIN32_WINNT
@@ -17,13 +20,14 @@
 
 namespace Network {
 
-#define NET_MAX_PAYLOAD 4000
-#define NET_MAX_MESSAGE 4096
-#define MIN_ROUTEABLE_PACKET 16
-#define MAX_ROUTEABLE_PACKET 1400 // Ethernet 1518 - ( CRC + IP + UDP header)
-#define UDP_HEADER_SIZE 28
+#define MAX_PACKETLEN 1400 // max size of a network packet
 
-int ASocket::socketClose(void) {
+#define FRAGMENT_SIZE (MAX_PACKETLEN - 100)
+#define PACKET_HEADER 10 // two ints and a short
+
+#define UDP_SO_RCVBUF_SIZE 131072
+
+int ASocket::socketClose(const SOCKET socket) {
     int status = 0;
 
 #ifdef _WIN32
@@ -31,29 +35,27 @@ int ASocket::socketClose(void) {
     if (status == 0)
         status = closesocket(m_sock);
 #else
-    status = shutdown(m_sock, SHUT_RDWR);
+    status = shutdown(socket, SHUT_RDWR);
     if (status == 0)
-        status = close(m_sock);
+        status = close(socket);
 #endif
 
     return status;
 }
 
-void ASocket::setBlocking(bool blocking) {
+void ASocket::setBlocking(const SOCKET socket, bool blocking) {
 #ifdef _WIN32
     u_long mode = blocking ? 0 : 1;
     ioctlsocket(m_sock, FIONBIO, &mode);
 #else
-    int flags = fcntl(m_sock, F_GETFL, 0);
+    int flags = fcntl(socket, F_GETFL, 0);
     if (blocking)
         flags &= ~O_NONBLOCK;
     else
         flags |= O_NONBLOCK;
-    fcntl(m_sock, F_SETFL, flags);
+    fcntl(socket, F_SETFL, flags);
 #endif
 }
-
-ASocket::~ASocket() { socketClose(); }
 
 /***********************************************/
 
@@ -62,6 +64,8 @@ SocketTCP::SocketTCP() {
     if (m_sock == -1)
         throw std::runtime_error("Failed to create socket");
 }
+
+SocketTCP::~SocketTCP() { socketClose(m_sock); }
 
 size_t SocketTCP::send(const byte_t *data, const size_t size) const {
     size_t sentTotal = 0;
@@ -99,14 +103,23 @@ size_t SocketTCP::receive(byte_t *data, const size_t size) const {
 
 /***********************************************/
 
-SocketUDP::SocketUDP(const std::string &address) {
-    m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    if (m_sock == -1)
-        throw std::runtime_error("Failed to create socket");
+int SocketUDP::initSocket(void) {
+    mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (mg_sock == -1)
+        return -1;
 
     unsigned int opt = 1;
-    setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt));
+    setsockopt(mg_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt));
+    return 0;
+}
 
+int SocketUDP::shutdownSocket(void) {
+    return socketClose(mg_sock);
+}
+
+SocketUDP::SocketUDP(const std::string &address) {
+
+    std::memcpy(&m_addr, 0, sizeof(m_addr));
     if (address == "localhost")
         m_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     else
@@ -123,7 +136,7 @@ size_t SocketUDP::send(const byte_t *data, const size_t size) const {
         because it's inherited
     */
     while (sentTotal < size) {
-        auto sent = sendto(m_sock, data, size - sentTotal, 0,
+        auto sent = sendto(mg_sock, data, size - sentTotal, 0,
                            (struct sockaddr *)&m_addr, sizeof(m_addr));
         if (sent < 0) {
             if (errno == EWOULDBLOCK)
@@ -140,7 +153,7 @@ size_t SocketUDP::send(const byte_t *data, const size_t size) const {
 size_t SocketUDP::receive(byte_t *data, const size_t size) const {
     socklen_t len = sizeof(m_addr);
     size_t recv =
-        recvfrom(m_sock, data, size, 0, (struct sockaddr *)&m_addr, &len);
+        recvfrom(mg_sock, data, size, 0, (struct sockaddr *)&m_addr, &len);
 }
 
 } // namespace Network
