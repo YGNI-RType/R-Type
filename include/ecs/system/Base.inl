@@ -8,7 +8,7 @@
 namespace ecs::system {
 
     template<typename Derived>
-    Base<Derived>::Base(): m_isRunning(true) {
+    Base<Derived>::Base(event::Bus &eventBus): m_eventBus(eventBus), m_isRunning(true) {
         m_eventBus.subscribe<Derived, event::MainLoop>(*static_cast<Derived*>(this), &Derived::MainLoop);
     }
 

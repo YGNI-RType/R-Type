@@ -20,7 +20,7 @@ namespace ecs::system {
 
             template <class T, typename ...Params>
             void register_system(Params &&...p) {
-                m_systemTable[std::type_index(typeid(T))] = std::make_unique<T>(std::forward(p)...);
+                m_systemTable[std::type_index(typeid(T))] = std::make_unique<T>(m_eventBus, std::forward(p)...);
             }
 
             template <class T>
