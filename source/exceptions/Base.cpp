@@ -12,7 +12,7 @@ namespace gengine {
 
     }
 
-    virtual const char* BaseException::what() const noexcept override {
-        return message_.c_str();
+    const char* BaseException::what() const noexcept {
+        return m_message.c_str();
     }
 }
