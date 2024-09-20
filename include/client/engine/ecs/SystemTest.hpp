@@ -8,6 +8,7 @@
 #pragma once
 
 #include <functional>
+#include <queue>
 
 #include "Sprite.hpp"
 
@@ -61,7 +62,7 @@ namespace ecs {
                     auto& tr = transforms.get(entity);
                     sprite.sp.setPosition({tr.x, tr.y});
                     sprite.sp.setFillColor(sprite.col);
-                    // wd.draw(sprite.sp);
+                    wd.draw(sprite.sp);
                 }
             }
             wd.display();
@@ -83,12 +84,24 @@ namespace ecs {
 
         void update(float dt) override
         {
+            std::queue<Entity> toRemove;
             for (auto& [entity, transform] : transforms) {
+
                 if (transform.y > 600) {
-                    m_core.deleteEntity(entity);
-                    std::cout << "Entity " << entity << " killed\n";
+                    toRemove.push(entity);
+                    // std::cout << "killing " << entity << std::endl;
+
+                    // std::cout << "size " << transforms.size() << std::endl;
+                    // for (auto& [entity, transform] : transforms)
+                    //     std::cout << "[" << entity << "]";
+                    // std::cout << std::endl;
                 }
             }
+            while (!toRemove.empty()) {
+                m_core.killEntity(toRemove.front());
+                toRemove.pop();
+            }
+
         }
 
     private:

@@ -82,6 +82,10 @@ namespace ecs {
             return m_dense[m_sparse[entity]].second;
         }
 
+        std::size_t size() const {
+            return m_dense.size();
+        }
+
         auto begin() { return m_dense.begin(); }
         auto end() { return m_dense.end(); }
         auto cbegin() const { return m_dense.cbegin(); }

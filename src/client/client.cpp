@@ -17,6 +17,7 @@ int main()
 {
     std::cout << "Client is running." << std::endl;
     sharedFunction();
+    srand(time(nullptr));
 
     // ecs::Core core;
     // core.registerComponent<Transform>();
@@ -40,7 +41,7 @@ int main()
 
 
     // core.setComponent<Transform>(0, 0.0f, 0.0f);
-    for (int i = 1; i < 5000; i++) {
+    for (int i = 0; i < 50; i++) {
         ecs::Entity player = core.spawnEntity(Transform{float(rand() % 1000), 0.0f},
         Motion{0.0f, float(rand() % 100 / 100.0f)},
         Sprite{sf::RectangleShape({50, 50}), sf::Color(rand())});
@@ -57,13 +58,14 @@ int main()
 
     float time = std::clock();
     float newTime = std::clock();
-    for (int i = 0; i < 5000; i++) {
-        std::cout << std::endl << "Update " << i << " " << newTime - time << std::endl;
+    for (int i = 0; i < 20000; i++) {
+        // std::cout << std::endl << "Update " << i << " " << newTime - time << std::endl;
         mov.update((newTime - time) / 1000.0f);
         draw.update((newTime - time) / 1000.0f);
         killer.update((newTime - time) / 1000.0f);
         time = newTime;
         newTime = std::clock();
+        // sleep(1);
     }
 
 
