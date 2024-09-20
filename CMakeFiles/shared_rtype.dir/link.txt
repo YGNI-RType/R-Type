@@ -1,2 +1,0 @@
-/usr/bin/ar qc libshared_rtype.a CMakeFiles/shared_rtype.dir/src/shared/shared.cpp.o
-/usr/bin/ranlib libshared_rtype.a
