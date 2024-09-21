@@ -14,7 +14,7 @@ namespace gengine {
     class BaseException: public std::exception {
     public:
         BaseException(std::string &message);
-        virtual const char* what() const noexcept override;
+        const char* what() const noexcept override { return m_message.c_str(); }
     private:
         std::string m_message;
     };
