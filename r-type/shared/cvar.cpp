@@ -5,12 +5,14 @@
 ** cvar
 */
 
-#include "cvar.hpp"
+#include "shared/cvar.hpp"
 
 namespace RType {
 
 std::unordered_map<std::string, ConVar *> ConVar::g_hmAllCommands = {};
 std::unordered_map<std::string, ConVar *> ConVar::g_hmPublicCommands = {};
+
+ConVar sv_cheats("sv_cheats", "0", ConVar::CHEAT | ConVar::SERVER);
 
 ////////////////////////////////////////
 
@@ -41,7 +43,5 @@ void ConVar::setValue(const std::string &value, bool isUserInput) {
 
     m_value = value;
 }
-
-ConVar sv_cheats("sv_cheats", "0", ConVar::CHEAT | ConVar::SERVER);
 
 } // namespace RType

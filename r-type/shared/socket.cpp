@@ -1,4 +1,4 @@
-#include "socket.hpp"
+#include "shared/socket.hpp"
 #include <cerrno>
 #include <cstring>
 #include <stdexcept>
@@ -103,6 +103,8 @@ size_t SocketTCP::receive(byte_t *data, const size_t size) const {
 
 /***********************************************/
 
+ASocket::SOCKET SocketUDP::mg_sock = -1;
+
 int SocketUDP::initSocket(void) {
     mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (mg_sock == -1)
@@ -154,6 +156,8 @@ size_t SocketUDP::receive(byte_t *data, const size_t size) const {
     socklen_t len = sizeof(m_addr);
     size_t recv =
         recvfrom(mg_sock, data, size, 0, (struct sockaddr *)&m_addr, &len);
+
+    return recv;
 }
 
 } // namespace Network

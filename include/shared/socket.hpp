@@ -1,6 +1,10 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h> // Add this line to include the header file that defines sockaddr_in
 
 namespace Network {
 
@@ -23,7 +27,7 @@ class ASocket {
 class SocketUDP : public ASocket {
   public:
     SocketUDP(const std::string &address = "any");
-    ~SocketUDP();
+    ~SocketUDP() = default;
 
     std::size_t send(const byte_t *data,
                      const std::size_t size) const override final;

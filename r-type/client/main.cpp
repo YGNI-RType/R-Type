@@ -9,6 +9,5 @@
 
 int main(void)
 {
-    gengine::driver::Engine DriverEngine;
-    DriverEngine.run();
+    return 0;
 }

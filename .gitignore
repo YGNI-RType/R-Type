@@ -1,6 +1,8 @@
 ## Build
 /build/*
 !/build/.gitkeep
+/r-type/build/*
+!/r-type/build/.gitkeep
 
 ## Binaries
 r-type_client

@@ -9,6 +9,5 @@
 
 int main(void)
 {
-    gengine::game::Engine GameEngine;
-    GameEngine.run();
+    return 0;
 }
