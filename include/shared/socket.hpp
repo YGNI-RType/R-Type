@@ -57,6 +57,7 @@ class ISocketIO {
 
 class SocketUDP : public ASocket, public ISocketIO {
   public:
+    SocketUDP() = default;
     SocketUDP(const IP &ip, uint16_t port);
     ~SocketUDP();
 
@@ -68,7 +69,7 @@ class SocketUDP : public ASocket, public ISocketIO {
   private:
     static SOCKET mg_sock;
 
-    const IP &ip;
+    const IP *m_ip;
 };
 
 ////////////////////////////////////////
@@ -77,6 +78,7 @@ class SocketTCP;
 
 class SocketTCPMaster : public ASocket {
   public:
+    SocketTCPMaster() = default;
     SocketTCPMaster(const IP &ip, uint16_t port);
     ~SocketTCPMaster();
 
@@ -86,11 +88,12 @@ class SocketTCPMaster : public ASocket {
   private:
     static SOCKET mg_sock;
 
-    const IP &ip;
+    const IP *m_ip;
 };
 
 class SocketTCP : public ASocket, public ISocketIO {
   public:
+    SocketTCP() = default;
     SocketTCP(const SocketTCPMaster
                   &socketMaster); // accepts it from the socket master
     ~SocketTCP();
@@ -101,7 +104,7 @@ class SocketTCP : public ASocket, public ISocketIO {
                         const std::size_t size) const override final;
 
   private:
-    SOCKET m_sock;
+    SOCKET m_sock = -1;
 };
 
 } // namespace Network

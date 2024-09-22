@@ -58,10 +58,10 @@ namespace Network {
 
 /* Global vars */
 
-std::unique_ptr<SocketUDP> NET::g_socketUdp;
-std::unique_ptr<SocketTCP> NET::g_socketListenTdp;
-std::unique_ptr<SocketUDP> NET::g_socketUdpV6;
-std::unique_ptr<SocketTCP> NET::g_socketListenTdpV6;
+SocketUDP NET::mg_socketUdp;
+SocketTCP NET::mg_socketListenTcp;
+SocketUDP NET::mg_socketUdpV6;
+SocketTCP NET::mg_socketListenTcpV6;
 
 std::vector<IP> NET::g_localIPs;
 
@@ -79,18 +79,15 @@ void NET::init(void) {
     for (const IP &ip : g_localIPs) { // todo : force an ip, find the best ip
                                       // (privileging pubilc interface)
         if (ip.type == AT_IPV4) {
-            g_socketListenTdp =
-                std::make_unique<SocketTCP>(openSocketTcp(ip, port));
+            mg_socketListenTcp = openSocketTcp(ip, port);
             port++;
-            g_socketUdp = std::make_unique<SocketUDP>(openSocketUdp(ip, port));
+            mg_socketUdp = openSocketUdp(ip, port);
             port++;
         }
         if (ip.type == AT_IPV6) { // check if ipv6 is supported
-            g_socketListenTdpV6 =
-                std::make_unique<SocketTCP>(openSocketTcp(ip, DEFAULT_PORT));
+            mg_socketListenTcpV6 = openSocketTcp(ip, port);
             port++;
-            g_socketUdpV6 =
-                std::make_unique<SocketUDP>(openSocketUdp(ip, DEFAULT_PORT));
+            mg_socketUdpV6 = openSocketUdp(ip, port);
             port++;
         }
         break;
@@ -99,13 +96,7 @@ void NET::init(void) {
     enabled = true;
 }
 
-void NET::stop(void) {
-    g_socketListenTdp.reset();
-    g_socketUdp.reset();
-    g_socketListenTdpV6.reset();
-    g_socketUdpV6.reset();
-    enabled = false;
-}
+void NET::stop(void) { enabled = false; }
 
 void NET::getLocalAddress(void) {
 #if defined(__linux__) || defined(__APPLE__) || defined(__BSD__)
@@ -249,7 +240,8 @@ SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
 
 /* returns true if has event, false otherwise */
 bool NET::sleep(uint32_t ms) {
-	struct timeval timeout = {.tv_sec = ms / 1000, .tv_usec = (ms % 1000) * 1000};
+    struct timeval timeout = {.tv_sec = ms / 1000,
+                              .tv_usec = (ms % 1000) * 1000};
     ASocket::SOCKET highest = ASocket::getHighestSocket();
 
     fd_set readSet, writeSet;

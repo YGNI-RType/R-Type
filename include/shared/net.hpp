@@ -26,10 +26,10 @@ struct Address {
 
 class NET {
   private:
-    static std::unique_ptr<SocketUDP> g_socketUdp;
-    static std::unique_ptr<SocketTCP> g_socketListenTdp;
-    static std::unique_ptr<SocketUDP> g_socketUdpV6;
-    static std::unique_ptr<SocketTCP> g_socketListenTdpV6;
+    static SocketUDP mg_socketUdp;
+    static SocketTCP mg_socketListenTcp;
+    static SocketUDP mg_socketUdpV6;
+    static SocketTCP mg_socketListenTcpV6;
 
     static std::vector<IP> g_localIPs;
 

@@ -139,5 +139,6 @@ Temporary Items
 # Ignore all local history of files
 .history
 .ionide
+TODO
 
 # End of https://www.toptal.com/developers/gitignore/api/cmake,macos,c++,conan,visualstudiocode

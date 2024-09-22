@@ -17,7 +17,7 @@
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x0501 /* Windows XP. */
 #endif
-#include <Ws2tcpip.h>
+#include <Ws2tcpiph>
 #include <winsock2.h>
 #else
 #include <arpa/inet.h>
@@ -93,7 +93,7 @@ void ASocket::setBlocking(const SOCKET socket, bool blocking) {
 
 ASocket::SOCKET SocketTCPMaster::mg_sock = -1;
 
-SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : ip(ip) {
+SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : m_ip(&ip) {
     mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_TCP);
     if (mg_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
@@ -181,7 +181,7 @@ ASocket::SOCKET SocketUDP::mg_sock = -1;
 
 SocketUDP::~SocketUDP() { socketClose(mg_sock); }
 
-SocketUDP::SocketUDP(const IP &ip, uint16_t port) : ip(ip) {
+SocketUDP::SocketUDP(const IP &ip, uint16_t port) : m_ip(&ip) {
 
     mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (mg_sock == -1)
@@ -218,7 +218,7 @@ size_t SocketUDP::send(const byte_t *data, const size_t size) const {
     while (sentTotal < size) {
         auto sent =
             sendto(mg_sock, data, size - sentTotal, 0,
-                   (struct sockaddr *)&ip.addr, sizeof(struct sockaddr));
+                   (struct sockaddr *)&m_ip->addr, sizeof(struct sockaddr));
         if (sent < 0) {
             if (errno == EWOULDBLOCK)
                 return sentTotal;
@@ -232,9 +232,9 @@ size_t SocketUDP::send(const byte_t *data, const size_t size) const {
 }
 
 size_t SocketUDP::receive(byte_t *data, const size_t size) const {
-    socklen_t len = sizeof(ip.addr);
+    socklen_t len = sizeof(m_ip->addr);
     size_t recv =
-        recvfrom(mg_sock, data, size, 0, (struct sockaddr *)&ip.addr, &len);
+        recvfrom(mg_sock, data, size, 0, (struct sockaddr *)&m_ip->addr, &len);
 
     return recv;
 }
