@@ -32,12 +32,18 @@ class ASocket {
 
     static void setBlocking(const SOCKET socket, bool blocking);
     static int socketClose(const SOCKET socket);
+    static SOCKET getHighestSocket(void) { return m_highFd; }
 
   public:
     static void initLibs(void);
 
   protected:
+    static void addSocketPool(SOCKET socket);
     virtual ~ASocket() = default;
+
+  private:
+    static fd_set m_fdSet;
+    static SOCKET m_highFd;
 };
 
 class ISocketIO {

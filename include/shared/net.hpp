@@ -10,9 +10,9 @@
 #include "net_common.hpp"
 #include "socket.hpp"
 
-#include <vector>
 #include <array>
 #include <memory>
+#include <vector>
 
 namespace Network {
 
@@ -25,7 +25,7 @@ struct Address {
 };
 
 class NET {
-  public:
+  private:
     static std::unique_ptr<SocketUDP> g_socketUdp;
     static std::unique_ptr<SocketTCP> g_socketListenTdp;
     static std::unique_ptr<SocketUDP> g_socketUdpV6;
@@ -33,9 +33,12 @@ class NET {
 
     static std::vector<IP> g_localIPs;
 
+    static bool enabled;
+
     /* Init everything */
   public:
     static void init(void);
+    static void stop(void);
 
   private:
     static void getLocalAddress(void);
@@ -46,5 +49,11 @@ class NET {
     static SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);
     static SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort);
     /*********************/
+
+  public:
+    static bool sleep(uint32_t ms);
+
+  private:
+    static int createSets(fd_set &readSet, fd_set &writeSet);
 };
 } // namespace Network

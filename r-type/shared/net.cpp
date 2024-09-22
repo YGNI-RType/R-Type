@@ -65,6 +65,8 @@ std::unique_ptr<SocketTCP> NET::g_socketListenTdpV6;
 
 std::vector<IP> NET::g_localIPs;
 
+bool NET::enabled = false;
+
 /***************/
 
 void NET::init(void) {
@@ -74,27 +76,35 @@ void NET::init(void) {
 
     uint16_t port = DEFAULT_PORT;
 
-    for (const IP &ip : g_localIPs) { // todo : force an ip, find the best ip (privileging pubilc interface)
+    for (const IP &ip : g_localIPs) { // todo : force an ip, find the best ip
+                                      // (privileging pubilc interface)
         if (ip.type == AT_IPV4) {
-            g_socketListenTdp = std::make_unique<SocketTCP>(
-                openSocketTcp(ip, port));
+            g_socketListenTdp =
+                std::make_unique<SocketTCP>(openSocketTcp(ip, port));
             port++;
-            g_socketUdp = std::make_unique<SocketUDP>(
-                openSocketUdp(ip, port));
+            g_socketUdp = std::make_unique<SocketUDP>(openSocketUdp(ip, port));
             port++;
         }
         if (ip.type == AT_IPV6) { // check if ipv6 is supported
-            g_socketListenTdpV6 = std::make_unique<SocketTCP>(
-                openSocketTcp(ip, DEFAULT_PORT));
+            g_socketListenTdpV6 =
+                std::make_unique<SocketTCP>(openSocketTcp(ip, DEFAULT_PORT));
             port++;
-            g_socketUdpV6 = std::make_unique<SocketUDP>(
-                openSocketUdp(ip, DEFAULT_PORT));
+            g_socketUdpV6 =
+                std::make_unique<SocketUDP>(openSocketUdp(ip, DEFAULT_PORT));
             port++;
         }
         break;
     }
 
+    enabled = true;
+}
 
+void NET::stop(void) {
+    g_socketListenTdp.reset();
+    g_socketUdp.reset();
+    g_socketListenTdpV6.reset();
+    g_socketUdpV6.reset();
+    enabled = false;
 }
 
 void NET::getLocalAddress(void) {
@@ -233,5 +243,34 @@ SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
         }
     }
     throw SocketException("Failed to open UDP socket");
+}
+
+/**************************************************************/
+
+/* returns true if has event, false otherwise */
+bool NET::sleep(uint32_t ms) {
+	struct timeval timeout = {.tv_sec = ms / 1000, .tv_usec = (ms % 1000) * 1000};
+    ASocket::SOCKET highest = ASocket::getHighestSocket();
+
+    fd_set readSet, writeSet;
+    if (createSets(readSet, writeSet) == -1)
+        throw SocketException("Failed to create sets");
+
+    /* The usage of select : both on windows and unix systems */
+    int res = select(highest + 1, &readSet, &writeSet, nullptr, &timeout);
+    if (res == -1)
+        throw SocketException("Failed to sleep");
+    else if (res == 0)
+        return false;
+
+    // WE GOT SOMETHING GUYS, EVENT
+    return true;
+}
+
+int NET::createSets(fd_set &readSet, fd_set &writeSet) {
+    FD_ZERO(&readSet);
+    FD_ZERO(&writeSet);
+
+    return 0;
 }
 } // namespace Network

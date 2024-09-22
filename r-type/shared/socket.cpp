@@ -5,8 +5,8 @@
 ** socket
 */
 
-#include "shared/socketError.hpp"
 #include "shared/socket.hpp"
+#include "shared/socketError.hpp"
 
 #include <cerrno>
 #include <cstring>
@@ -33,6 +33,9 @@ namespace Network {
 WSADATA ASocket::winsockdata;
 #endif
 
+ASocket::SOCKET ASocket::m_highFd = -1;
+fd_set ASocket::m_fdSet;
+
 void ASocket::initLibs(void) {
 #ifdef _WIN32
     if (WSAStartup(MAKEWORD(1, 1), &winsockdata)) {
@@ -43,6 +46,7 @@ void ASocket::initLibs(void) {
 
     // Com_Printf( "Winsock Initialized\n" );
 #endif
+    FD_ZERO(&m_fdSet);
 }
 
 int ASocket::socketClose(const SOCKET socket) {
@@ -58,7 +62,17 @@ int ASocket::socketClose(const SOCKET socket) {
         status = close(socket);
 #endif
 
+    if (socket == m_highFd)
+        while (!FD_ISSET(m_highFd, &m_fdSet))
+            (m_highFd)--;
+
     return status;
+}
+
+void ASocket::addSocketPool(SOCKET socket) {
+    FD_SET(socket, &m_fdSet);
+    if (socket > m_highFd)
+        m_highFd = socket;
 }
 
 void ASocket::setBlocking(const SOCKET socket, bool blocking) {
@@ -87,10 +101,12 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : ip(ip) {
     unsigned int opt = 1;
     if (setsockopt(mg_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
                    sizeof(opt)))
-        throw std::runtime_error("(TCP) Failed to set socket options (SO_REUSEADDR)");
+        throw std::runtime_error(
+            "(TCP) Failed to set socket options (SO_REUSEADDR)");
     if (setsockopt(mg_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt,
                    sizeof(opt)))
-        throw std::runtime_error("(TCP) Failed to set socket options (SO_BROADCAST)");
+        throw std::runtime_error(
+            "(TCP) Failed to set socket options (SO_BROADCAST)");
 
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
@@ -102,6 +118,8 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : ip(ip) {
 
     if (listen(mg_sock, MAX_LISTEN) < 0)
         throw SocketException("(TCP) Failed to listen on socket");
+
+    addSocketPool(mg_sock);
 }
 
 SocketTCP SocketTCPMaster::accept(void) const { return SocketTCP(*this); }
@@ -117,6 +135,8 @@ SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster) {
         if (errno != EWOULDBLOCK)
             throw std::runtime_error("Failed to accept connection");
     }
+
+    addSocketPool(m_sock);
 }
 
 SocketTCP::~SocketTCP() { socketClose(m_sock); }
@@ -170,10 +190,12 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) : ip(ip) {
     unsigned int opt = 1;
     if (setsockopt(mg_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
                    sizeof(opt)))
-        throw std::runtime_error("(UDP) Failed to set socket options (SO_REUSEADDR)");
+        throw std::runtime_error(
+            "(UDP) Failed to set socket options (SO_REUSEADDR)");
     if (setsockopt(mg_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt,
                    sizeof(opt)))
-        throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
+        throw std::runtime_error(
+            "(UDP) Failed to set socket options (SO_BROADCAST)");
 
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
@@ -182,6 +204,8 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) : ip(ip) {
 
     if (bind(mg_sock, (sockaddr *)&address, sizeof(address)) < 0)
         throw SocketException("(UDP) Failed to bind socket");
+
+    addSocketPool(mg_sock);
 }
 
 size_t SocketUDP::send(const byte_t *data, const size_t size) const {
@@ -192,8 +216,9 @@ size_t SocketUDP::send(const byte_t *data, const size_t size) const {
         because it's inherited
     */
     while (sentTotal < size) {
-        auto sent = sendto(mg_sock, data, size - sentTotal, 0,
-                           (struct sockaddr *)&ip.addr, sizeof(struct sockaddr));
+        auto sent =
+            sendto(mg_sock, data, size - sentTotal, 0,
+                   (struct sockaddr *)&ip.addr, sizeof(struct sockaddr));
         if (sent < 0) {
             if (errno == EWOULDBLOCK)
                 return sentTotal;
