@@ -9,23 +9,22 @@
 
 using namespace ecs;
 
-std::vector<entity::Entity> entity::Manager::m_entities = {};
+entity::Manager::Manager() : m_size(0)
+{
+}
 
-entity::Manager::Manager() {}
-
-entity::Entity entity::Manager::createEntity() {
-    entity::Entity entity = m_entities.size();
-    m_entities.push_back(entity);
+entity::Entity entity::Manager::createEntity()
+{
+    entity::Entity entity;
+    if (!m_available.empty()) {
+        entity = m_available.front();
+        m_available.pop();
+    } else
+        entity = m_size++;
     return entity;
 }
 
-void entity::Manager::destroyEntity(entity::Entity dead) {
-    std::size_t lastIndex = m_entities.size() - 1;
-    for (auto entity : m_entities) {
-        if (entity == dead) {
-            entity = m_entities[lastIndex];
-            break;
-        }
-    }
-    m_entities.pop_back();
+void entity::Manager::destroyEntity(entity::Entity dead)
+{
+    m_available.push(dead);
 }

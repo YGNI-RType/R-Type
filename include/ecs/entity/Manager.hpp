@@ -8,17 +8,17 @@
 #pragma once
 
 #include "ecs/entity/Entity.hpp"
-#include <vector>
+#include <queue>
 
 namespace ecs::entity {
 class Manager {
 public:
     Manager();
 
-    Entity createEntity();
-    void destroyEntity(Entity dead);
-
-private:
-    static std::vector<Entity> m_entities;
-};
-} // namespace ecs::entity
+        Entity createEntity();
+        void destroyEntity(Entity dead);
+    private:
+        std::size_t m_size;
+        std::queue<Entity> m_available;
+    };
+}
