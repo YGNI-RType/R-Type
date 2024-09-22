@@ -29,11 +29,6 @@
 #include <ws2tcpip.h>
 
 typedef int socklen_t;
-#ifdef ADDRESS_FAMILY
-#define sa_family_t ADDRESS_FAMILY
-#else
-typedef unsigned short sa_family_t;
-#endif
 
 #define EAGAIN WSAEWOULDBLOCK
 #define EADDRNOTAVAIL WSAEADDRNOTAVAIL
@@ -71,7 +66,8 @@ std::vector<IP> NET::g_localIPs;
 
 void NET::init(void) {
     ASocket::init();
-    g_socketUdp.initSocket();
+    
+    getLocalAddress();
 }
 
 void NET::getLocalAddress(void) {
@@ -144,7 +140,7 @@ void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr,
         return;
     }
 
-    IP ip = {.family = sockaddr->sa_family};
+    IP ip = {.family = sockaddr->sa_family };
 
     if (family == AF_INET) {
         addrlen = sizeof(struct sockaddr_in);
@@ -188,5 +184,13 @@ bool NET::isLanAddress(const Address &addr) {
 
     // TODO if time : check if the address is in the same subnet as the local
     return false;
+}
+
+SocketTCPMaster NET::openSocketTcp(const IP &ip, uint16_t wantedPort) {
+    return SocketTCPMaster(ip, wantedPort);
+}
+
+SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
+    return SocketUDP(ip, wantedPort);
 }
 } // namespace Network

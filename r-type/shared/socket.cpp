@@ -26,12 +26,13 @@ WSADATA ASocket::winsockdata;
 
 void ASocket::init(void) {
 #ifdef _WIN32
-	if( WSAStartup( MAKEWORD( 1, 1 ), &winsockdata ) ) {
-		// Com_Printf( "WARNING: Winsock initialization failed, returned %d\n", r );
-		return;
-	}
+    if (WSAStartup(MAKEWORD(1, 1), &winsockdata)) {
+        // Com_Printf( "WARNING: Winsock initialization failed, returned %d\n",
+        // r );
+        return;
+    }
 
-	// Com_Printf( "Winsock Initialized\n" );
+    // Com_Printf( "Winsock Initialized\n" );
 #endif
 }
 
@@ -67,10 +68,44 @@ void ASocket::setBlocking(const SOCKET socket, bool blocking) {
 
 /***********************************************/
 
-SocketTCP::SocketTCP() {
-    m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (m_sock == -1)
-        throw std::runtime_error("Failed to create socket");
+SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : ip(ip) {
+    mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_TCP);
+    if (mg_sock == -1)
+        throw std::runtime_error("(TCP) Failed to create socket");
+
+    unsigned int opt = 1;
+    if (setsockopt(mg_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+                   sizeof(opt)))
+        throw std::runtime_error("(TCP) Failed to set socket options (SO_REUSEADDR)");
+    if (setsockopt(mg_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt,
+                   sizeof(opt)))
+        throw std::runtime_error("(TCP) Failed to set socket options (SO_BROADCAST)");
+
+    struct sockaddr_in address;
+    std::memcpy(&address, &ip.addr, sizeof(address));
+
+    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+
+    if (bind(mg_sock, (sockaddr *)&address, sizeof(address)) < 0)
+        throw std::runtime_error("(TCP) Failed to bind socket");
+
+    if (listen(mg_sock, MAX_LISTEN) < 0)
+        throw std::runtime_error("(TCP) Failed to listen on socket");
+}
+
+SocketTCP SocketTCPMaster::accept(void) const { return SocketTCP(*this); }
+
+SocketTCPMaster::~SocketTCPMaster() { socketClose(mg_sock); }
+
+/***********************************************/
+
+SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster) {
+    // addr should not be null
+    m_sock = accept(socketMaster.getSocket(), nullptr, nullptr);
+    if (m_sock == -1) {
+        if (errno != EWOULDBLOCK)
+            throw std::runtime_error("Failed to accept connection");
+    }
 }
 
 SocketTCP::~SocketTCP() { socketClose(m_sock); }
@@ -113,29 +148,29 @@ size_t SocketTCP::receive(byte_t *data, const size_t size) const {
 
 ASocket::SOCKET SocketUDP::mg_sock = -1;
 
-int SocketUDP::initSocket(void) {
+SocketUDP::~SocketUDP() { socketClose(mg_sock); }
+
+SocketUDP::SocketUDP(const IP &ip, uint16_t port) : ip(ip) {
+
     mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (mg_sock == -1)
-        return -1;
+        throw std::runtime_error("(UDP) Failed to create socket");
 
     unsigned int opt = 1;
-    setsockopt(mg_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt));
-    return 0;
-}
+    if (setsockopt(mg_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+                   sizeof(opt)))
+        throw std::runtime_error("(UDP) Failed to set socket options (SO_REUSEADDR)");
+    if (setsockopt(mg_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt,
+                   sizeof(opt)))
+        throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
 
-int SocketUDP::shutdownSocket(void) {
-    return socketClose(mg_sock);
-}
+    struct sockaddr_in address;
+    std::memcpy(&address, &ip.addr, sizeof(address));
 
-SocketUDP::SocketUDP(const std::string &address) {
+    address.sin_port = port == PORT_ANY ? 0 : htons(port);
 
-    std::memcpy(&m_addr, 0, sizeof(m_addr));
-    if (address == "localhost")
-        m_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    else
-        m_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    // setsockopt(m_sock, SOL_SOCKET, SO_RCVBUF, (char *)&opt, sizeof(opt));
-    // setsockopt(m_sock, SOL_SOCKET, SO_SNDBUF, (char *)&opt, sizeof(opt));
+    if (bind(mg_sock, (sockaddr *)&address, sizeof(address)) < 0)
+        throw std::runtime_error("(UDP) Failed to bind socket");
 }
 
 size_t SocketUDP::send(const byte_t *data, const size_t size) const {
@@ -147,7 +182,7 @@ size_t SocketUDP::send(const byte_t *data, const size_t size) const {
     */
     while (sentTotal < size) {
         auto sent = sendto(mg_sock, data, size - sentTotal, 0,
-                           (struct sockaddr *)&m_addr, sizeof(m_addr));
+                           (struct sockaddr *)&ip.addr, sizeof(struct sockaddr));
         if (sent < 0) {
             if (errno == EWOULDBLOCK)
                 return sentTotal;
@@ -161,9 +196,9 @@ size_t SocketUDP::send(const byte_t *data, const size_t size) const {
 }
 
 size_t SocketUDP::receive(byte_t *data, const size_t size) const {
-    socklen_t len = sizeof(m_addr);
+    socklen_t len = sizeof(ip.addr);
     size_t recv =
-        recvfrom(mg_sock, data, size, 0, (struct sockaddr *)&m_addr, &len);
+        recvfrom(mg_sock, data, size, 0, (struct sockaddr *)&ip.addr, &len);
 
     return recv;
 }

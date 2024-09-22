@@ -1,5 +1,7 @@
 #pragma once
 
+#include "net_common.hpp"
+
 #include <cstdint>
 #include <string>
 #include <sys/socket.h>
@@ -28,23 +30,31 @@ class ASocket {
 #else
   static WSADATA winsockdata;
 #endif
-    virtual std::size_t send(const byte_t *data,
-                             const std::size_t size) const = 0;
-    virtual std::size_t receive(byte_t *data, const std::size_t size) const = 0;
+
 
     static void setBlocking(const SOCKET socket, bool blocking);
     static int socketClose(const SOCKET socket);
 
+  private:
     static void init(void);
 
-  public:
+  protected:
     virtual ~ASocket() = default;
 };
 
-class SocketUDP : public ASocket {
+class ISocketIO {
   public:
-    SocketUDP(const std::string &address = "any");
-    ~SocketUDP() = default;
+    virtual std::size_t send(const byte_t *data,
+                             const std::size_t size) const = 0;
+    virtual std::size_t receive(byte_t *data, const std::size_t size) const = 0;
+};
+
+////////////////////////////////////////
+
+class SocketUDP : public ASocket, public ISocketIO {
+  public:
+    SocketUDP(const IP &ip, uint16_t port);
+    ~SocketUDP();
 
     std::size_t send(const byte_t *data,
                      const std::size_t size) const override final;
@@ -57,12 +67,28 @@ class SocketUDP : public ASocket {
   private:
     static SOCKET mg_sock;
 
-    struct sockaddr_in m_addr;
+    const IP &ip;
 };
 
-class SocketTCP : public ASocket {
+////////////////////////////////////////
+
+class SocketTCPMaster : public ASocket {
   public:
-    SocketTCP();
+    SocketTCPMaster(const IP &ip, uint16_t port);
+    ~SocketTCPMaster();
+
+    SocketTCP accept(void) const;
+    SOCKET getSocket(void) const { return mg_sock; }
+
+  private:
+    static SOCKET mg_sock;
+
+    const IP &ip;
+};
+
+class SocketTCP : public ASocket, public ISocketIO {
+  public:
+    SocketTCP(const SocketTCPMaster &socketMaster); // accepts it from the socket master
     ~SocketTCP();
 
     std::size_t send(const byte_t *data,
