@@ -13,6 +13,7 @@
 namespace gengine {
     class BaseEngine {
     public:
+        // TODO add constructor whit Interface Type template
         BaseEngine(std::unique_ptr<interface::Base> interface): m_interface(std::move(interface)) {};
 
         void run(void);

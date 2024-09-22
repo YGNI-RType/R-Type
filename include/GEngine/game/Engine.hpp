@@ -12,7 +12,7 @@
 #include <memory>
 
 namespace gengine::game {
-    class Engine : public ecs::ECS, public BaseEngine {
+    class Engine : public ecs::ECS, public BaseEngine {         // TODO mieux de faire hérité BaseEngine d'ECS ?
     public:
         Engine(std::unique_ptr<gengine::interface::Base> interface);
     };
