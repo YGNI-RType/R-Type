@@ -9,5 +9,14 @@
 
 int main(void)
 {
+    // init all the NET framework
+
+    // LOOP THE GAME
+    // check each frame the commands : connect (via gui or console)
+
+    // -> code/client/cl_main?c (CL_FRAME)
+    // check timeout
+    // send UDP packets
+    // update screen  
     return 0;
 }

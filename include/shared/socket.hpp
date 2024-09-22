@@ -8,13 +8,25 @@
 
 namespace Network {
 
-typedef char byte_t;
+typedef uint8_t byte_t;
+
+#define MAX_PACKETLEN 1400 // max size of a network packet
+
+#define FRAGMENT_SIZE (MAX_PACKETLEN - 100)
+#define PACKET_HEADER 10 // two ints and a short
+
+#define UDP_SO_RCVBUF_SIZE 131072
+
+
+////////////////////////////////////////
 
 class ASocket {
 
   public:
 #ifndef _WIN32
     typedef int SOCKET;
+#else
+  static WSADATA winsockdata;
 #endif
     virtual std::size_t send(const byte_t *data,
                              const std::size_t size) const = 0;
@@ -22,6 +34,11 @@ class ASocket {
 
     static void setBlocking(const SOCKET socket, bool blocking);
     static int socketClose(const SOCKET socket);
+
+    static void init(void);
+
+  public:
+    virtual ~ASocket() = default;
 };
 
 class SocketUDP : public ASocket {

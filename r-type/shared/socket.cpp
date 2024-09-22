@@ -20,12 +20,20 @@
 
 namespace Network {
 
-#define MAX_PACKETLEN 1400 // max size of a network packet
+#ifdef _WIN32
+WSADATA ASocket::winsockdata;
+#endif
 
-#define FRAGMENT_SIZE (MAX_PACKETLEN - 100)
-#define PACKET_HEADER 10 // two ints and a short
+void ASocket::init(void) {
+#ifdef _WIN32
+	if( WSAStartup( MAKEWORD( 1, 1 ), &winsockdata ) ) {
+		// Com_Printf( "WARNING: Winsock initialization failed, returned %d\n", r );
+		return;
+	}
 
-#define UDP_SO_RCVBUF_SIZE 131072
+	// Com_Printf( "Winsock Initialized\n" );
+#endif
+}
 
 int ASocket::socketClose(const SOCKET socket) {
     int status = 0;
