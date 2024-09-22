@@ -26,6 +26,8 @@ typedef unsigned short sa_family_t;
 
 #define	PORT_ANY    -1
 #define	MAX_LISTEN    5
+#define MAX_TRY_PORTS 10
+#define DEFAULT_PORT 4242
 
 typedef enum {
     AT_NONE = 0,

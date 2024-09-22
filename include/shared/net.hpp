@@ -28,6 +28,8 @@ class NET {
   public:
     static std::unique_ptr<SocketUDP> g_socketUdp;
     static std::unique_ptr<SocketTCP> g_socketListenTdp;
+    static std::unique_ptr<SocketUDP> g_socketUdpV6;
+    static std::unique_ptr<SocketTCP> g_socketListenTdpV6;
 
     static std::vector<IP> g_localIPs;
 

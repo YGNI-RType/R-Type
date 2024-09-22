@@ -18,6 +18,7 @@
 // https://en.wikipedia.org/wiki/NACK-Oriented_Reliable_Multicast
 
 #include "shared/net.hpp"
+#include "shared/socketError.hpp"
 
 #include <cstring>
 
@@ -59,6 +60,8 @@ namespace Network {
 
 std::unique_ptr<SocketUDP> NET::g_socketUdp;
 std::unique_ptr<SocketTCP> NET::g_socketListenTdp;
+std::unique_ptr<SocketUDP> NET::g_socketUdpV6;
+std::unique_ptr<SocketTCP> NET::g_socketListenTdpV6;
 
 std::vector<IP> NET::g_localIPs;
 
@@ -66,8 +69,32 @@ std::vector<IP> NET::g_localIPs;
 
 void NET::init(void) {
     ASocket::initLibs();
-    
+
     getLocalAddress();
+
+    uint16_t port = DEFAULT_PORT;
+
+    for (const IP &ip : g_localIPs) { // todo : force an ip, find the best ip (privileging pubilc interface)
+        if (ip.type == AT_IPV4) {
+            g_socketListenTdp = std::make_unique<SocketTCP>(
+                openSocketTcp(ip, port));
+            port++;
+            g_socketUdp = std::make_unique<SocketUDP>(
+                openSocketUdp(ip, port));
+            port++;
+        }
+        if (ip.type == AT_IPV6) { // check if ipv6 is supported
+            g_socketListenTdpV6 = std::make_unique<SocketTCP>(
+                openSocketTcp(ip, DEFAULT_PORT));
+            port++;
+            g_socketUdpV6 = std::make_unique<SocketUDP>(
+                openSocketUdp(ip, DEFAULT_PORT));
+            port++;
+        }
+        break;
+    }
+
+
 }
 
 void NET::getLocalAddress(void) {
@@ -140,7 +167,7 @@ void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr,
         return;
     }
 
-    IP ip = {.family = sockaddr->sa_family };
+    IP ip = {.family = sockaddr->sa_family};
 
     if (family == AF_INET) {
         addrlen = sizeof(struct sockaddr_in);
@@ -187,10 +214,24 @@ bool NET::isLanAddress(const Address &addr) {
 }
 
 SocketTCPMaster NET::openSocketTcp(const IP &ip, uint16_t wantedPort) {
-    return SocketTCPMaster(ip, wantedPort);
+    for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
+        try {
+            return SocketTCPMaster(ip, wantedPort);
+        } catch (SocketException &e) {
+            continue;
+        }
+    }
+    throw SocketException("Failed to open TCP socket");
 }
 
 SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
-    return SocketUDP(ip, wantedPort);
+    for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
+        try {
+            return SocketUDP(ip, wantedPort);
+        } catch (SocketException &e) {
+            continue;
+        }
+    }
+    throw SocketException("Failed to open UDP socket");
 }
 } // namespace Network

@@ -1,4 +1,13 @@
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LYN-5-1-rtype-basile.fouquet (Workspace)
+** File description:
+** socket
+*/
+
+#include "shared/socketError.hpp"
 #include "shared/socket.hpp"
+
 #include <cerrno>
 #include <cstring>
 #include <stdexcept>
@@ -89,10 +98,10 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : ip(ip) {
     address.sin_port = port == PORT_ANY ? 0 : htons(port);
 
     if (bind(mg_sock, (sockaddr *)&address, sizeof(address)) < 0)
-        throw std::runtime_error("(TCP) Failed to bind socket");
+        throw SocketException("(TCP) Failed to bind socket");
 
     if (listen(mg_sock, MAX_LISTEN) < 0)
-        throw std::runtime_error("(TCP) Failed to listen on socket");
+        throw SocketException("(TCP) Failed to listen on socket");
 }
 
 SocketTCP SocketTCPMaster::accept(void) const { return SocketTCP(*this); }
@@ -172,7 +181,7 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) : ip(ip) {
     address.sin_port = port == PORT_ANY ? 0 : htons(port);
 
     if (bind(mg_sock, (sockaddr *)&address, sizeof(address)) < 0)
-        throw std::runtime_error("(UDP) Failed to bind socket");
+        throw SocketException("(UDP) Failed to bind socket");
 }
 
 size_t SocketUDP::send(const byte_t *data, const size_t size) const {
