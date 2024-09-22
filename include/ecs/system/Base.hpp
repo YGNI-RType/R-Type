@@ -29,7 +29,7 @@ namespace ecs::system {
          *
          * @param eventBus Reference to the event bus used for subscribing to events.
          */
-        Base();
+        Base(event::Bus &eventBus);
 
         /**
          * @brief Virtual destructor for the Base class.
@@ -73,7 +73,7 @@ namespace ecs::system {
         void resume(void);
 
     private:
-        static event::Bus m_eventBus; ///< Bus used for subscribing to events.
+        event::Bus &m_eventBus; ///< Bus used for subscribing to events.
         bool m_isRunning; ///< Flag indicating whether the system is currently running.
     };
 
