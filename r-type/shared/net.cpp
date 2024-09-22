@@ -57,15 +57,15 @@ namespace Network {
 
 /* Global vars */
 
-SocketUDP NET::g_socketUdp;
-SocketTCP NET::g_socketListenTdp;
+std::unique_ptr<SocketUDP> NET::g_socketUdp;
+std::unique_ptr<SocketTCP> NET::g_socketListenTdp;
 
 std::vector<IP> NET::g_localIPs;
 
 /***************/
 
 void NET::init(void) {
-    ASocket::init();
+    ASocket::initLibs();
     
     getLocalAddress();
 }

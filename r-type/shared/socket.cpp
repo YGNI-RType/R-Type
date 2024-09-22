@@ -24,7 +24,7 @@ namespace Network {
 WSADATA ASocket::winsockdata;
 #endif
 
-void ASocket::init(void) {
+void ASocket::initLibs(void) {
 #ifdef _WIN32
     if (WSAStartup(MAKEWORD(1, 1), &winsockdata)) {
         // Com_Printf( "WARNING: Winsock initialization failed, returned %d\n",
@@ -67,6 +67,8 @@ void ASocket::setBlocking(const SOCKET socket, bool blocking) {
 }
 
 /***********************************************/
+
+ASocket::SOCKET SocketTCPMaster::mg_sock = -1;
 
 SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : ip(ip) {
     mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_TCP);

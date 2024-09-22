@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <array>
+#include <memory>
 
 namespace Network {
 
@@ -25,8 +26,8 @@ struct Address {
 
 class NET {
   public:
-    static SocketUDP g_socketUdp;
-    static SocketTCP g_socketListenTdp;
+    static std::unique_ptr<SocketUDP> g_socketUdp;
+    static std::unique_ptr<SocketTCP> g_socketListenTdp;
 
     static std::vector<IP> g_localIPs;
 
