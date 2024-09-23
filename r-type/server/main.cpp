@@ -7,8 +7,13 @@
 
 #include "GEngine/game/Engine.hpp"
 
-int main(void)
-{
-    // gengine::game::Engine GameEngine(std::make_unique<gengine::interface::Base>());
-    // GameEngine.run();
+int main(void) {
+  for (int i = 0; i < 100; i++) {
+    gengine::game::Engine GameEngine(
+        std::make_unique<gengine::interface::Base>());
+    GameEngine.run();
+  }
+  // gengine::game::Engine
+  // GameEngine(std::make_unique<gengine::interface::Base>());
+  // GameEngine.run();
 }

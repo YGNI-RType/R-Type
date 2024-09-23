@@ -140,3 +140,24 @@ jobs:
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         run: ctest --build-config ${{ matrix.build_type }}
+
+  cleanup:
+    needs: [build_gengine, build_rtype] # Ensures cleanup runs after both builds are complete
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clean up build artifacts
+        run: |
+          find ${{ github.workspace }} -type f \( -name "*.so" -o -name "*.o" -o -name "*.d" -name "*.a" \) -delete
+          echo "Cleaned up .so, .o, and .d files."
+
+  beautify:
+    needs: cleanup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: sudo apt-get install clang-format
+
+      - name: Run clang-format
+        run: clang-format -i $(find ${{ github.workspace }} -name "*.hpp" -o -name "*.cpp")
