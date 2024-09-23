@@ -142,7 +142,7 @@ jobs:
         run: ctest --build-config ${{ matrix.build_type }}
 
   cleanup:
-    needs: [build_gengine, build_rtype] # Ensures cleanup runs after both builds are complete
+    needs: [build_gengine, build_rtype]
     runs-on: ubuntu-latest
     steps:
       - name: Clean up build artifacts
