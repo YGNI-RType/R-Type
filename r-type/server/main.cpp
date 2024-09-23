@@ -9,9 +9,7 @@
 
 int main(void) {
   for (int i = 0; i < 100; i++) {
-    gengine::game::Engine GameEngine(
-        std::make_unique<gengine::interface::Base>());
-    GameEngine.run();
+    printf("Hello, World!\n");
   }
   // gengine::game::Engine
   // GameEngine(std::make_unique<gengine::interface::Base>());
