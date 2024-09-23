@@ -21,10 +21,6 @@ ConVar::ConVar(const std::string &name, const std::string &value, short flags, c
 
     if (flags & ROM || flags & CMD)
         return;
-#ifdef SERVER
-    if (!(flags & CLIENT))
-        return;
-#endif
     g_hmPublicCommands[name] = this;
 }
 
