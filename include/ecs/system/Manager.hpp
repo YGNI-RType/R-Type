@@ -5,46 +5,57 @@
 ** SystemManager.hpp
 */
 
+#pragma once
 
 #include "ecs/system/event/Bus.hpp"
 #include "ecs/system/Base.hpp"
 #include <typeindex>
 #include <unordered_map>
+#include <optional>
+#include <functional>
 #include <memory>
 #include <any>
 
+namespace ecs {
+    class ECS;
+};
+
 namespace ecs::system {
     class Manager {
-        public:
-            Manager(): m_eventBus() {}
+    public:
+        Manager(ECS &ecs): m_ecs(ecs), m_eventBus() {}
 
-            template <class T, typename ...Params>
-            void register_system(Params &&...p) {
-                m_systemTable[std::type_index(typeid(T))] = std::make_unique<T>(m_eventBus, std::forward(p)...);
-            }
+        template <class T, class ...Params>
+        void registerSystem(Params &&...p) {
+            m_systemTable[std::type_index(typeid(T))] = std::make_any<T>(std::forward<Params>(p)...);
+            T &system = (std::any_cast<T&>(m_systemTable[std::type_index(typeid(T))]));
+            system.m_eventBus = m_eventBus;
+            system.m_ecs = m_ecs;
+            system.init();
+        }
 
-            template <class T>
-            void pause_system(void) {
-                auto it = m_systemTable.find(std::type_index(typeid(T)));
+        template<class T>
+        T &getSystem(void) {
+            auto it = m_systemTable.find(std::type_index(typeid(T)));
 
-                if (it == m_systemTable.end())
-                    throw "";
+            if (it == m_systemTable.end())
+                throw "";
+            return std::any_cast<T&>(it->second);
+        }
 
-                (std::any_cast<Base<T>&>(it->second)).pause();
-            }
+        template<class T>
+        void publishEvent(T &event) {
+            m_eventBus.publish<T>(event);
+        }
 
-            template <class T>
-            void resume_system(void) {
-                auto it = m_systemTable.find(std::type_index(typeid(T)));
+        template<class T>
+        void publishEvent(T &&event) {
+            m_eventBus.publish<T>(event);
+        }
 
-                if (it == m_systemTable.end())
-                    throw "";
-
-                (std::any_cast<Base<T>&>(it->second)).resume();
-            }
-
-        private:
-            std::unordered_map<std::type_index, std::any> m_systemTable;
-            event::Bus m_eventBus;
+    private:
+        std::unordered_map<std::type_index, std::any> m_systemTable;
+        event::Bus m_eventBus;
+        ECS &m_ecs;
     };
 }

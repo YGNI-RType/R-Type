@@ -10,7 +10,7 @@
 
 using namespace ecs;
 
-ECS::ECS()
+ECS::ECS(): ecs::system::Manager(*this)
 {
 }
 

@@ -10,10 +10,12 @@
 #include "ecs/entity/Manager.hpp"
 #include "ecs/component/Manager.hpp"
 #include "ecs/system/Manager.hpp"
+#include "ecs/system/Base.hpp"
+#include "ecs/system/event/Base.hpp"
 #include <memory>
 
 namespace ecs {
-    class ECS : protected component::Manager, protected entity::Manager, protected system::Manager {
+    class ECS : public component::Manager, private entity::Manager, public system::Manager {
     public:
         ECS();
 
@@ -25,8 +27,14 @@ namespace ecs {
             return entity;
         }
 
-        void killEntity(entity::Entity entity);
+        void start(void) {
+            publishEvent(ecs::system::event::StartEngine());
+        }
 
-    private:
+        void update(void) {
+            publishEvent(ecs::system::event::MainLoop());
+        }
+
+        void killEntity(entity::Entity entity);
     };
 }

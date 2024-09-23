@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** game-engine-headers
+** B-CPP-500-LYN-5-1-rtype-basile.fouquet
 ** File description:
 ** Bus.hpp
 */

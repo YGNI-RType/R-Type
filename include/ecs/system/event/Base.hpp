@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** game-engine-headers
+** B-CPP-500-LYN-5-1-rtype-basile.fouquet
 ** File description:
 ** Base.hpp
 */
@@ -9,6 +9,8 @@
 
 #include <vector>
 #include <iostream>
+
+#include "ecs/ECS.hpp"
 
 namespace ecs::system::event {
     /**
@@ -38,6 +40,7 @@ namespace ecs::system::event {
         Base(const Base&) = default;
     };
 
-    class MainLoop: public Base {};
+    class MainLoop: public Base {}; // TODO replace
+    class StartEngine: public Base {}; // TODO replace
 
 }

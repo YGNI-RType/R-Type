@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** game-engine-headers
+** B-CPP-500-LYN-5-1-rtype-basile.fouquet
 ** File description:
 ** Base.hpp
 */
@@ -8,87 +8,66 @@
 #pragma once
 
 #include "ecs/system/event/Bus.hpp"
-#include "ecs/system/event/Base.hpp"
+#include "ecs/system/event/Callback.hpp"
+#include "ecs/ECS.hpp"
+#include <optional>
+#include <functional>
 
-namespace ecs::system {
-    /**
-     * @brief Base class for all systems in the game engine.
-     *
-     * This class provides a common interface for systems, including the ability to
-     * subscribe to events and manage the running state of the system.
-     *
-     * @tparam Derived The derived class that inherits from this Base class.
-     */
-    template<typename Derived>
-    class Base {
-    public:
-        /**
-         * @brief Constructs a Base instance.
-         *
-         * Initializes the system with the event bus and sets the system to running.
-         *
-         * @param eventBus Reference to the event bus used for subscribing to events.
-         */
-        Base(event::Bus &eventBus);
-
-        /**
-         * @brief Virtual destructor for the Base class.
-         */
-        virtual ~Base() = default;
-
-        /**
-         * @brief Virtual method for handling the main loop event.
-         *
-         * This method is intended to be overridden by derived classes to handle
-         * the main loop event.
-         *
-         * @param event The main loop event.
-         */
-        virtual void MainLoop(event::MainLoop &event) {}
-
-        /**
-         * @brief Subscribe to a specific event type with a callback method.
-         *
-         * @tparam EventType The type of event to subscribe to.
-         * @param callbackMethod Pointer to the member function that handles the event.
-         *
-         * This method registers a callback for a specific event type and ensures that
-         * the callback is only invoked if the system is running.
-         */
-        template<typename EventType>
-        void subscribeToEvent(void (Derived::*callbackMethod)(EventType&));
-
-        /**
-         * @brief Pauses the system, preventing it from processing events.
-         *
-         * Sets the system's running state to false.
-         */
-        void pause(void);
-
-        /**
-         * @brief Resumes the system, allowing it to process events again.
-         *
-         * Sets the system's running state to true.
-         */
-        void resume(void);
-
-    private:
-        event::Bus &m_eventBus; ///< Bus used for subscribing to events.
-        bool m_isRunning; ///< Flag indicating whether the system is currently running.
-    };
-
-    /**
-     * @brief Registers a system with the event bus.
-     *
-     * Creates an instance of the specified system type and initializes it with the
-     * event bus.
-     *
-     * @tparam BaseType The type of system to register.
-     * @param eventBus Reference to the event bus.
-     */
-    template<typename BaseType>
-    void register_system(event::Bus &eventBus);
+namespace ecs {
+    class ECS;
 }
 
-#include "Base.inl"
+namespace ecs::system {
+
+    template<typename T, typename... Types>
+    struct is_one_of;
+
+    template<typename T, typename First, typename... Rest>
+    struct is_one_of<T, First, Rest...>
+        : std::conditional_t<std::is_same_v<T, First>, std::true_type, is_one_of<T, Rest...>> {};
+
+    template<typename T>
+    struct is_one_of<T> : std::false_type {};
+
+    class Manager;
+    template<class Derived, class ...DependTypes>
+    class Base {
+    public:
+        Base() = default;
+
+        virtual ~Base() = default;
+
+        virtual void init(void) = 0;
+
+        template<typename EventType>
+        void subscribeToEvent(void (Derived::*callbackMethod)(EventType&)) {
+            m_eventBus->get().template subscribe<Derived, EventType>(static_cast<Derived&>(*this), callbackMethod);
+        }
+
+        template <typename T>
+        T &getSystem(void) {
+            static_assert(is_one_of<T, DependTypes...>::value, "SystemType is not in the list of allowed types");
+            return m_ecs->get().template getSystem<T>();
+        }
+
+        template <typename T>
+        component::SparseArray<T> &getComponent(void) {
+            static_assert(is_one_of<T, DependTypes...>::value, "ComponentType is not in the list of allowed types");
+            return m_ecs->get().template getComponents<T>();
+        }
+
+        template <typename ...Components>
+        void spawnEntity(Components&& ...components) {
+            m_ecs->get().spawnEntity(std::forward<Components>(components)...);
+        }
+
+    private:
+
+        friend class system::Manager;
+
+        std::optional<std::reference_wrapper<ECS>> m_ecs;
+        std::optional<std::reference_wrapper<event::Bus>> m_eventBus;
+    };
+}
+
 
