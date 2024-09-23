@@ -118,7 +118,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: gengine-build
-          path: ${{ github.workspace }}/gengine
+          path: ${{ github.workspace }}/build
 
       - name: Set reusable strings
         id: strings
