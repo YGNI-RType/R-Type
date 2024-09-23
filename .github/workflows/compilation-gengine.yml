@@ -69,7 +69,7 @@ jobs:
         run: ctest --build-config ${{ matrix.build_type }}
 
       - name: Upload GEngine artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }}
           path: ${{ steps.strings.outputs.build-output-dir }}
@@ -117,7 +117,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Download GEngine artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }}
           path: ${{ github.workspace }}/build
@@ -142,15 +142,20 @@ jobs:
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         run: ctest --build-config ${{ matrix.build_type }}
-
   cleanup:
     needs: [build_gengine, build_rtype]
     runs-on: ubuntu-latest
     steps:
-      - name: Clean up build artifacts
+      - name: Check for build artifacts
         run: |
-          find ${{ github.workspace }} -type f \( -name "*.so" -o -name "*.o" -o -name "*.d" -name "*.a" \) -delete
-          echo "Cleaned up .so, .o, and .d files."
+          artifacts=$(find ${{ github.workspace }} -type f \( -name "*.so" -o -name "*.o" -o -name "*.d" -o -name "*.a" \))
+          if [ -n "$artifacts" ]; then
+            echo "Found unwanted artifacts:"
+            echo "$artifacts"
+            exit 1
+          else
+            echo "No unwanted artifacts found."
+          fi
 
   beautify:
     needs: cleanup
@@ -161,5 +166,13 @@ jobs:
       - name: Install clang-format
         run: sudo apt-get install clang-format
 
-      - name: Run clang-format
-        run: clang-format -i $(find ${{ github.workspace }} -name "*.hpp" -o -name "*.cpp")
+      - name: Check clang-format compliance
+        run: |
+          files=$(find ${{ github.workspace }} -name "*.hpp" -o -name "*.cpp")
+          clang-format --dry-run $files
+          if [ $? -ne 0 ]; then
+            echo "Clang-format issues found. Please format the code."
+            exit 1
+          else
+            echo "Code is properly formatted."
+          fi
