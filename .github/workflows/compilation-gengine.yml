@@ -169,10 +169,4 @@ jobs:
       - name: Check clang-format compliance
         run: |
           files=$(find ${{ github.workspace }} -name "*.hpp" -o -name "*.cpp")
-          clang-format --dry-run $files
-          if [ $? -ne 0 ]; then
-            echo "Clang-format issues found. Please format the code."
-            exit 1
-          else
-            echo "Code is properly formatted."
-          fi
+          clang-format -Werror $files
