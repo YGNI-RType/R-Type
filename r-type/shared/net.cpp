@@ -252,12 +252,11 @@ bool NET::sleep(uint32_t ms) {
                               .tv_usec = (ms % 1000) * 1000};
     ASocket::SOCKET highest = ASocket::getHighestSocket();
 
-    fd_set readSet, writeSet;
-    if (createSets(readSet, writeSet) == -1)
-        throw SocketException("Failed to create sets");
+    fd_set readSet;
+    createSets(readSet);
 
     /* The usage of select : both on windows and unix systems */
-    int res = select(highest + 1, &readSet, &writeSet, nullptr, &timeout);
+    int res = select(highest + 1, &readSet, nullptr, nullptr, &timeout);
     if (res == -1)
         throw SocketException("Failed to sleep");
     else if (res == 0)
@@ -267,9 +266,8 @@ bool NET::sleep(uint32_t ms) {
     return true;
 }
 
-int NET::createSets(fd_set &readSet, fd_set &writeSet) {
+void NET::createSets(fd_set &readSet) {
     FD_ZERO(&readSet);
-    FD_ZERO(&writeSet);
 
     for (SocketTCP &socket : g_clientSocketsTCP) {
         auto eventType = socket.getEventType();
@@ -277,8 +275,6 @@ int NET::createSets(fd_set &readSet, fd_set &writeSet) {
 
         if (eventType == SocketTCP::EventType::READ)
             FD_SET(socketId, &readSet);
-        else if (eventType == SocketTCP::EventType::WRITE)
-            FD_SET(socketId, &writeSet);
     }
 
     if (CVar::net_ipv6.getIntValue()) {
@@ -287,7 +283,5 @@ int NET::createSets(fd_set &readSet, fd_set &writeSet) {
     } 
     FD_SET(mg_socketUdp.getSocket(), &readSet);
     FD_SET(mg_socketListenTcp.getSocket(), &readSet);
-
-    return 0;
 }
 } // namespace Network

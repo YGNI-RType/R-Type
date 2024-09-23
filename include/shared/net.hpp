@@ -57,6 +57,6 @@ class NET {
     static bool sleep(uint32_t ms);
 
   private:
-    static int createSets(fd_set &readSet, fd_set &writeSet);
+    static void createSets(fd_set &readSet);
 };
 } // namespace Network
