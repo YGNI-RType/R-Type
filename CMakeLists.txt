@@ -1,21 +1,35 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(R-Type VERSION 0.0.1)
+project(GEngine)
 
-# Specify the C++ standard
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+file(GLOB_RECURSE SOURCES source/*.cpp)
 
-# Add the shared library
-add_library(shared_rtype src/shared/shared.cpp)
-target_include_directories(shared_rtype PUBLIC include/shared)
+file(GLOB_RECURSE HEADERS include/*.h)
 
-# Add the client executable
-add_executable(client src/client/client.cpp)
-target_include_directories(client PRIVATE include/client)
-target_link_libraries(client PRIVATE shared_rtype)
+include_directories(include)
 
-# Add the server executable
-add_executable(server src/server/server.cpp)
-target_include_directories(server PRIVATE include/server)
-target_link_libraries(server PRIVATE shared_rtype)
+add_library(GEngine SHARED ${SOURCES} ${HEADERS})
+
+add_library(GEngine_static STATIC ${SOURCES} ${HEADERS})
+
+set_target_properties(GEngine PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+    VERSION 0.0.1
+)
+
+set_target_properties(GEngine_static PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+    VERSION 0.0.1
+    OUTPUT_NAME "GEngine"
+)
+
+install(TARGETS GEngine GEngine_static
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin # Windows
+)
+install(DIRECTORY include/ DESTINATION include)
