@@ -114,6 +114,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Download GEngine artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: gengine-build
+          path: ${{ github.workspace }}/gengine
+
       - name: Set reusable strings
         id: strings
         shell: bash
