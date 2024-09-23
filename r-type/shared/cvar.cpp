@@ -7,7 +7,7 @@
 
 #include "shared/cvar.hpp"
 
-namespace RType {
+namespace CVar {
 
 std::unordered_map<std::string, ConVar *> ConVar::g_hmAllCommands = {};
 std::unordered_map<std::string, ConVar *> ConVar::g_hmPublicCommands = {};

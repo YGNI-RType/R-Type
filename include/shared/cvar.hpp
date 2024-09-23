@@ -11,7 +11,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace RType {
+namespace CVar {
 
 // Templating may result issues on convar indexing
 class ConVar {
@@ -52,4 +52,7 @@ class ConVar {
     short m_flags;
     // std::function<void(void)> m_callback; // only used on system commands
 };
+
+extern ConVar sv_cheats;
+
 } // namespace RType

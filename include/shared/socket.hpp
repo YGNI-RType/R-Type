@@ -34,6 +34,8 @@ class ASocket {
     static int socketClose(const SOCKET socket);
     static SOCKET getHighestSocket(void) { return m_highFd; }
 
+    virtual SOCKET getSocket(void) const = 0;
+
   public:
     static void initLibs(void);
 
@@ -66,6 +68,8 @@ class SocketUDP : public ASocket, public ISocketIO {
     std::size_t receive(byte_t *data,
                         const std::size_t size) const override final;
 
+    SOCKET getSocket(void) const override final { return mg_sock; }
+
   private:
     static SOCKET mg_sock;
 
@@ -82,8 +86,9 @@ class SocketTCPMaster : public ASocket {
     SocketTCPMaster(const IP &ip, uint16_t port);
     ~SocketTCPMaster();
 
-    SocketTCP accept(void) const;
-    SOCKET getSocket(void) const { return mg_sock; }
+    SocketTCP accept(size_t pos) const;
+    SOCKET getSocket(void) const override final { return mg_sock; }
+    const IP &getIP(void) const { return *m_ip; }
 
   private:
     static SOCKET mg_sock;
@@ -93,8 +98,15 @@ class SocketTCPMaster : public ASocket {
 
 class SocketTCP : public ASocket, public ISocketIO {
   public:
-    SocketTCP() = default;
-    SocketTCP(const SocketTCPMaster
+    enum EventType {
+        NONE = 0,
+        READ,
+        WRITE,
+    };
+
+  public:
+    SocketTCP(size_t pos_accept,
+              const SocketTCPMaster
                   &socketMaster); // accepts it from the socket master
     ~SocketTCP();
 
@@ -103,8 +115,17 @@ class SocketTCP : public ASocket, public ISocketIO {
     std::size_t receive(byte_t *data,
                         const std::size_t size) const override final;
 
+    std::size_t getPosAccept(void) const { return m_posAccept; }
+    SOCKET getSocket(void) const override final { return m_sock; }
+    const EventType getEventType(void) const { return m_eventType; }
+
   private:
     SOCKET m_sock = -1;
+
+    const IP *m_ip;
+    EventType m_eventType = READ;
+
+    const size_t m_posAccept; /* posititon in array for fast removal */
 };
 
 } // namespace Network

@@ -19,6 +19,7 @@
 
 #include "shared/net.hpp"
 #include "shared/socketError.hpp"
+#include "shared/cvar/net.hpp"
 
 #include <cstring>
 
@@ -59,9 +60,11 @@ namespace Network {
 /* Global vars */
 
 SocketUDP NET::mg_socketUdp;
-SocketTCP NET::mg_socketListenTcp;
+SocketTCPMaster NET::mg_socketListenTcp;
 SocketUDP NET::mg_socketUdpV6;
-SocketTCP NET::mg_socketListenTcpV6;
+SocketTCPMaster NET::mg_socketListenTcpV6;
+
+std::vector<SocketTCP> NET::g_clientSocketsTCP;
 
 std::vector<IP> NET::g_localIPs;
 
@@ -84,7 +87,7 @@ void NET::init(void) {
             mg_socketUdp = openSocketUdp(ip, port);
             port++;
         }
-        if (ip.type == AT_IPV6) { // check if ipv6 is supported
+        if (ip.type == AT_IPV6 && CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
             mg_socketListenTcpV6 = openSocketTcp(ip, port);
             port++;
             mg_socketUdpV6 = openSocketUdp(ip, port);
@@ -96,7 +99,12 @@ void NET::init(void) {
     enabled = true;
 }
 
-void NET::stop(void) { enabled = false; }
+void NET::stop(void) {
+    g_clientSocketsTCP.clear();
+    g_localIPs.clear(); /* TODO : the pointesr inside the socket class are now
+                           UNSAFE, should we copy them instead ? */
+    enabled = false;
+}
 
 void NET::getLocalAddress(void) {
 #if defined(__linux__) || defined(__APPLE__) || defined(__BSD__)
@@ -262,6 +270,23 @@ bool NET::sleep(uint32_t ms) {
 int NET::createSets(fd_set &readSet, fd_set &writeSet) {
     FD_ZERO(&readSet);
     FD_ZERO(&writeSet);
+
+    for (SocketTCP &socket : g_clientSocketsTCP) {
+        auto eventType = socket.getEventType();
+        auto socketId = socket.getSocket();
+
+        if (eventType == SocketTCP::EventType::READ)
+            FD_SET(socketId, &readSet);
+        else if (eventType == SocketTCP::EventType::WRITE)
+            FD_SET(socketId, &writeSet);
+    }
+
+    if (CVar::net_ipv6.getIntValue()) {
+        FD_SET(mg_socketUdpV6.getSocket(), &readSet);
+        FD_SET(mg_socketListenTcpV6.getSocket(), &readSet);
+    } 
+    FD_SET(mg_socketUdp.getSocket(), &readSet);
+    FD_SET(mg_socketListenTcp.getSocket(), &readSet);
 
     return 0;
 }

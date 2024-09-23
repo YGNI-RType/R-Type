@@ -103,10 +103,6 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : m_ip(&ip) {
                    sizeof(opt)))
         throw std::runtime_error(
             "(TCP) Failed to set socket options (SO_REUSEADDR)");
-    if (setsockopt(mg_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt,
-                   sizeof(opt)))
-        throw std::runtime_error(
-            "(TCP) Failed to set socket options (SO_BROADCAST)");
 
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
@@ -122,15 +118,19 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : m_ip(&ip) {
     addSocketPool(mg_sock);
 }
 
-SocketTCP SocketTCPMaster::accept(void) const { return SocketTCP(*this); }
+SocketTCP SocketTCPMaster::accept(size_t pos) const { return SocketTCP(pos, *this); }
 
 SocketTCPMaster::~SocketTCPMaster() { socketClose(mg_sock); }
 
 /***********************************************/
 
-SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster) {
-    // addr should not be null
-    m_sock = accept(socketMaster.getSocket(), nullptr, nullptr);
+SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster) : m_posAccept(m_posAccept), m_ip(&socketMaster.getIP()) {
+
+    struct sockaddr_in address;
+    socklen_t sz_addr = sizeof(address);
+    std::memcpy(&address, &m_ip->addr, sizeof(address));
+
+    m_sock = accept(socketMaster.getSocket(), (sockaddr *)&address, &sz_addr);
     if (m_sock == -1) {
         if (errno != EWOULDBLOCK)
             throw std::runtime_error("Failed to accept connection");

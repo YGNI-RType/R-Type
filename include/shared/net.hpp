@@ -27,9 +27,12 @@ struct Address {
 class NET {
   private:
     static SocketUDP mg_socketUdp;
-    static SocketTCP mg_socketListenTcp;
+    static SocketTCPMaster mg_socketListenTcp;
     static SocketUDP mg_socketUdpV6;
-    static SocketTCP mg_socketListenTcpV6;
+    static SocketTCPMaster mg_socketListenTcpV6;
+    
+    static std::vector<SocketTCP> g_clientSocketsTCP;
+
 
     static std::vector<IP> g_localIPs;
 
