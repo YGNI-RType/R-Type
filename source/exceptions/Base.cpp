@@ -12,4 +12,7 @@ namespace gengine {
 
     }
 
+    const char* BaseException::what() const noexcept {
+        return m_message.c_str();
+    }
 }
