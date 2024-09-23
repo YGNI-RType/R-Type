@@ -148,7 +148,7 @@ jobs:
     steps:
       - name: Check for build artifacts
         run: |
-          artifacts=$(find ${{ github.workspace }} -type f \( -name "*.so" -o -name "*.o" -o -name "*.d" -o -name "*.a" \))
+          artifacts=$(find ${{ github.workspace }} -type f -name "*.so" -o -name "*.o" -o -name "*.d" -o -name "*.a")
           if [ -n "$artifacts" ]; then
             echo "Found unwanted artifacts:"
             echo "$artifacts"
@@ -169,4 +169,4 @@ jobs:
       - name: Check clang-format compliance
         run: |
           files=$(find ${{ github.workspace }} -name "*.hpp" -o -name "*.cpp")
-          clang-format -Werror $files
+          clang-format -Werror -dry-run $files
