@@ -70,7 +70,7 @@ jobs:
       - name: Upload GEngine artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: gengine-build
+          name: gengine-build-${{ matrix.os }}-${{ matrix.bot }}
           path: ${{ steps.strings.outputs.build-output-dir }}
 
   build_rtype:
@@ -117,7 +117,7 @@ jobs:
       - name: Download GEngine artifacts
         uses: actions/download-artifact@v4
         with:
-          name: gengine-build
+          name: gengine-build-${{ matrix.os }}-${{ matrix.bot }}
           path: ${{ github.workspace }}/build
 
       - name: Set reusable strings
