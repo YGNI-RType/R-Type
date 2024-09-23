@@ -7,7 +7,7 @@ on:
     branches: [ "main", "dev" ]
 
 jobs:
-  build:
+  build_gengine:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -66,3 +66,9 @@ jobs:
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: ctest --build-config ${{ matrix.build_type }}
+
+    - name: Upload GEngine artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: gengine-build
+        path: ${{ steps.strings.outputs.build-output-dir }}
