@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "shared/cvar.hpp"
+#include "cvar.hpp"
 
 namespace CVar {
 extern ConVar net_ipv6;

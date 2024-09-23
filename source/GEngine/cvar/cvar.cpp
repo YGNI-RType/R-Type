@@ -5,7 +5,7 @@
 ** cvar
 */
 
-#include "shared/cvar.hpp"
+#include "GEngine/cvar/cvar.hpp"
 
 namespace CVar {
 

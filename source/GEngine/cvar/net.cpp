@@ -5,7 +5,7 @@
 ** net
 */
 
-#include "shared/cvar/net.hpp"
+#include "GEngine/cvar/net.hpp"
 
 namespace CVar
 {

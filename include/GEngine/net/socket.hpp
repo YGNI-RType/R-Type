@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LYN-5-1-rtype-basile.fouquet (Workspace)
+** File description:
+** socket
+*/
+
 #pragma once
 
 #include "net_common.hpp"

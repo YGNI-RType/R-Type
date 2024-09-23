@@ -5,8 +5,8 @@
 ** socket
 */
 
-#include "shared/socket.hpp"
-#include "shared/socketError.hpp"
+#include "GEngine/net/socket.hpp"
+#include "GEngine/net/socketError.hpp"
 
 #include <cerrno>
 #include <cstring>

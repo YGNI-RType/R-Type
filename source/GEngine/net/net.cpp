@@ -17,9 +17,9 @@
 // add multicast for ipv6
 // https://en.wikipedia.org/wiki/NACK-Oriented_Reliable_Multicast
 
-#include "shared/net.hpp"
-#include "shared/socketError.hpp"
-#include "shared/cvar/net.hpp"
+#include "GEngine/net/net.hpp"
+#include "GEngine/net/socketError.hpp"
+#include "GEngine/cvar/net.hpp"
 
 #include <cstring>
 
