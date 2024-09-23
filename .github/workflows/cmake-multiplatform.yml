@@ -2,9 +2,9 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev", "devops" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
 jobs:
   build:
@@ -45,14 +45,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: Check CMake version (for debugging)
-      run: cmake --version
-      continue-on-error: true
-
-    - name: Install CMake on macOS
-      if: matrix.os == 'macos-latest'
-      run: brew install cmake
 
     - name: Set reusable strings
       id: strings
