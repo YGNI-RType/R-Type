@@ -19,7 +19,7 @@ r-type_server
 # Compiled Object files
 *.slo
 *.lo
-# *.o
+*.o
 *.obj
 
 # Precompiled Headers
