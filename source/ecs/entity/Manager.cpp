@@ -9,12 +9,9 @@
 
 using namespace ecs;
 
-entity::Manager::Manager() : m_size(0)
-{
-}
+entity::Manager::Manager() : m_size(0) {}
 
-entity::Entity entity::Manager::createEntity()
-{
+entity::Entity entity::Manager::createEntity() {
     entity::Entity entity;
     if (!m_available.empty()) {
         entity = m_available.front();
@@ -24,7 +21,4 @@ entity::Entity entity::Manager::createEntity()
     return entity;
 }
 
-void entity::Manager::destroyEntity(entity::Entity dead)
-{
-    m_available.push(dead);
-}
+void entity::Manager::destroyEntity(entity::Entity dead) { m_available.push(dead); }

@@ -15,10 +15,11 @@ class Manager {
 public:
     Manager();
 
-        Entity createEntity();
-        void destroyEntity(Entity dead);
-    private:
-        std::size_t m_size;
-        std::queue<Entity> m_available;
-    };
-}
+    Entity createEntity();
+    void destroyEntity(Entity dead);
+
+private:
+    std::size_t m_size;
+    std::queue<Entity> m_available;
+};
+} // namespace ecs::entity

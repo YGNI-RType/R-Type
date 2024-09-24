@@ -16,9 +16,9 @@
 #include "ecs/system/event/Base.hpp" // StartEngine MainLoop
 
 namespace ecs {
-    class ECS : private entity::Manager, public component::Manager, public system::Manager {
-    public:
-        ECS();
+class ECS : private entity::Manager, public component::Manager, public system::Manager {
+public:
+    ECS();
 
     template <typename... Components> entity::Entity spawnEntity(Components &&...components);
 
