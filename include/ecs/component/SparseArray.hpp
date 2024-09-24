@@ -35,12 +35,12 @@ public:
 
     std::size_t size() const;
 
-    using dense_iterator_t = std::vector<std::pair<entity::Entity, Component>>::iterator;
-    using dense_const_iterator_t = std::vector<std::pair<entity::Entity, Component>>::const_iterator;
-    dense_iterator_t begin();
-    dense_iterator_t end();
-    dense_const_iterator_t cbegin() const;
-    dense_const_iterator_t cend() const;
+    using dense_iterator = typename std::vector<std::pair<entity::Entity, Component>>::iterator;
+    using dense_const_iterator = typename std::vector<std::pair<entity::Entity, Component>>::const_iterator;
+    dense_iterator begin();
+    dense_iterator end();
+    dense_const_iterator cbegin() const;
+    dense_const_iterator cend() const;
 
 private:
     static constexpr std::size_t invalid_index = std::numeric_limits<std::size_t>::max();
