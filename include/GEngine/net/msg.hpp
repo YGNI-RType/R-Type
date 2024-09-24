@@ -15,7 +15,8 @@ namespace Network {
 
 typedef uint8_t byte_t;
 
-#define MAX_MSGLEN 16384
+#define MAX_UDP_MSGLEN 16384
+#define MAX_TCP_MSGLEN 32768
 
 class AMessage {
   public:
@@ -26,7 +27,9 @@ class AMessage {
     // virtual void readHeader(); // override final;
 
 
-
+    std::size_t getSize() const { return m_curSize; }
+    uint8_t getType() const { return m_type; }
+    std::size_t getMaxSize() const { return m_maxSize; }
 
   protected:
     AMessage(std::size_t maxSize, uint8_t type);
@@ -35,8 +38,6 @@ class AMessage {
     const std::size_t m_maxSize;
     std::size_t m_curSize = 0;
     uint8_t m_type;
-
-    byte_t m_data[MAX_MSGLEN];
 };
 
 class TCPMessage : public AMessage {
@@ -45,9 +46,13 @@ class TCPMessage : public AMessage {
 
     void writeHeader(); // override final;
     void readHeader(); // override final;
+    const byte_t *getData() const { return m_data; }
 
   private:
-    bool m_isFinished = false;
+    bool m_isFinished = true;
+
+    /* always set field to last, this is not a header !!!*/
+    byte_t m_data[MAX_TCP_MSGLEN];
 };
 
 class UDPMessage : public AMessage {
@@ -56,10 +61,15 @@ class UDPMessage : public AMessage {
 
     void writeHeader(); // override final;
     void readHeader(); // override final;
+    const byte_t *getData() const { return m_data; }
 
   private:
     bool m_isCompressed = false;
     uint16_t fragments = 0;
+
+    /* always set field to last, this is not a header !!!*/
+    byte_t m_data[MAX_UDP_MSGLEN];
+
 };
 
 } // namespace Network

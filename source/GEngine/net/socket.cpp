@@ -93,7 +93,7 @@ void ASocket::setBlocking(const SOCKET socket, bool blocking) {
 
 ASocket::SOCKET SocketTCPMaster::mg_sock = -1;
 
-SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : m_ip(&ip) {
+SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_TCP);
     if (mg_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
@@ -118,21 +118,20 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) : m_ip(&ip) {
     addSocketPool(mg_sock);
 }
 
-SocketTCP SocketTCPMaster::accept(size_t pos) const { return SocketTCP(pos, *this); }
+SocketTCP SocketTCPMaster::accept(size_t pos) const {
+    return SocketTCP(pos, *this);
+}
 
 SocketTCPMaster::~SocketTCPMaster() { socketClose(mg_sock); }
 
 /***********************************************/
 
-SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster) : m_posAccept(m_posAccept), m_ip(&socketMaster.getIP()) {
+SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster)
+    : m_posAccept(m_posAccept) {
 
-    struct sockaddr_in address;
-    socklen_t sz_addr = sizeof(address);
-    std::memcpy(&address, &m_ip->addr, sizeof(address));
-
-    m_sock = accept(socketMaster.getSocket(), (sockaddr *)&address, &sz_addr);
-    if (m_sock == -1) {
-        if (errno != EWOULDBLOCK)
+    m_sock = accept(socketMaster.getSocket(), &m_addr, &m_szAddr);
+    if (m_sock < 0) {
+        if (errno != EWOULDBLOCK) /* it should never block right ? */
             throw std::runtime_error("Failed to accept connection");
     }
 
@@ -141,38 +140,56 @@ SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster) : m
 
 SocketTCP::~SocketTCP() { socketClose(m_sock); }
 
-size_t SocketTCP::send(const byte_t *data, const size_t size) const {
-    size_t sentTotal = 0;
+bool SocketTCP::send(const TCPMessage &msg) const {
+    /* TODO : here, we guess the size is enough to
+    send, should we break it here or before ? */
 
-    while (sentTotal < size) {
-        auto sent = ::send(m_sock, data, size - sentTotal, 0);
-        if (sent < 0) {
-            if (errno == EWOULDBLOCK)
-                return sentTotal;
-            return sent;
-        }
-        if (sent == 0)
-            return 0;
-        sentTotal += sent;
-    }
-    return sentTotal;
+    return sendReliant(&msg, msg.getSize()) != 0; // if it did not block
 }
 
-size_t SocketTCP::receive(byte_t *data, const size_t size) const {
+TCPMessage SocketTCP::receive(void) const {
+    byte_t data[sizeof(TCPMessage)];
+
+    size_t recvSz = receiveReliant(data, sizeof(AMessage));
+    TCPMessage *msg = reinterpret_cast<TCPMessage *>(data);
+    recvSz = receiveReliant(
+        data + recvSz, std::min(msg->getSize(), sizeof(TCPMessage) - recvSz));
+
+    return *msg;
+}
+
+size_t SocketTCP::receiveReliant(byte_t *buffer, size_t size) const {
     size_t receivedTotal = 0;
 
     while (receivedTotal < size) {
-        auto received = recv(m_sock, data, size - receivedTotal, 0);
-        if (received < 0) {
-            if (errno == EWOULDBLOCK)
-                return receivedTotal;
-            return received;
-        }
+        auto received =
+            ::recv(m_sock, buffer + receivedTotal, size - receivedTotal, 0);
+        if (received < 0)
+            throw SocketException("Failed to receive message");
         if (received == 0)
-            return 0;
+            throw SocketClientDisconnected();
         receivedTotal += received;
     }
     return receivedTotal;
+}
+
+/* THIS IS THE ALL MESSAGE, NOT THE DATA */
+size_t SocketTCP::sendReliant(const TCPMessage *msg, size_t msgDataSize) const {
+    size_t sentTotal = 0;
+    msgDataSize += sizeof(TCPMessage) - MAX_TCP_MSGLEN;
+
+    while (sentTotal < msgDataSize) {
+        auto sent = ::send(m_sock, msg + sentTotal, msgDataSize - sentTotal, 0);
+        if (sent < 0) {
+            if (errno == EWOULDBLOCK || errno == EAGAIN)
+                return 0;
+            throw SocketException("Failed to send message");
+        }
+        if (sent == 0)
+            throw SocketClientDisconnected();
+        sentTotal += sent;
+    }
+    return sentTotal;
 }
 
 /***********************************************/
@@ -181,7 +198,7 @@ ASocket::SOCKET SocketUDP::mg_sock = -1;
 
 SocketUDP::~SocketUDP() { socketClose(mg_sock); }
 
-SocketUDP::SocketUDP(const IP &ip, uint16_t port) : m_ip(&ip) {
+SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
 
     mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (mg_sock == -1)
@@ -208,35 +225,62 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) : m_ip(&ip) {
     addSocketPool(mg_sock);
 }
 
-size_t SocketUDP::send(const byte_t *data, const size_t size) const {
-    size_t sentTotal = 0;
+bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
 
     /*
         BY THE WAY, m_sock is the same for EVERY CLASS, i don't put it on static
         because it's inherited
     */
-    while (sentTotal < size) {
-        auto sent =
-            sendto(mg_sock, data, size - sentTotal, 0,
-                   (struct sockaddr *)&m_ip->addr, sizeof(struct sockaddr));
-        if (sent < 0) {
-            if (errno == EWOULDBLOCK)
-                return sentTotal;
-            return sent;
-        }
-        if (sent == 0)
-            return 0;
-        sentTotal += sent;
+    size_t size = msg.getSize();
+    struct sockaddr_storage sockaddr = {0};
+
+    addr.toSockAddr(reinterpret_cast<struct sockaddr *>(&sockaddr));
+    auto sent =
+        sendto(mg_sock, &msg, size + sizeof(UDPMessage) - MAX_UDP_MSGLEN, 0,
+               (struct sockaddr *)&sockaddr, sizeof(struct sockaddr));
+    if (sent < 0) {
+        if (errno == EWOULDBLOCK || errno == EAGAIN)
+            return false;
+        throw SocketException("Failed to send message");
     }
-    return sentTotal;
+    if (sent == 0)
+        throw SocketClientDisconnected();
+    return true;
 }
 
-size_t SocketUDP::receive(byte_t *data, const size_t size) const {
-    socklen_t len = sizeof(m_ip->addr);
-    size_t recv =
-        recvfrom(mg_sock, data, size, 0, (struct sockaddr *)&m_ip->addr, &len);
+void SocketUDP::receive(struct sockaddr *addr, byte_t *data) const {
+    socklen_t len;
 
-    return recv;
+    size_t recv = recvfrom(mg_sock, data, sizeof(UDPMessage), 0, addr, &len);
+
+    // checking wouldblock etc... select told us to read so it's not possible
+    if (recv < 0)
+        throw SocketException("Failed to receive message");
+
+    if (recv < sizeof(UDPMessage) - MAX_UDP_MSGLEN)
+        throw SocketException("Received message is too small");
+}
+
+std::pair<UDPMessage, AddressV4> SocketUDP::receiveV4(void) const {
+    byte_t data[sizeof(UDPMessage)];
+    struct sockaddr_in addr;
+
+    receive(reinterpret_cast<struct sockaddr *>(&addr), data);
+    UDPMessage *msg = reinterpret_cast<UDPMessage *>(data);
+
+    AddressV4 a(AT_IPV4, addr.sin_port, addr.sin_addr.s_addr);
+    return std::make_pair(*msg, a);
+}
+
+std::pair<UDPMessage, AddressV6> SocketUDP::receiveV6(void) const {
+    byte_t data[sizeof(UDPMessage)];
+    struct sockaddr_in6 addr;
+
+    receive(reinterpret_cast<struct sockaddr *>(&addr), data);
+    UDPMessage *msg = reinterpret_cast<UDPMessage *>(data);
+
+    AddressV6 a(AT_IPV6, addr.sin6_port, addr.sin6_addr, addr.sin6_scope_id);
+    return std::make_pair(*msg, a);
 }
 
 } // namespace Network

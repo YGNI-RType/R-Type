@@ -21,4 +21,9 @@ class SocketException : public std::exception {
   private:
     const char *m_msg;
 };
+
+class SocketClientDisconnected : public SocketException {
+  public:
+    SocketClientDisconnected() : SocketException("Client disconnected") {}
+};
 } // namespace Network

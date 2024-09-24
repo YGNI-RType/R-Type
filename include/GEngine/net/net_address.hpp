@@ -11,6 +11,20 @@
 
 #include <array>
 
+#ifdef _WIN32
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501 /* Windows XP. */
+#endif
+#include <Ws2tcpiph>
+#include <winsock2.h>
+#else
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#endif
+
 namespace Network {
 class Address {
 
@@ -37,6 +51,7 @@ class AddressV4 : public Address {
   public:
     AddressV4(AddressType type, uint16_t port, ipv4_t address);
     AddressV4(AddressType type, uint16_t port);
+    AddressV4(AddressType type, uint16_t port, uint32_t ip);
     ~AddressV4() = default;
 
     const ipv4_t &getAddress() const { return m_address; };
@@ -50,8 +65,9 @@ class AddressV4 : public Address {
 
 class AddressV6 : public Address {
   public:
-    AddressV6(AddressType type, uint16_t port, ipv6_t address);
+    AddressV6(AddressType type, uint16_t port, ipv6_t address, uint64_t scopeId);
     AddressV6(AddressType type, uint16_t port);
+    AddressV6(AddressType type, uint16_t port, in6_addr ip, uint32_t scopeId);
     ~AddressV6() = default;
 
     const ipv6_t &getAddress() const { return m_address; };

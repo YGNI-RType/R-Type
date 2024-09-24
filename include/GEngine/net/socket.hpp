@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "msg.hpp"
+#include "net_address.hpp"
 #include "net_common.hpp"
 
 #include <cstdint>
@@ -14,6 +16,7 @@
 #include <string>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <utility>
 
 namespace Network {
 
@@ -53,32 +56,25 @@ class ASocket {
     static SOCKET m_highFd;
 };
 
-class ISocketIO {
-  public:
-    virtual std::size_t send(const byte_t *data,
-                             const std::size_t size) const = 0;
-    virtual std::size_t receive(byte_t *data, const std::size_t size) const = 0;
-};
-
 ////////////////////////////////////////
 
-class SocketUDP : public ASocket, public ISocketIO {
+class SocketUDP : public ASocket {
   public:
     SocketUDP() = default;
     SocketUDP(const IP &ip, uint16_t port);
     ~SocketUDP();
 
-    std::size_t send(const byte_t *data,
-                     const std::size_t size) const override final;
-    std::size_t receive(byte_t *data,
-                        const std::size_t size) const override final;
+    bool send(const UDPMessage &msg, const Address &addr) const;
+
+    /* this seems redundant, but to avoid any heap calls, this is necessary */
+    std::pair<UDPMessage, AddressV4> receiveV4(void) const;
+    std::pair<UDPMessage, AddressV6> receiveV6(void) const;
 
     SOCKET getSocket(void) const override final { return mg_sock; }
 
   private:
+    void receive(struct sockaddr *addr, byte_t *data) const;
     static SOCKET mg_sock;
-
-    const IP *m_ip;
 };
 
 ////////////////////////////////////////
@@ -93,15 +89,12 @@ class SocketTCPMaster : public ASocket {
 
     SocketTCP accept(size_t pos) const;
     SOCKET getSocket(void) const override final { return mg_sock; }
-    const IP &getIP(void) const { return *m_ip; }
 
   private:
     static SOCKET mg_sock;
-
-    const IP *m_ip;
 };
 
-class SocketTCP : public ASocket, public ISocketIO {
+class SocketTCP : public ASocket {
   public:
     enum EventType {
         NONE = 0,
@@ -115,19 +108,24 @@ class SocketTCP : public ASocket, public ISocketIO {
                   &socketMaster); // accepts it from the socket master
     ~SocketTCP();
 
-    std::size_t send(const byte_t *data,
-                     const std::size_t size) const override final;
-    std::size_t receive(byte_t *data,
-                        const std::size_t size) const override final;
+    bool send(const TCPMessage &msg) const;
+    TCPMessage receive(void) const;
 
     std::size_t getPosAccept(void) const { return m_posAccept; }
     SOCKET getSocket(void) const override final { return m_sock; }
     const EventType getEventType(void) const { return m_eventType; }
 
   private:
+    std::size_t receiveReliant(byte_t *buffer, std::size_t size) const;
+    std::size_t sendReliant(const TCPMessage *msg,
+                                   std::size_t msgDataSize) const;
+
     SOCKET m_sock = -1;
 
-    const IP *m_ip;
+    /* since accept can block, set it's here when it will be applied anyway */
+    struct sockaddr m_addr;
+    socklen_t m_szAddr;
+
     EventType m_eventType = READ;
 
     const size_t m_posAccept; /* posititon in array for fast removal */

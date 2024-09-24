@@ -103,8 +103,7 @@ void NET::init(void) {
 
 void NET::stop(void) {
     g_clientSocketsTCP.clear();
-    g_localIPs.clear(); /* TODO : the pointesr inside the socket class are now
-                           UNSAFE, should we copy them instead ? */
+    g_localIPs.clear();
     enabled = false;
 }
 
