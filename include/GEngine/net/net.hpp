@@ -8,21 +8,13 @@
 #pragma once
 
 #include "net_common.hpp"
+#include "net_address.hpp"
+#include "msg.hpp"
 #include "socket.hpp"
 
-#include <array>
-#include <memory>
 #include <vector>
 
 namespace Network {
-
-struct Address {
-    AddressType type;
-    std::array<byte_t, 4> ipv4;
-    std::array<byte_t, 16> ipv6;
-    uint16_t port;
-    uint64_t interface_id; // scope_id for ipv6 / zone_id
-};
 
 class NET {
   private:
@@ -30,9 +22,8 @@ class NET {
     static SocketTCPMaster mg_socketListenTcp;
     static SocketUDP mg_socketUdpV6;
     static SocketTCPMaster mg_socketListenTcpV6;
-    
-    static std::vector<SocketTCP> g_clientSocketsTCP;
 
+    static std::vector<SocketTCP> g_clientSocketsTCP;
 
     static std::vector<IP> g_localIPs;
 
@@ -53,10 +44,19 @@ class NET {
     static SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort);
     /*********************/
 
+    /* Usage of "select" */
   public:
     static bool sleep(uint32_t ms);
 
   private:
     static void createSets(fd_set &readSet);
+    /*********************/
+
+    /* Ping servers */
+  public:
+    static void pingServers(void);
+    static void respondPingServers(UDPMessage &msg, const Address &addr);
+
+  private:
 };
 } // namespace Network

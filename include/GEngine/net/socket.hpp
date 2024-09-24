@@ -17,8 +17,6 @@
 
 namespace Network {
 
-typedef uint8_t byte_t;
-
 #define MAX_PACKETLEN 1400 // max size of a network packet
 
 #define FRAGMENT_SIZE (MAX_PACKETLEN - 100)

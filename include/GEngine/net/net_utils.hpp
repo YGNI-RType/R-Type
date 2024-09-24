@@ -5,6 +5,12 @@
 ** net_utils
 */
 
-#include "GEngine/net/net_utils.hpp"
+#pragma once
 
-namespace Network {} // namespace Network
+#include "net_common.hpp"
+
+namespace Network {
+class NetUtils {
+  public:
+};
+} // namespace Network

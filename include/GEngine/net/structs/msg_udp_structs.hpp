@@ -12,11 +12,11 @@
 namespace Network {
 
 enum {
-    CL_BROADCAST,
+    CL_BROADCAST_PING,
 };
 
 enum {
-    SV_BROADCAST
+    SV_BROADCAST_PING
 };
 
 } // namespace Network

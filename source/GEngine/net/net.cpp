@@ -14,12 +14,13 @@
 // voip)
 
 // open both UDP socket for ipv4 and ipv6 for the same class
-// add multicast for ipv6
+// add multicast for ipv6 --> NOT PRIORITARY
 // https://en.wikipedia.org/wiki/NACK-Oriented_Reliable_Multicast
 
 #include "GEngine/net/net.hpp"
-#include "GEngine/net/socketError.hpp"
 #include "GEngine/cvar/net.hpp"
+#include "GEngine/net/socketError.hpp"
+#include "GEngine/net/msg.hpp"
 
 #include <cstring>
 
@@ -87,7 +88,8 @@ void NET::init(void) {
             mg_socketUdp = openSocketUdp(ip, port);
             port++;
         }
-        if (ip.type == AT_IPV6 && CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
+        if (ip.type == AT_IPV6 &&
+            CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
             mg_socketListenTcpV6 = openSocketTcp(ip, port);
             port++;
             mg_socketUdpV6 = openSocketUdp(ip, port);
@@ -197,29 +199,10 @@ void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr,
 
 bool NET::isLanAddress(const Address &addr) {
 
-    if (addr.type == AT_LOOPBACK)
+    if (addr.getType() == AT_LOOPBACK)
         return true;
 
-    else if (addr.type == AT_IPV4) {
-        // RFC1918:
-        // 10.0.0.0        -   10.255.255.255  (10/8 prefix)
-        // 172.16.0.0      -   172.31.255.255  (172.16/12 prefix)
-        // 192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
-        if (addr.ipv4[0] == 10 || addr.ipv4[0] == 127)
-            return true;
-        if (addr.ipv4[0] == 172 && addr.ipv4[1] >= 16 && addr.ipv4[1] <= 31)
-            return true;
-        if (addr.ipv4[0] == 192 && addr.ipv4[1] == 168)
-            return true;
-    } else if (addr.type == AT_IPV6) {
-        if (addr.ipv6[0] == 0xFE && addr.ipv6[1] == 0x80)
-            return true;
-        if ((addr.ipv6[0] & 0xfe) == 0xfc)
-            return true;
-    }
-
-    // TODO if time : check if the address is in the same subnet as the local
-    return false;
+    return addr.isLanAddr();
 }
 
 SocketTCPMaster NET::openSocketTcp(const IP &ip, uint16_t wantedPort) {
@@ -280,8 +263,30 @@ void NET::createSets(fd_set &readSet) {
     if (CVar::net_ipv6.getIntValue()) {
         FD_SET(mg_socketUdpV6.getSocket(), &readSet);
         FD_SET(mg_socketListenTcpV6.getSocket(), &readSet);
-    } 
+    }
     FD_SET(mg_socketUdp.getSocket(), &readSet);
     FD_SET(mg_socketListenTcp.getSocket(), &readSet);
 }
+
+/**************************************************************/
+
+void NET::pingServers(void) {
+    struct sockaddr_in to;
+
+    std::memset(&to, 0, sizeof(to));
+
+    /* address is 0.0.0.0 */
+    to.sin_family = AF_INET;
+    to.sin_addr.s_addr = INADDR_BROADCAST;
+
+    for (size_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS;
+         port++) {
+        to.sin_port = htons(port);
+
+        auto message = UDPMessage(0, CL_BROADCAST_PING);
+        /* udp socket should get address and message*/
+    }
+    /* todo : ipv6 sockaddr_in6, the function might change */
+}
+
 } // namespace Network
