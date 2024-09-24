@@ -150,8 +150,6 @@ jobs:
 
       - name: Check for build artifacts
         run: |
-          ls ${{ github.workspace }}
-          tree ${{ github.workspace }}
           artifacts=$(find ${{ github.workspace }} -type f -name "*.so" -o -name "*.o" -o -name "*.d" -o -name "*.a")
           if [ -n "$artifacts" ]; then
             echo "Found unwanted artifacts:"
@@ -162,7 +160,6 @@ jobs:
           fi
 
   beautify:
-    needs: cleanup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
