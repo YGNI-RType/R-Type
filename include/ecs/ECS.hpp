@@ -7,28 +7,30 @@
 
 #pragma once
 
-#include "ecs/component/Manager.hpp"
-#include "ecs/entity/Manager.hpp"
-#include "ecs/system/Base.hpp"
-#include "ecs/system/Manager.hpp"
-#include "ecs/system/event/Base.hpp"
 #include <memory>
 
+#include "ecs/component/Manager.hpp"
+#include "ecs/entity/Manager.hpp"
+#include "ecs/system/Manager.hpp"
+
+#include "ecs/system/event/Base.hpp" // StartEngine MainLoop
+
 namespace ecs {
+// namespace system {
+//     class Manager;
+// }
 class ECS : public component::Manager, private entity::Manager, public system::Manager {
 public:
     ECS();
 
-    template <typename... Components> entity::Entity spawnEntity(Components &&...components) {
-        entity::Entity entity = createEntity();
-        (setComponent(entity, std::forward<Components>(components)), ...);
-        return entity;
-    }
-
-    void start(void) { publishEvent(ecs::system::event::StartEngine()); }
-
-    void update(void) { publishEvent(ecs::system::event::MainLoop()); }
+    template <typename... Components> entity::Entity spawnEntity(Components &&...components);
 
     void killEntity(entity::Entity entity);
+
+    void start(void);
+
+    void update(void);
 };
 } // namespace ecs
+
+#include "ECS.inl"

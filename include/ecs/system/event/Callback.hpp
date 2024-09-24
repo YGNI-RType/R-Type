@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "ecs/system/event/Base.hpp"
 #include <functional>
 #include <memory>
+// #include "ecs/system/event/Base.hpp"
 
 namespace ecs::system::event {
 
@@ -20,6 +20,7 @@ namespace ecs::system::event {
  * event handling. Derived classes must implement the `exec` method to handle
  * specific events.
  */
+class Base;
 class Callback {
 public:
     /**

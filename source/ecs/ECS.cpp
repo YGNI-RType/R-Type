@@ -6,13 +6,16 @@
 */
 
 #include "ecs/ECS.hpp"
-#include <iostream>
 
 using namespace ecs;
 
-ECS::ECS() : ecs::system::Manager(*this) {}
+ECS::ECS() : system::Manager(*this) {}
 
 void ECS::killEntity(entity::Entity entity) {
     destroyComponents(entity);
     destroyEntity(entity);
 }
+
+void ECS::start(void) { publishEvent(ecs::system::event::StartEngine()); }
+
+void ECS::update(void) { publishEvent(ecs::system::event::MainLoop()); }

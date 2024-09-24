@@ -16,3 +16,5 @@ class Engine : public BaseEngine {
 public:
 };
 } // namespace gengine::game
+
+#include "ecs/system/event/Base.hpp"

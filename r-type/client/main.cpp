@@ -10,7 +10,7 @@
 #include "GEngine/interface/Internal.hpp"
 
 struct Position {
-    int x, y, z;
+    float x, y, z;
 };
 
 struct Motion {
@@ -47,7 +47,7 @@ public:
     }
 };
 
-#include "ecs/ECS.hpp"
+#include "ecs/system/Base.hpp"
 
 int main(void) {
     gengine::driver::Engine DriverEngine;

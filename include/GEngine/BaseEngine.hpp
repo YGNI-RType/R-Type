@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "GEngine/interface/Base.hpp"
-#include "ecs/ECS.hpp"
+#include "ecs/system/Base.hpp" // includes ECS (avoid circular include)
+
 #include <functional>
 #include <memory>
 
@@ -16,17 +16,17 @@ namespace gengine {
 class BaseEngine {
 public:
     // TODO add constructor whit Interface Type template
-    template <typename T, typename... Params> inline void registerSystem(Params &&...p) {
-        m_ecs.registerSystem<T>(std::forward<Params>(p)...);
-    }
+    template <typename T, typename... Params> inline void registerSystem(Params &&...p);
 
-    template <typename T> inline void registerComponent(void) { m_ecs.registerComponent<T>(); }
+    template <typename T> inline void registerComponent(void);
 
-    void update(void) { m_ecs.update(); }
+    void update(void);
 
-    void start(void) { m_ecs.start(); }
+    void start(void);
 
 private:
     ecs::ECS m_ecs;
 };
 } // namespace gengine
+
+#include "BaseEngine.inl"
