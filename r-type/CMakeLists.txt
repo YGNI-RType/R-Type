@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS NO)
 
 include_directories(../include)
 
-find_library(GEngine_LIB NAMES GEngine PATHS ../)
+find_library(GEngine_LIB NAMES GEngine PATHS ../build/)
 
 set(CLIENT_SOURCES client/main.cpp)
 add_executable(r-type_client ${CLIENT_SOURCES})
