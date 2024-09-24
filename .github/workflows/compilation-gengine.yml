@@ -148,7 +148,8 @@ jobs:
     steps:
       - name: Check for build artifacts
         run: |
-          ls
+          ls ${{ github.workspace }}
+          tree ${{ github.workspace }}
           artifacts=$(find ${{ github.workspace }} -type f -name "*.so" -o -name "*.o" -o -name "*.d" -o -name "*.a")
           if [ -n "$artifacts" ]; then
             echo "Found unwanted artifacts:"
