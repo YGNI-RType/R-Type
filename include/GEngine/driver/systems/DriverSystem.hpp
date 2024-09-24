@@ -7,18 +7,20 @@
 
 #pragma once
 
-#include "ecs/system/Base.hpp"
 #include "GEngine/driver/systems/Library/Library.hpp"
+#include "ecs/system/Base.hpp"
 #include <memory>
 
-class DriverSystem: public ecs::system::Base<DriverSystem> {
-    public:
-        DriverSystem(ecs::system::event::Bus &eventBus, std::unique_ptr<Library> gLib): Base<DriverSystem>(eventBus) {
-            m_gLib = std::move(gLib);
-        }
+class DriverSystem : public ecs::system::Base<DriverSystem> {
+public:
+    DriverSystem(ecs::system::event::Bus &eventBus,
+                 std::unique_ptr<Library> gLib)
+        : Base<DriverSystem>(eventBus) {
+        m_gLib = std::move(gLib);
+    }
 
-    private:
-        static std::unique_ptr<Library> m_gLib;
+private:
+    static std::unique_ptr<Library> m_gLib;
 };
 
 std::unique_ptr<Library> DriverSystem::m_gLib = nullptr;

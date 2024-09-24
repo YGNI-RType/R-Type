@@ -7,7 +7,5 @@
 
 #pragma once
 
-class Library {
-
-};
+class Library {};
 // TODO impl Raylib: public Library

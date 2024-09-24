@@ -10,12 +10,9 @@
 
 using namespace ecs;
 
-ECS::ECS(): ecs::system::Manager(*this)
-{
-}
+ECS::ECS() : ecs::system::Manager(*this) {}
 
-void ECS::killEntity(entity::Entity entity)
-{
+void ECS::killEntity(entity::Entity entity) {
     destroyComponents(entity);
     destroyEntity(entity);
 }

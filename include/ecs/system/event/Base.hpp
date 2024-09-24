@@ -7,40 +7,40 @@
 
 #pragma once
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 #include "ecs/ECS.hpp"
 
 namespace ecs::system::event {
+/**
+ * @brief Base class for all events.
+ *
+ * This is the base class from which all specific event types should derive.
+ * It provides a default constructor, destructor, and copy constructor.
+ * This class is meant to be used polymorphically for event handling.
+ */
+class Base {
+public:
     /**
-     * @brief Base class for all events.
-     *
-     * This is the base class from which all specific event types should derive.
-     * It provides a default constructor, destructor, and copy constructor.
-     * This class is meant to be used polymorphically for event handling.
+     * @brief Default constructor.
      */
-    class Base {
-    public:
-        /**
-         * @brief Default constructor.
-         */
-        Base() = default;
+    Base() = default;
 
-        /**
-         * @brief Virtual destructor.
-         *
-         * Ensures proper cleanup of derived classes.
-         */
-        virtual ~Base() = default;
+    /**
+     * @brief Virtual destructor.
+     *
+     * Ensures proper cleanup of derived classes.
+     */
+    virtual ~Base() = default;
 
-        /**
-         * @brief Default copy constructor.
-         */
-        Base(const Base&) = default;
-    };
+    /**
+     * @brief Default copy constructor.
+     */
+    Base(const Base &) = default;
+};
 
-    class MainLoop: public Base {}; // TODO replace
-    class StartEngine: public Base {}; // TODO replace
+class MainLoop : public Base {};    // TODO replace
+class StartEngine : public Base {}; // TODO replace
 
-}
+} // namespace ecs::system::event

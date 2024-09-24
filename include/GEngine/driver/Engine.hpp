@@ -12,7 +12,7 @@
 #include <memory>
 
 namespace gengine::driver {
-    class Engine : public BaseEngine {
-    public:
-    };
-}
+class Engine : public BaseEngine {
+public:
+};
+} // namespace gengine::driver

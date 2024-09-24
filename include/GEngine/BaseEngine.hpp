@@ -9,32 +9,27 @@
 
 #include "GEngine/interface/Base.hpp"
 #include "ecs/ECS.hpp"
-#include <memory>
 #include <functional>
+#include <memory>
 
 namespace gengine {
-    class BaseEngine {
-    public:
-        // TODO add constructor whit Interface Type template
-        template<typename T, typename ...Params>
-        inline void registerSystem(Params &&...p) {
-            m_ecs.registerSystem<T>(std::forward<Params>(p)...);
-        }
+class BaseEngine {
+public:
+    // TODO add constructor whit Interface Type template
+    template <typename T, typename... Params>
+    inline void registerSystem(Params &&...p) {
+        m_ecs.registerSystem<T>(std::forward<Params>(p)...);
+    }
 
-        template<typename T>
-        inline void registerComponent(void) {
-            m_ecs.registerComponent<T>();
-        }
+    template <typename T> inline void registerComponent(void) {
+        m_ecs.registerComponent<T>();
+    }
 
-        void update(void) {
-            m_ecs.update();
-        }
+    void update(void) { m_ecs.update(); }
 
-        void start(void) {
-            m_ecs.start();
-        }
+    void start(void) { m_ecs.start(); }
 
-    private:
-        ecs::ECS m_ecs;
-    };
-}
+private:
+    ecs::ECS m_ecs;
+};
+} // namespace gengine

@@ -12,7 +12,7 @@
 #include <memory>
 
 namespace gengine::game {
-    class Engine : public BaseEngine {
-    public:
-    };
-}
+class Engine : public BaseEngine {
+public:
+};
+} // namespace gengine::game

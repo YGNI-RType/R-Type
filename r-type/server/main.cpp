@@ -7,8 +7,7 @@
 
 #include "GEngine/game/Engine.hpp"
 
-int main(void)
-{
+int main(void) {
     // gengine::game::Engine GameEngine;
     // GameEngine.run();
 }

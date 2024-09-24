@@ -11,11 +11,12 @@
 #include <string>
 
 namespace gengine {
-    class BaseException: public std::exception {
-    public:
-        BaseException(std::string &message);
-        virtual const char* what() const noexcept override;
-    private:
-        std::string m_message;
-    };
-}
+class BaseException : public std::exception {
+public:
+    BaseException(std::string &message);
+    virtual const char *what() const noexcept override;
+
+private:
+    std::string m_message;
+};
+} // namespace gengine

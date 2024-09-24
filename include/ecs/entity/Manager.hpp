@@ -11,13 +11,14 @@
 #include <vector>
 
 namespace ecs::entity {
-    class Manager {
-    public:
-        Manager();
+class Manager {
+public:
+    Manager();
 
-        Entity createEntity();
-        void destroyEntity(Entity dead);
-    private:
-        static std::vector<Entity> m_entities;
-    };
-}
+    Entity createEntity();
+    void destroyEntity(Entity dead);
+
+private:
+    static std::vector<Entity> m_entities;
+};
+} // namespace ecs::entity

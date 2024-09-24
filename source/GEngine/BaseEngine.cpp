@@ -7,5 +7,4 @@
 
 #include "GEngine/BaseEngine.hpp"
 
-namespace gengine {
-}
+namespace gengine {}

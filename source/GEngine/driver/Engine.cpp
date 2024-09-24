@@ -7,6 +7,4 @@
 
 #include "GEngine/driver/Engine.hpp"
 
-namespace gengine::driver {
-
-}
+namespace gengine::driver {}

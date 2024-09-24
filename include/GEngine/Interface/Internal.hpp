@@ -7,27 +7,28 @@
 
 #pragma once
 
-#include "GEngine/interface/Base.hpp"
 #include "GEngine/game/Engine.hpp"
+#include "GEngine/interface/Base.hpp"
 
 #include <unistd.h>
 
-
 namespace gengine::interface {
-    class Internal: public Base {
-        public:
-            Internal(game::Engine &gameEngine, driver::Engine &driverEngine): m_gameEngine(gameEngine), m_driverEngine(driverEngine) {};
-            void run(void) override {
-                m_gameEngine.start();
-                m_driverEngine.start();
-                while(1) {
-                    m_gameEngine.update();
-                    m_driverEngine.update();
-                    usleep(100000);
-                }
-            }
-        private:
-            game::Engine &m_gameEngine;
-            driver::Engine &m_driverEngine;
-    };
-}
+class Internal : public Base {
+public:
+    Internal(game::Engine &gameEngine, driver::Engine &driverEngine)
+        : m_gameEngine(gameEngine), m_driverEngine(driverEngine){};
+    void run(void) override {
+        m_gameEngine.start();
+        m_driverEngine.start();
+        while (1) {
+            m_gameEngine.update();
+            m_driverEngine.update();
+            usleep(100000);
+        }
+    }
+
+private:
+    game::Engine &m_gameEngine;
+    driver::Engine &m_driverEngine;
+};
+} // namespace gengine::interface

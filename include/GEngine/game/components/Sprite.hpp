@@ -7,6 +7,4 @@
 
 #pragma once
 
-struct Sprite {
-
-};
+struct Sprite {};

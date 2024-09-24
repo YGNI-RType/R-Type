@@ -7,6 +7,4 @@
 
 #include "GEngine/game/Engine.hpp"
 
-namespace gengine::game {
-
-}
+namespace gengine::game {}
