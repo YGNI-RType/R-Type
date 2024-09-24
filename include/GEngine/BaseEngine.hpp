@@ -34,8 +34,6 @@ namespace gengine {
             m_ecs.start();
         }
 
-        // void start
-
     private:
         ecs::ECS m_ecs;
     };

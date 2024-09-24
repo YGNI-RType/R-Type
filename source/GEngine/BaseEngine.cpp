@@ -8,7 +8,4 @@
 #include "GEngine/BaseEngine.hpp"
 
 namespace gengine {
-    void BaseEngine::run(void) {
-        m_interface->run();
-    }
 }

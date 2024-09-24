@@ -8,7 +8,5 @@
 #include "GEngine/driver/Engine.hpp"
 
 namespace gengine::driver {
-    Engine::Engine(std::unique_ptr<gengine::interface::Base> interface) : BaseEngine(std::move(interface)) {
 
-    }
 }

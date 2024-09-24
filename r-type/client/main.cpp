@@ -35,7 +35,6 @@ public:
 
 class MotionSystem: public ecs::system::Base<MotionSystem, Position, Motion> {
 public:
-    MotionSystem() = default;
 
     void init(void) override {
         subscribeToEvent<ecs::system::event::MainLoop>(&MotionSystem::mainLoop);
