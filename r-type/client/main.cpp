@@ -25,7 +25,7 @@ public:
 
     void init(void) override { subscribeToEvent<ecs::system::event::StartEngine>(&StartSystem::onStart); }
 
-    void onStart(ecs::system::event::StartEngine &event) { spawnEntity(Position{1, 1, 1}, Motion{2.f, 0.4, 1.5}); }
+    void onStart(ecs::system::event::StartEngine &event) { spawnEntity(Position{1.0f, 1.0f, 1.0f}, Motion{2.f, 0.4f, 1.5f}); }
 };
 
 class MotionSystem : public ecs::system::Base<MotionSystem, Position, Motion> {
