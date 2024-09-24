@@ -21,7 +21,7 @@
 namespace ecs::component {
 class Manager {
 public:
-    Manager() {};
+    Manager(){};
 
     template <class Component> SparseArray<Component> &registerComponent() {
         auto res = m_componentArrays.emplace(std::type_index(typeid(Component)),

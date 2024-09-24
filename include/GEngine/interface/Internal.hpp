@@ -16,7 +16,7 @@ namespace gengine::interface {
 class Internal : public Base {
 public:
     Internal(game::Engine &gameEngine, driver::Engine &driverEngine)
-        : m_gameEngine(gameEngine), m_driverEngine(driverEngine) {};
+        : m_gameEngine(gameEngine), m_driverEngine(driverEngine){};
     void run(void) override {
         m_gameEngine.start();
         m_driverEngine.start();
