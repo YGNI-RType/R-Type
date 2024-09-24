@@ -12,8 +12,9 @@
 #include <memory>
 
 namespace gengine::game {
-    class Engine : public ecs::ECS, public BaseEngine {
-    public:
-        Engine(std::unique_ptr<gengine::interface::Base> interface);
-    };
-}
+class Engine : public BaseEngine {
+public:
+};
+} // namespace gengine::game
+
+#include "ecs/system/event/Base.hpp"

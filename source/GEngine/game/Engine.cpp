@@ -7,8 +7,4 @@
 
 #include "GEngine/game/Engine.hpp"
 
-namespace gengine::game {
-    Engine::Engine(std::unique_ptr<gengine::interface::Base> interface) : BaseEngine(std::move(interface)) {
-
-    }
-}
+namespace gengine::game {}

@@ -8,7 +8,7 @@
 #include "GEngine/BaseEngine.hpp"
 
 namespace gengine {
-    void BaseEngine::run(void) {
-        m_interface->run();
-    }
-}
+void BaseEngine::update(void) { m_ecs.update(); }
+
+void BaseEngine::start(void) { m_ecs.start(); }
+} // namespace gengine

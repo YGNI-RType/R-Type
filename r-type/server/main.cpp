@@ -8,10 +8,6 @@
 #include "GEngine/game/Engine.hpp"
 
 int main(void) {
-  for (int i = 0; i < 100; i++) {
-    printf("Hello, World!\n");
-  }
-  // gengine::game::Engine
-  // GameEngine(std::make_unique<gengine::interface::Base>());
-  // GameEngine.run();
+    // gengine::game::Engine GameEngine;
+    // GameEngine.run();
 }

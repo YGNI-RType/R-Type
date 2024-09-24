@@ -8,9 +8,9 @@
 #pragma once
 
 namespace gengine::interface {
-    class Base {
-        public:
-            virtual ~Base() = default;
-            virtual void run(void) = 0;
-    };
-}
+class Base {
+public:
+    virtual ~Base() = default;
+    virtual void run(void) = 0;
+};
+} // namespace gengine::interface
