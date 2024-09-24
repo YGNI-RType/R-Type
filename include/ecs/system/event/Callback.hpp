@@ -9,7 +9,6 @@
 
 #include <functional>
 #include <memory>
-// #include "ecs/system/event/Base.hpp"
 
 namespace ecs::system::event {
 

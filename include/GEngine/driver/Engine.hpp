@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "GEngine/BaseEngine.hpp"
-#include "ecs/ECS.hpp"
 #include <memory>
+
+#include "GEngine/BaseEngine.hpp"
 
 namespace gengine::driver {
 class Engine : public BaseEngine {

@@ -7,9 +7,10 @@
 
 #pragma once
 
+#include <memory>
+
 #include "GEngine/driver/systems/Library/Library.hpp"
 #include "ecs/system/Base.hpp"
-#include <memory>
 
 class DriverSystem : public ecs::system::Base<DriverSystem> {
 public:

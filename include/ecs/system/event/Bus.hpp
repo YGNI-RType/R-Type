@@ -7,12 +7,13 @@
 
 #pragma once
 
-#include "ecs/system/event/Callback.hpp"
 #include <functional>
 #include <memory>
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
+
+#include "ecs/system/event/Callback.hpp"
 
 namespace ecs::system::event {
 

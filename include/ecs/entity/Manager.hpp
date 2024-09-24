@@ -2,13 +2,14 @@
 ** EPITECH PROJECT, 2024
 ** B-CPP-500-LYN-5-1-rtype-basile.fouquet
 ** File description:
-** Manager.hpp
+** entity::Manager.hpp
 */
 
 #pragma once
 
-#include "ecs/entity/Entity.hpp"
 #include <queue>
+
+#include "ecs/entity/Entity.hpp"
 
 namespace ecs::entity {
 class Manager {
