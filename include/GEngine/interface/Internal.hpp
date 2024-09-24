@@ -10,8 +10,6 @@
 #include "GEngine/game/Engine.hpp"
 #include "GEngine/interface/Base.hpp"
 
-#include <unistd.h>
-
 namespace gengine::interface {
 class Internal : public Base {
 public:
@@ -23,7 +21,6 @@ public:
         while (1) {
             m_gameEngine.update();
             m_driverEngine.update();
-            usleep(100000);
         }
     }
 
