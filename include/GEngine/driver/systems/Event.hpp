@@ -12,11 +12,10 @@
 namespace gengine::driver::system {
 class Event : public ecs::system::Base<Event> {
     Event(ecs::system::event::Bus eventBus)
-        : Base<Event>(
-              eventBus) { // TODO ne plus construire avec event bus mais forcé
-                          // le manager à la register a sa creation pourquoi pas
-                          // avec une méthod protected, ça éviterais d'avoir a
-                          // précesier la construction de Base<T>
+        : Base<Event>(eventBus) { // TODO ne plus construire avec event bus mais forcé
+                                  // le manager à la register a sa creation pourquoi pas
+                                  // avec une méthod protected, ça éviterais d'avoir a
+                                  // précesier la construction de Base<T>
     }
 
     void mainloop(event::MainLoop &e) override {

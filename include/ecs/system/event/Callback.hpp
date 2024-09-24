@@ -71,8 +71,8 @@ public:
     void exec(const Base &event) const override;
 
 private:
-    T &m_instance; ///< Reference to the instance of the class containing the
-                   ///< member function.
+    T &m_instance;                   ///< Reference to the instance of the class containing the
+                                     ///< member function.
     CallbackMethod m_callbackMethod; ///< Pointer to the member function.
 };
 

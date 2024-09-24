@@ -2,3 +2,4 @@ BasedOnStyle: LLVM
 RemoveBracesLLVM: true
 IndentWidth: 4
 AccessModifierOffset: -4
+ColumnLimit: 120

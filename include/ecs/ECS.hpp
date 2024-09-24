@@ -15,14 +15,11 @@
 #include <memory>
 
 namespace ecs {
-class ECS : public component::Manager,
-            private entity::Manager,
-            public system::Manager {
+class ECS : public component::Manager, private entity::Manager, public system::Manager {
 public:
     ECS();
 
-    template <typename... Components>
-    entity::Entity spawnEntity(Components &&...components) {
+    template <typename... Components> entity::Entity spawnEntity(Components &&...components) {
         entity::Entity entity = createEntity();
         (setComponent(entity, std::forward<Components>(components)), ...);
         return entity;

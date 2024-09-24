@@ -22,8 +22,7 @@ public:
 class MovementSystem : public System {
 public:
     MovementSystem(Core &core)
-        : transforms(core.getComponents<Transform>()),
-          velocities(core.getComponents<Motion>()) {}
+        : transforms(core.getComponents<Transform>()), velocities(core.getComponents<Motion>()) {}
 
     void update(float dt) override {
         for (auto &[entity, transform] : transforms) {
@@ -45,8 +44,7 @@ private:
 class DrawSystem : public System {
 public:
     DrawSystem(Core &core)
-        : sprites(core.getComponents<Sprite>()),
-          transforms(core.getComponents<Transform>()),
+        : sprites(core.getComponents<Sprite>()), transforms(core.getComponents<Transform>()),
           wd(sf::VideoMode(1000, 800), "title") {}
 
     void update(float dt) override {
@@ -74,8 +72,7 @@ private:
 
 class KillerSystem : public System {
 public:
-    KillerSystem(Core &core)
-        : transforms(core.getComponents<Transform>()), m_core(core) {}
+    KillerSystem(Core &core) : transforms(core.getComponents<Transform>()), m_core(core) {}
 
     void update(float dt) override {
         std::queue<Entity> toRemove;

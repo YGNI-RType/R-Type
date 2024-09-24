@@ -20,25 +20,17 @@ struct Motion {
 class StartSystem : public ecs::system::Base<StartSystem> {
 public:
     StartSystem(const std::string &message) {
-        std::cout << "Engine starting..., it say: \"" << message << "\""
-                  << std::endl;
+        std::cout << "Engine starting..., it say: \"" << message << "\"" << std::endl;
     }; // TODO args mut be const.
 
-    void init(void) override {
-        subscribeToEvent<ecs::system::event::StartEngine>(
-            &StartSystem::onStart);
-    }
+    void init(void) override { subscribeToEvent<ecs::system::event::StartEngine>(&StartSystem::onStart); }
 
-    void onStart(ecs::system::event::StartEngine &event) {
-        spawnEntity(Position{1, 1, 1}, Motion{2.f, 0.4, 1.5});
-    }
+    void onStart(ecs::system::event::StartEngine &event) { spawnEntity(Position{1, 1, 1}, Motion{2.f, 0.4, 1.5}); }
 };
 
 class MotionSystem : public ecs::system::Base<MotionSystem, Position, Motion> {
 public:
-    void init(void) override {
-        subscribeToEvent<ecs::system::event::MainLoop>(&MotionSystem::mainLoop);
-    }
+    void init(void) override { subscribeToEvent<ecs::system::event::MainLoop>(&MotionSystem::mainLoop); }
 
     void mainLoop(ecs::system::event::MainLoop &event) {
         auto &positions = getComponent<Position>();
@@ -49,8 +41,7 @@ public:
                 auto &motion = motions.get(entity);
                 transform.x += motion.x * 1.f;
                 transform.y += motion.y * 1.f;
-                std::cout << "Entity " << entity << " moved to (" << transform.x
-                          << ", " << transform.y << ")\n";
+                std::cout << "Entity " << entity << " moved to (" << transform.x << ", " << transform.y << ")\n";
             }
         }
     }

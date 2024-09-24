@@ -19,9 +19,7 @@ public:
     SparseArray() = default;
     ~SparseArray() = default;
 
-    void reserve(entity::Entity capacity) {
-        m_sparse.resize(capacity, invalid_index);
-    }
+    void reserve(entity::Entity capacity) { m_sparse.resize(capacity, invalid_index); }
 
     void insert(entity::Entity entity, const Component &component) {
         if (entity >= m_sparse.size())
@@ -35,8 +33,7 @@ public:
         }
     }
 
-    template <typename... Params>
-    void emplace(entity::Entity entity, Params &&...p) {
+    template <typename... Params> void emplace(entity::Entity entity, Params &&...p) {
         if (entity >= m_sparse.size())
             reserve(entity + 1);
 
@@ -44,8 +41,7 @@ public:
             m_sparse[entity] = m_dense.size();
             m_dense.emplace_back(entity, Component(std::forward<Params>(p)...));
         } else {
-            m_dense[m_sparse[entity]].second =
-                Component(std::forward<Params>(p)...);
+            m_dense[m_sparse[entity]].second = Component(std::forward<Params>(p)...);
         }
     }
 
@@ -63,17 +59,11 @@ public:
         m_sparse[entity] = invalid_index;
     }
 
-    bool contains(entity::Entity entity) const {
-        return entity < m_sparse.size() && m_sparse[entity] != invalid_index;
-    }
+    bool contains(entity::Entity entity) const { return entity < m_sparse.size() && m_sparse[entity] != invalid_index; }
 
-    Component &get(entity::Entity entity) {
-        return m_dense[m_sparse[entity]].second;
-    }
+    Component &get(entity::Entity entity) { return m_dense[m_sparse[entity]].second; }
 
-    const Component &get(entity::Entity entity) const {
-        return m_dense[m_sparse[entity]].second;
-    }
+    const Component &get(entity::Entity entity) const { return m_dense[m_sparse[entity]].second; }
 
     std::size_t size() const { return m_dense.size(); }
 
@@ -83,8 +73,7 @@ public:
     auto cend() const { return m_dense.cend(); }
 
 private:
-    static constexpr std::size_t invalid_index =
-        std::numeric_limits<std::size_t>::max();
+    static constexpr std::size_t invalid_index = std::numeric_limits<std::size_t>::max();
 
     std::vector<entity::Entity> m_sparse;
     std::vector<std::pair<entity::Entity, Component>> m_dense;
