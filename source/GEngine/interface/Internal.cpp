@@ -9,7 +9,7 @@
 
 namespace gengine::interface {
 Internal::Internal(game::Engine &gameEngine, driver::Engine &driverEngine)
-    : m_gameEngine(gameEngine), m_driverEngine(driverEngine) {};
+    : m_gameEngine(gameEngine), m_driverEngine(driverEngine) {}
 
 void Internal::run(void) {
     m_gameEngine.start();

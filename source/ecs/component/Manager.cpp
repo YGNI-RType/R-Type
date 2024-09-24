@@ -9,6 +9,8 @@
 
 using namespace ecs;
 
+component::Manager::Manager() {}
+
 void component::Manager::destroyComponents(entity::Entity entity) {
     for (auto &[_, pair] : m_componentArrays)
         pair.second(entity);

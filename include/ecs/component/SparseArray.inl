@@ -66,16 +66,17 @@ template <class Component> const Component &SparseArray<Component>::get(entity::
 
 template <class Component> std::size_t SparseArray<Component>::size() const { return m_dense.size(); }
 
-template <class Component> SparseArray<Component>::dense_iterator SparseArray<Component>::begin() {
+template <class Component> typename SparseArray<Component>::dense_iterator SparseArray<Component>::begin() {
     return m_dense.begin();
 }
-template <class Component> SparseArray<Component>::dense_iterator SparseArray<Component>::end() {
+template <class Component> typename SparseArray<Component>::dense_iterator SparseArray<Component>::end() {
     return m_dense.end();
 }
-template <class Component> SparseArray<Component>::dense_const_iterator SparseArray<Component>::cbegin() const {
+template <class Component>
+typename SparseArray<Component>::dense_const_iterator SparseArray<Component>::cbegin() const {
     return m_dense.cbegin();
 }
-template <class Component> SparseArray<Component>::dense_const_iterator SparseArray<Component>::cend() const {
+template <class Component> typename SparseArray<Component>::dense_const_iterator SparseArray<Component>::cend() const {
     return m_dense.cend();
 }
 } // namespace ecs::component
