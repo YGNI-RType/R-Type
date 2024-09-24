@@ -92,7 +92,7 @@ void AddressV6::toSockAddr(sockaddr *addr) const {
         s->sin6_addr = *((struct in6_addr *)&m_address);
         s->sin6_scope_id = m_scopeId;
         break;
-    case AT_BROADCAST: // NA_MULTICAST6
+    case AT_MULTICAST:
     case AT_UNSPEC:
         s->sin6_addr = in6addr_any;
         break;

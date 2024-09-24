@@ -70,6 +70,7 @@ std::vector<SocketTCP> NET::g_clientSocketsTCP;
 std::vector<IP> NET::g_localIPs;
 
 bool NET::enabled = false;
+bool NET::isHostingServer = false;
 
 /***************/
 
@@ -270,22 +271,13 @@ void NET::createSets(fd_set &readSet) {
 /**************************************************************/
 
 void NET::pingServers(void) {
-    struct sockaddr_in to;
-
-    std::memset(&to, 0, sizeof(to));
-
-    /* address is 0.0.0.0 */
-    to.sin_family = AF_INET;
-    to.sin_addr.s_addr = INADDR_BROADCAST;
-
     for (size_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS;
          port++) {
-        to.sin_port = htons(port);
-
         auto message = UDPMessage(0, CL_BROADCAST_PING);
-        /* udp socket should get address and message*/
+        mg_socketUdp.send(message, AddressV4(AT_BROADCAST, port));
+        if (CVar::net_ipv6.getIntValue())
+            mg_socketUdpV6.send(message, AddressV6(AT_MULTICAST, port));
     }
-    /* todo : ipv6 sockaddr_in6, the function might change */
 }
 
 } // namespace Network

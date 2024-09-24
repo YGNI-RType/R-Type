@@ -36,6 +36,7 @@ typedef enum {
     AT_BOT,
     AT_LOOPBACK,
     AT_BROADCAST,
+    AT_MULTICAST,
     AT_IPV4,
     AT_IPV6,
     AT_UNSPEC

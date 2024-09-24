@@ -243,8 +243,6 @@ bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
             return false;
         throw SocketException("Failed to send message");
     }
-    if (sent == 0)
-        throw SocketClientDisconnected();
     return true;
 }
 

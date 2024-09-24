@@ -28,6 +28,7 @@ class NET {
     static std::vector<IP> g_localIPs;
 
     static bool enabled;
+    static bool isHostingServer;
 
     /* Init everything */
   public:
