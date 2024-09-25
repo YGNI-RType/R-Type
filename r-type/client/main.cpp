@@ -6,17 +6,24 @@
 */
 
 #include "GEngine/driver/Engine.hpp"
+#include "GEngine/net/net.hpp"
 
 int main(void)
 {
-    // init all the NET framework
+    Network::NET::init();
 
     // LOOP THE GAME
     // check each frame the commands : connect (via gui or console)
+
+    while (1) {
+        Network::NET::sleep(4000000);
+    }
 
     // -> code/client/cl_main?c (CL_FRAME)
     // check timeout
     // send UDP packets
     // update screen  
+
+    Network::NET::stop();
     return 0;
 }

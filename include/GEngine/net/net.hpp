@@ -56,7 +56,7 @@ class NET {
     /* Ping servers */
   public:
     static void pingServers(void);
-    static void respondPingServers(UDPMessage &msg, const Address &addr);
+    static void respondPingServers(const UDPMessage &msg, const Address &addr);
 
   private:
 };

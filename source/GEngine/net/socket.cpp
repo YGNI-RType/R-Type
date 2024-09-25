@@ -36,6 +36,23 @@ WSADATA ASocket::winsockdata;
 ASocket::SOCKET ASocket::m_highFd = -1;
 fd_set ASocket::m_fdSet;
 
+ASocket::~ASocket() { socketClose(); }
+
+ASocket::ASocket(ASocket &&other) {
+    m_sock = other.m_sock;
+    other.m_sock = -1;
+}
+
+ASocket &ASocket::operator=(ASocket &&other) {
+    if (this != &other) {
+        m_sock = other.m_sock;
+        other.m_sock = -1;
+    }
+    return *this;
+}
+
+//////////////////////////////////////
+
 void ASocket::initLibs(void) {
 #ifdef _WIN32
     if (WSAStartup(MAKEWORD(1, 1), &winsockdata)) {
@@ -49,20 +66,23 @@ void ASocket::initLibs(void) {
     FD_ZERO(&m_fdSet);
 }
 
-int ASocket::socketClose(const SOCKET socket) {
+int ASocket::socketClose(void) {
     int status = 0;
+
+    if (m_sock == -1)
+        return 0;
 
 #ifdef _WIN32
     status = shutdown(m_sock, SD_BOTH);
     if (status == 0)
         status = closesocket(m_sock);
 #else
-    status = shutdown(socket, SHUT_RDWR);
+    status = shutdown(m_sock, SHUT_RDWR);
     if (status == 0)
-        status = close(socket);
+        status = close(m_sock);
 #endif
 
-    if (socket == m_highFd)
+    if (m_sock == m_highFd)
         while (!FD_ISSET(m_highFd, &m_fdSet))
             (m_highFd)--;
 
@@ -91,38 +111,42 @@ void ASocket::setBlocking(const SOCKET socket, bool blocking) {
 
 /***********************************************/
 
-ASocket::SOCKET SocketTCPMaster::mg_sock = -1;
-
 SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
-    mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_TCP);
-    if (mg_sock == -1)
+    m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
-    unsigned int opt = 1;
-    if (setsockopt(mg_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
-                   sizeof(opt)))
-        throw std::runtime_error(
-            "(TCP) Failed to set socket options (SO_REUSEADDR)");
+    // unsigned int opt = 1;
+    // if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+    //                sizeof(opt)))
+    //     throw std::runtime_error(
+    //         "(TCP) Failed to set socket options (SO_REUSEADDR)");
 
     struct sockaddr_in address;
-    std::memcpy(&address, &ip.addr, sizeof(address));
+    std::memcpy(&address, &ip.addr, sizeof(struct sockaddr_in));
 
     address.sin_port = port == PORT_ANY ? 0 : htons(port);
 
-    if (bind(mg_sock, (sockaddr *)&address, sizeof(address)) < 0)
+    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
         throw SocketException("(TCP) Failed to bind socket");
 
-    if (listen(mg_sock, MAX_LISTEN) < 0)
+    if (listen(m_sock, MAX_LISTEN) < 0)
         throw SocketException("(TCP) Failed to listen on socket");
 
-    addSocketPool(mg_sock);
+    addSocketPool(m_sock);
+}
+
+SocketTCPMaster::SocketTCPMaster(SocketTCPMaster &&other)
+    : ASocket(std::move(other)) {}
+SocketTCPMaster &SocketTCPMaster::operator=(SocketTCPMaster &&other) {
+    if (this != &other)
+        ASocket::operator=(std::move(other));
+    return *this;
 }
 
 SocketTCP SocketTCPMaster::accept(size_t pos) const {
     return SocketTCP(pos, *this);
 }
-
-SocketTCPMaster::~SocketTCPMaster() { socketClose(mg_sock); }
 
 /***********************************************/
 
@@ -138,7 +162,19 @@ SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster)
     addSocketPool(m_sock);
 }
 
-SocketTCP::~SocketTCP() { socketClose(m_sock); }
+SocketTCP::SocketTCP(SocketTCP &&other)
+    : ASocket(std::move(other)), m_posAccept(other.m_posAccept) {
+    m_addr = other.m_addr;
+    m_szAddr = other.m_szAddr;
+}
+SocketTCP &SocketTCP::operator=(SocketTCP &&other) {
+    if (this != &other) {
+        ASocket::operator=(std::move(other));
+        m_addr = other.m_addr;
+        m_szAddr = other.m_szAddr;
+    }
+    return *this;
+}
 
 bool SocketTCP::send(const TCPMessage &msg) const {
     /* TODO : here, we guess the size is enough to
@@ -194,23 +230,18 @@ size_t SocketTCP::sendReliant(const TCPMessage *msg, size_t msgDataSize) const {
 
 /***********************************************/
 
-ASocket::SOCKET SocketUDP::mg_sock = -1;
-
-SocketUDP::~SocketUDP() { socketClose(mg_sock); }
-
 SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
 
-    mg_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    if (mg_sock == -1)
+    m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (m_sock == -1)
         throw std::runtime_error("(UDP) Failed to create socket");
 
     unsigned int opt = 1;
-    if (setsockopt(mg_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
-                   sizeof(opt)))
-        throw std::runtime_error(
-            "(UDP) Failed to set socket options (SO_REUSEADDR)");
-    if (setsockopt(mg_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt,
-                   sizeof(opt)))
+    // if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+    //                sizeof(opt)))
+    //     throw std::runtime_error(
+    //         "(UDP) Failed to set socket options (SO_REUSEADDR)");
+    if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
         throw std::runtime_error(
             "(UDP) Failed to set socket options (SO_BROADCAST)");
 
@@ -219,10 +250,17 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
 
     address.sin_port = port == PORT_ANY ? 0 : htons(port);
 
-    if (bind(mg_sock, (sockaddr *)&address, sizeof(address)) < 0)
+    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
         throw SocketException("(UDP) Failed to bind socket");
 
-    addSocketPool(mg_sock);
+    addSocketPool(m_sock);
+}
+
+SocketUDP::SocketUDP(SocketUDP &&other) : ASocket(std::move(other)) {}
+SocketUDP &SocketUDP::operator=(SocketUDP &&other) {
+    if (this != &other)
+        ASocket::operator=(std::move(other));
+    return *this;
 }
 
 bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
@@ -236,7 +274,7 @@ bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
 
     addr.toSockAddr(reinterpret_cast<struct sockaddr *>(&sockaddr));
     auto sent =
-        sendto(mg_sock, &msg, size + sizeof(UDPMessage) - MAX_UDP_MSGLEN, 0,
+        sendto(m_sock, &msg, size + sizeof(UDPMessage) - MAX_UDP_MSGLEN, 0,
                (struct sockaddr *)&sockaddr, sizeof(struct sockaddr));
     if (sent < 0) {
         if (errno == EWOULDBLOCK || errno == EAGAIN)
@@ -249,7 +287,7 @@ bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
 void SocketUDP::receive(struct sockaddr *addr, byte_t *data) const {
     socklen_t len;
 
-    size_t recv = recvfrom(mg_sock, data, sizeof(UDPMessage), 0, addr, &len);
+    size_t recv = recvfrom(m_sock, data, sizeof(UDPMessage), 0, addr, &len);
 
     // checking wouldblock etc... select told us to read so it's not possible
     if (recv < 0)

@@ -208,7 +208,7 @@ bool NET::isLanAddress(const Address &addr) {
 SocketTCPMaster NET::openSocketTcp(const IP &ip, uint16_t wantedPort) {
     for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
         try {
-            return SocketTCPMaster(ip, wantedPort);
+            return std::move(SocketTCPMaster(ip, wantedPort));
         } catch (SocketException &e) {
             continue;
         }
@@ -219,7 +219,7 @@ SocketTCPMaster NET::openSocketTcp(const IP &ip, uint16_t wantedPort) {
 SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
     for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
         try {
-            return SocketUDP(ip, wantedPort);
+            return std::move(SocketUDP(ip, wantedPort));
         } catch (SocketException &e) {
             continue;
         }
@@ -241,7 +241,7 @@ bool NET::sleep(uint32_t ms) {
     /* The usage of select : both on windows and unix systems */
     int res = select(highest + 1, &readSet, nullptr, nullptr, &timeout);
     if (res == -1)
-        throw SocketException("Failed to sleep");
+        throw SocketException(strerror(errno));
     else if (res == 0)
         return false;
 
