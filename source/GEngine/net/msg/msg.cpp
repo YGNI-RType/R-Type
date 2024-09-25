@@ -8,6 +8,6 @@
 #include "GEngine/net/msg.hpp"
 
 namespace Network {
-    AMessage::AMessage(std::size_t maxSize, uint8_t type) : m_maxSize(maxSize), m_type(type) {}
+AMessage::AMessage(std::size_t maxSize, uint8_t type) : m_maxSize(maxSize), m_type(type) {}
 
 } // namespace Network

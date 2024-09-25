@@ -7,16 +7,15 @@
 
 #pragma once
 
-namespace Network
-{
-    enum {
-        SV_DOWNLOAD,
-        SV_UPLOAD, // TODO : add resriction on files (size, type, etc)
-    };
+namespace Network {
+enum {
+    SV_DOWNLOAD,
+    SV_UPLOAD, // TODO : add resriction on files (size, type, etc)
+};
 
-    enum {
-        CL_CONNECT_INFORMATION,
-        CL_DOWNLOAD,
-        CL_UPLOAD,
-    };
+enum {
+    CL_CONNECT_INFORMATION,
+    CL_DOWNLOAD,
+    CL_UPLOAD,
+};
 } // namespace Network

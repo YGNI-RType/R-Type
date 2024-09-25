@@ -11,4 +11,4 @@
 
 namespace CVar {
 extern ConVar net_ipv6;
-} // namespace RType
+} // namespace CVar

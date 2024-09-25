@@ -19,7 +19,7 @@
 namespace Network {
 
 #ifndef IF_NAMESIZE
-  #define IF_NAMESIZE 16
+#define IF_NAMESIZE 16
 #endif
 
 #ifdef _WIN32
@@ -30,23 +30,14 @@ typedef unsigned short sa_family_t;
 #endif
 #endif
 
-#define	PORT_ANY    -1
-#define	MAX_LISTEN    5
+#define PORT_ANY -1
+#define MAX_LISTEN 5
 #define MAX_TRY_PORTS 5
 #define DEFAULT_PORT 4242
 
 typedef uint8_t byte_t;
 
-typedef enum {
-    AT_NONE = 0,
-    AT_BOT,
-    AT_LOOPBACK,
-    AT_BROADCAST,
-    AT_MULTICAST,
-    AT_IPV4,
-    AT_IPV6,
-    AT_UNSPEC
-} AddressType;
+typedef enum { AT_NONE = 0, AT_BOT, AT_LOOPBACK, AT_BROADCAST, AT_MULTICAST, AT_IPV4, AT_IPV6, AT_UNSPEC } AddressType;
 
 struct IP {
     std::string ifname = std::string(IF_NAMESIZE, '\0');

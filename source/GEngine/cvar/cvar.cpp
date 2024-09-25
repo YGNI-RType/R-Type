@@ -13,7 +13,8 @@ ConVar sv_cheats("sv_cheats", "0", ConVar::CHEAT | ConVar::SERVER);
 
 ////////////////////////////////////////
 
-ConVar::ConVar(const std::string &name, const std::string &value, short flags, const std::string &description) : m_value(value), m_intValue(std::stoi(value)), m_description(description), m_flags(flags) {
+ConVar::ConVar(const std::string &name, const std::string &value, short flags, const std::string &description)
+    : m_value(value), m_intValue(std::stoi(value)), m_description(description), m_flags(flags) {
     getAllCommands()[name] = this;
 
     if (flags & ROM || flags & CMD)
@@ -26,15 +27,15 @@ void ConVar::setValue(const std::string &value, bool isUserInput) {
         if (m_flags & ROM || m_flags & CMD)
             return;
 
-        #ifndef SERVER
-            if (m_flags & CHEAT && !sv_cheats.getIntValue())
-                return;
-            if (m_flags & SERVER)
-                return; // TODO: notifies the server that the client want the value changed !!
-        #endif
+#ifndef SERVER
+        if (m_flags & CHEAT && !sv_cheats.getIntValue())
+            return;
+        if (m_flags & SERVER)
+            return; // TODO: notifies the server that the client want the value changed !!
+#endif
     }
 
     m_value = value;
 }
 
-} // namespace RType
+} // namespace CVar

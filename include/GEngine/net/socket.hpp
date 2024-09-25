@@ -12,8 +12,8 @@
 #include "net_common.hpp"
 
 #include <cstdint>
-#include <utility>
 #include <string>
+#include <utility>
 
 #ifndef _WIN32
 #include <netinet/in.h> // Add this line to include the header file that defines sockaddr_in
@@ -22,7 +22,7 @@
 #endif
 
 #ifndef _WIN32
-  typedef int SOCKET;
+typedef int SOCKET;
 #endif
 
 namespace Network {
@@ -38,7 +38,7 @@ namespace Network {
 
 class ASocket {
 
-  public:
+public:
 #ifdef _WIN32
     static WSADATA winsockdata;
 #endif
@@ -47,7 +47,7 @@ class ASocket {
 
     SOCKET getSocket(void) const { return m_sock; }
 
-  public:
+public:
     static void initLibs(void);
 
     ASocket() = default;
@@ -56,17 +56,18 @@ class ASocket {
     ASocket(ASocket &&other);
     ASocket &operator=(ASocket &&other);
 
-  protected:
+protected:
     static void addSocketPool(SOCKET socket);
     virtual ~ASocket();
 
-  private:
+private:
     static fd_set m_fdSet;
     static SOCKET m_highFd;
 
-  public:
+public:
     void setBlocking(bool blocking);
-  protected:
+
+protected:
     int socketClose(void);
 
     SOCKET m_sock = -1;
@@ -75,7 +76,7 @@ class ASocket {
 ////////////////////////////////////////
 
 class SocketUDP : public ASocket {
-  public:
+public:
     SocketUDP() = default;
     SocketUDP(const IP &ip, uint16_t port);
     SocketUDP(const SocketUDP &other) = delete;
@@ -90,7 +91,7 @@ class SocketUDP : public ASocket {
     std::pair<UDPMessage, AddressV4> receiveV4(void) const;
     std::pair<UDPMessage, AddressV6> receiveV6(void) const;
 
-  private:
+private:
     void receive(struct sockaddr *addr, byte_t *data) const;
 };
 
@@ -99,7 +100,7 @@ class SocketUDP : public ASocket {
 class SocketTCP;
 
 class SocketTCPMaster : public ASocket {
-  public:
+public:
     SocketTCPMaster() = default;
     SocketTCPMaster(const IP &ip, uint16_t port);
 
@@ -115,17 +116,16 @@ class SocketTCPMaster : public ASocket {
 };
 
 class SocketTCP : public ASocket {
-  public:
+public:
     enum EventType {
         NONE = 0,
         READ,
         WRITE,
     };
 
-  public:
+public:
     SocketTCP(size_t pos_accept,
-              const SocketTCPMaster
-                  &socketMaster); // accepts it from the socket master
+              const SocketTCPMaster &socketMaster); // accepts it from the socket master
     SocketTCP(const SocketTCP &other) = delete;
     SocketTCP &operator=(const SocketTCP &) = delete;
     SocketTCP(SocketTCP &&other);
@@ -138,10 +138,9 @@ class SocketTCP : public ASocket {
     std::size_t getPosAccept(void) const { return m_posAccept; }
     const EventType getEventType(void) const { return m_eventType; }
 
-  private:
+private:
     std::size_t receiveReliant(byte_t *buffer, std::size_t size) const;
-    std::size_t sendReliant(const TCPMessage *msg,
-                            std::size_t msgDataSize) const;
+    std::size_t sendReliant(const TCPMessage *msg, std::size_t msgDataSize) const;
 
     /* since accept can block, set it's here when it will be applied anyway */
     struct sockaddr m_addr;

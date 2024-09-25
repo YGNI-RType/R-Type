@@ -11,6 +11,6 @@
 
 namespace Network {
 class NetUtils {
-  public:
+public:
 };
 } // namespace Network

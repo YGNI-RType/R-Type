@@ -15,7 +15,7 @@ namespace CVar {
 
 // Templating may result issues on convar indexing
 class ConVar {
-  public:
+public:
     enum flag {
         NONE = 0x00,
         CHEAT = 0x01,  // used only when cheat enabled
@@ -27,7 +27,7 @@ class ConVar {
         CLIENT = 0x40  // Client commands
     };
 
-  public:
+public:
     ConVar(const std::string &name, const std::string &value, short flags, const std::string &description = "");
     ~ConVar() = default;
 
@@ -38,18 +38,18 @@ class ConVar {
     const short getFlags(void) const { return m_flags; }
     void setValue(const std::string &value, bool isUserInput = false);
 
-  private:
-      static std::unordered_map<std::string, ConVar*>& getAllCommands() {
-        static std::unordered_map<std::string, ConVar*> instance;
+private:
+    static std::unordered_map<std::string, ConVar *> &getAllCommands() {
+        static std::unordered_map<std::string, ConVar *> instance;
         return instance;
     }
 
-    static std::unordered_map<std::string, ConVar*>& getPublicCommands() {
-        static std::unordered_map<std::string, ConVar*> instance;
+    static std::unordered_map<std::string, ConVar *> &getPublicCommands() {
+        static std::unordered_map<std::string, ConVar *> instance;
         return instance;
     }
 
-  private:
+private:
     std::string m_value;
     std::string m_description;
     int m_intValue;
@@ -59,4 +59,4 @@ class ConVar {
 
 extern ConVar sv_cheats;
 
-} // namespace RType
+} // namespace CVar

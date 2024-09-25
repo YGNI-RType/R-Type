@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "net_common.hpp"
-#include "net_address.hpp"
 #include "msg.hpp"
+#include "net_address.hpp"
+#include "net_common.hpp"
 #include "socket.hpp"
 
 #include <vector>
@@ -17,7 +17,7 @@
 namespace Network {
 
 class NET {
-  private:
+private:
     static SocketUDP mg_socketUdp;
     static SocketTCPMaster mg_socketListenTcp;
     static SocketUDP mg_socketUdpV6;
@@ -31,14 +31,13 @@ class NET {
     static bool isHostingServer;
 
     /* Init everything */
-  public:
+public:
     static void init(void);
     static void stop(void);
 
-  private:
+private:
     static void getLocalAddress(void);
-    static void addLocalAddress(char *ifname, struct sockaddr *sockaddr,
-                                struct sockaddr *netmask);
+    static void addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockaddr *netmask);
     static bool isLanAddress(const Address &addr);
 
     static SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);
@@ -46,18 +45,18 @@ class NET {
     /*********************/
 
     /* Usage of "select" */
-  public:
+public:
     static bool sleep(uint32_t ms);
 
-  private:
+private:
     static void createSets(fd_set &readSet);
     /*********************/
 
     /* Ping servers */
-  public:
+public:
     static void pingServers(void);
     static void respondPingServers(const UDPMessage &msg, const Address &addr);
 
-  private:
+private:
 };
 } // namespace Network

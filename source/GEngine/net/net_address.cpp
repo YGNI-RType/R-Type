@@ -9,12 +9,10 @@
 
 namespace Network {
 
-AddressV4::AddressV4(AddressType type, uint16_t port, ipv4_t address)
-    : Address(type, port), m_address(address) {};
+AddressV4::AddressV4(AddressType type, uint16_t port, ipv4_t address) : Address(type, port), m_address(address) {};
 AddressV4::AddressV4(AddressType type, uint16_t port) : Address(type, port) {};
 
-AddressV4::AddressV4(AddressType type, uint16_t port, in_addr_t ip)
-    : Address(type, port) {
+AddressV4::AddressV4(AddressType type, uint16_t port, in_addr_t ip) : Address(type, port) {
     m_address = *(ipv4_t *)&ip;
 }
 
@@ -56,8 +54,7 @@ bool AddressV4::isLanAddr(void) const {
 
 /**********************************************/
 
-AddressV6::AddressV6(AddressType type, uint16_t port, ipv6_t address,
-                     uint64_t scopeId)
+AddressV6::AddressV6(AddressType type, uint16_t port, ipv6_t address, uint64_t scopeId)
     : Address(type, port), m_address(address), m_scopeId(scopeId) {};
 AddressV6::AddressV6(AddressType type, uint16_t port) : Address(type, port) {};
 

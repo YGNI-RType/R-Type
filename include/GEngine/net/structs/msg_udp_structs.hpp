@@ -15,8 +15,6 @@ enum {
     CL_BROADCAST_PING,
 };
 
-enum {
-    SV_BROADCAST_PING
-};
+enum { SV_BROADCAST_PING };
 
 } // namespace Network

@@ -7,7 +7,6 @@
 
 #include "GEngine/cvar/net.hpp"
 
-namespace CVar
-{
-    ConVar net_ipv6("net_ipv6", "0", ConVar::flag::CMD, "Enable ipv6 (set in convar)");
-} // namespace RType
+namespace CVar {
+ConVar net_ipv6("net_ipv6", "0", ConVar::flag::CMD, "Enable ipv6 (set in convar)");
+} // namespace CVar

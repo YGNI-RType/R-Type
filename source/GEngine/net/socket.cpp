@@ -8,11 +8,11 @@
 #include "GEngine/net/socket.hpp"
 #include "GEngine/net/socketError.hpp"
 
+#include <algorithm>
 #include <cerrno>
 #include <cstring>
 #include <stdexcept>
 #include <string>
-#include <algorithm>
 
 #ifdef _WIN32
 #include <WS2tcpip.h>
@@ -130,23 +130,18 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     addSocketPool(m_sock);
 }
 
-SocketTCPMaster::SocketTCPMaster(SocketTCPMaster &&other)
-    : ASocket(std::move(other)) {}
+SocketTCPMaster::SocketTCPMaster(SocketTCPMaster &&other) : ASocket(std::move(other)) {}
 SocketTCPMaster &SocketTCPMaster::operator=(SocketTCPMaster &&other) {
     if (this != &other)
         ASocket::operator=(std::move(other));
     return *this;
 }
 
-SocketTCP SocketTCPMaster::accept(size_t pos) const {
-    return SocketTCP(pos, *this);
-}
+SocketTCP SocketTCPMaster::accept(size_t pos) const { return SocketTCP(pos, *this); }
 
 /***********************************************/
 
-SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster)
-    : m_posAccept(m_posAccept) {
-
+SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster) : m_posAccept(m_posAccept) {
     m_sock = accept(socketMaster.getSocket(), &m_addr, &m_szAddr);
     if (m_sock < 0) {
         if (errno != EWOULDBLOCK) /* it should never block right ? */
@@ -156,8 +151,7 @@ SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster)
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(SocketTCP &&other)
-    : ASocket(std::move(other)), m_posAccept(other.m_posAccept) {
+SocketTCP::SocketTCP(SocketTCP &&other) : ASocket(std::move(other)), m_posAccept(other.m_posAccept) {
     m_addr = other.m_addr;
     m_szAddr = other.m_szAddr;
 }
@@ -183,8 +177,7 @@ TCPMessage SocketTCP::receive(void) const {
     size_t recvSz = receiveReliant(data, sizeof(AMessage));
     TCPMessage *msg = reinterpret_cast<TCPMessage *>(data);
     /* WIN : need to use these parenthesis, to skip windows.h macro */
-    recvSz = receiveReliant(
-        data + recvSz, (std::min)(msg->getSize(), sizeof(TCPMessage) - recvSz));
+    recvSz = receiveReliant(data + recvSz, (std::min)(msg->getSize(), sizeof(TCPMessage) - recvSz));
 
     return *msg;
 }
@@ -193,8 +186,7 @@ size_t SocketTCP::receiveReliant(byte_t *buffer, size_t size) const {
     size_t receivedTotal = 0;
 
     while (receivedTotal < size) {
-        auto received =
-            ::recv(m_sock, reinterpret_cast<char *>(buffer + receivedTotal), size - receivedTotal, 0);
+        auto received = ::recv(m_sock, reinterpret_cast<char *>(buffer + receivedTotal), size - receivedTotal, 0);
         if (received < 0)
             throw SocketException("Failed to receive message");
         if (received == 0)
@@ -204,7 +196,7 @@ size_t SocketTCP::receiveReliant(byte_t *buffer, size_t size) const {
     return receivedTotal;
 }
 
-/* THIS IS THE ALL MESSAGE, NOT THE DATA */
+/* THIS IS THE ALL MESSAGE, NOT THE JUST DATA */
 size_t SocketTCP::sendReliant(const TCPMessage *msg, size_t msgDataSize) const {
     size_t sentTotal = 0;
     msgDataSize += sizeof(TCPMessage) - MAX_TCP_MSGLEN;
@@ -233,8 +225,7 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
 
     unsigned int opt = 1;
     if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
-        throw std::runtime_error(
-            "(UDP) Failed to set socket options (SO_BROADCAST)");
+        throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
 
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
@@ -255,7 +246,6 @@ SocketUDP &SocketUDP::operator=(SocketUDP &&other) {
 }
 
 bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
-
     /*
         BY THE WAY, m_sock is the same for EVERY CLASS, i don't put it on static
         because it's inherited
@@ -264,9 +254,8 @@ bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
     struct sockaddr_storage sockaddr = {0};
 
     addr.toSockAddr(reinterpret_cast<struct sockaddr *>(&sockaddr));
-    auto sent =
-        sendto(m_sock, reinterpret_cast<const char *>(&msg), size + sizeof(UDPMessage) - MAX_UDP_MSGLEN, 0,
-               (struct sockaddr *)&sockaddr, sizeof(struct sockaddr));
+    auto sent = sendto(m_sock, reinterpret_cast<const char *>(&msg), size + sizeof(UDPMessage) - MAX_UDP_MSGLEN, 0,
+                       (struct sockaddr *)&sockaddr, sizeof(struct sockaddr));
     if (sent < 0) {
         if (errno == EWOULDBLOCK || errno == EAGAIN)
             return false;

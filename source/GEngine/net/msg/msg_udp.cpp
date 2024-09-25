@@ -8,16 +8,15 @@
 #include "GEngine/net/msg.hpp"
 
 namespace Network {
-    UDPMessage::UDPMessage(std::size_t maxSize, uint8_t type) : AMessage(maxSize, type) {}
+UDPMessage::UDPMessage(std::size_t maxSize, uint8_t type) : AMessage(maxSize, type) {}
 
-    void UDPMessage::writeHeader() {
-        // put the time
-        // put the mode
-    }
+void UDPMessage::writeHeader() {
+    // put the time
+    // put the mode
+}
 
-    void UDPMessage::readHeader() {
-        // get the time
-    }
-
+void UDPMessage::readHeader() {
+    // get the time
+}
 
 } // namespace Network
