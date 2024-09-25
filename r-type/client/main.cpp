@@ -49,8 +49,6 @@ public:
     }
 };
 
-#include "ecs/system/Base.hpp"
-
 int main(void) {
     gengine::driver::Engine DriverEngine;
     gengine::game::Engine GameEngine;

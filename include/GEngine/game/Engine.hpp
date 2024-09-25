@@ -7,14 +7,12 @@
 
 #pragma once
 
-#include "GEngine/BaseEngine.hpp"
-#include "ecs/ECS.hpp"
 #include <memory>
+
+#include "GEngine/BaseEngine.hpp"
 
 namespace gengine::game {
 class Engine : public BaseEngine {
 public:
 };
 } // namespace gengine::game
-
-#include "ecs/system/event/Base.hpp"

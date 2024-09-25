@@ -2,13 +2,14 @@
 ** EPITECH PROJECT, 2024
 ** B-CPP-500-LYN-5-1-rtype-basile.fouquet
 ** File description:
-** Manager.hpp
+** entity::Manager.hpp
 */
 
 #pragma once
 
+#include <queue>
+
 #include "ecs/entity/Entity.hpp"
-#include <vector>
 
 namespace ecs::entity {
 class Manager {
@@ -19,6 +20,7 @@ public:
     void destroyEntity(Entity dead);
 
 private:
-    static std::vector<Entity> m_entities;
+    std::size_t m_size;
+    std::queue<Entity> m_available;
 };
 } // namespace ecs::entity

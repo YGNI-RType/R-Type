@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** B-CPP-500-LYN-5-1-rtype-basile.fouquet
 ** File description:
-** Core.hpp
+** ECS.hpp
 */
 
 #pragma once
@@ -16,10 +16,7 @@
 #include "ecs/system/event/Base.hpp" // StartEngine MainLoop
 
 namespace ecs {
-// namespace system {
-//     class Manager;
-// }
-class ECS : public component::Manager, private entity::Manager, public system::Manager {
+class ECS : private entity::Manager, public component::Manager, public system::Manager {
 public:
     ECS();
 

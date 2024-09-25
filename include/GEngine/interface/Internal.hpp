@@ -7,22 +7,16 @@
 
 #pragma once
 
+#include "GEngine/driver/Engine.hpp"
 #include "GEngine/game/Engine.hpp"
 #include "GEngine/interface/Base.hpp"
 
 namespace gengine::interface {
 class Internal : public Base {
 public:
-    Internal(game::Engine &gameEngine, driver::Engine &driverEngine)
-        : m_gameEngine(gameEngine), m_driverEngine(driverEngine){};
-    void run(void) override {
-        m_gameEngine.start();
-        m_driverEngine.start();
-        while (1) {
-            m_gameEngine.update();
-            m_driverEngine.update();
-        }
-    }
+    Internal(game::Engine &gameEngine, driver::Engine &driverEngine);
+
+    void run(void) override;
 
 private:
     game::Engine &m_gameEngine;

@@ -169,5 +169,5 @@ jobs:
 
       - name: Check clang-format compliance
         run: |
-          files=$(find ${{ github.workspace }} -name "*.hpp" -o -name "*.cpp")
+          files=$(find ${{ github.workspace }} -name "*.hpp" -o -name "*.cpp" -o -name "*.inl")
           clang-format -Werror -dry-run $files
