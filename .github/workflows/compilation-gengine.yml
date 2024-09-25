@@ -2,7 +2,7 @@ name: Compilation
 
 on:
   push:
-    branches: ["dev", "devops", "23-fix-windows-linker-issues"]
+    branches: ["dev", "devops"]
   pull_request:
     branches: ["main", "dev"]
 
