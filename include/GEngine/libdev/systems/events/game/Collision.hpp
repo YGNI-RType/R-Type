@@ -7,14 +7,13 @@
 
 #pragma once
 
+#include "GEngine/libdev/Entity.hpp"
 #include "GEngine/libdev/System.hpp"
 
 namespace gengine::system::event {
-struct MainLoop : public Event {
-    float deltaTime;
-    MainLoop(float &deltaTime) : deltaTime(deltaTime) {}
-    MainLoop(float &&deltaTime) : deltaTime(deltaTime) {}
+struct Collsion : public Event {
+    Entity entity1;
+    Entity entity2;
+    Collsion(const Entity &entity1, const Entity entity2) : entity1(entity1), entity2(entity2) {}
 };
-
-struct StopMainLoop : public Event {};
 } // namespace gengine::system::event

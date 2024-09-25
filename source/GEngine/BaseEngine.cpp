@@ -7,11 +7,15 @@
 
 #include "GEngine/BaseEngine.hpp"
 #include "GEngine/libdev/systems/events/Native.hpp"
+#include <chrono>
+#include <thread>
 
 namespace gengine {
 void BaseEngine::compute(void) {
-    while (m_ecs.hasEvent())
+    while (m_ecs.hasEvent()) {
         m_ecs.executeEvent();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
 }
 
 void BaseEngine::start(void) { m_ecs.publishEvent(system::event::StartEngine()); }
