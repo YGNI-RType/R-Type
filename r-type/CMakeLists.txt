@@ -29,8 +29,8 @@ if(WIN32)
 target_link_libraries(r-type_client PRIVATE ${GEngine_LIB} wsock32 ws2_32)
 target_link_libraries(r-type_server PRIVATE ${GEngine_LIB} wsock32 ws2_32)
 else()
-target_link_libraries(r-type_client PRIVATE ${GEngine_LIB} DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
-target_link_libraries(r-type_server PRIVATE ${GEngine_LIB} DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+target_link_libraries(r-type_client PRIVATE ${GEngine_LIB})
+target_link_libraries(r-type_server PRIVATE ${GEngine_LIB})
 endif()
 
 set_target_properties(r-type_client PROPERTIES
