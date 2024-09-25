@@ -5,8 +5,6 @@
 ** MainLoop.cpp
 */
 
-#pragma once
-
 #include "GEngine/libdev/systems/MainLoop.hpp"
 
 namespace gengine::system {
