@@ -230,7 +230,7 @@ SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
 
 /* returns true if has event, false otherwise */
 bool NET::sleep(uint32_t ms) {
-    struct timeval timeout = {.tv_sec = static_cast<long>(ms / 1000u), .tv_usec = (ms % 1000) * 1000};
+    struct timeval timeout = {.tv_sec = static_cast<long>(ms / 1000u), .tv_usec = static_cast<int>((ms % 1000) * 1000)};
     SOCKET highest = ASocket::getHighestSocket();
 
     fd_set readSet;

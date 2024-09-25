@@ -39,7 +39,7 @@ public:
     uint16_t getPort() const { return m_port; };
 
 protected:
-    Address(AddressType type, uint16_t port) : m_type(type), m_port(port) {};
+    Address(AddressType type, uint16_t port) : m_type(type), m_port(port){};
     virtual ~Address() = default;
 
     AddressType m_type;
