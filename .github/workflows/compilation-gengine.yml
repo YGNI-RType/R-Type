@@ -2,7 +2,7 @@ name: Compilation
 
 on:
   push:
-    branches: ["dev", "devops"]
+    branches: ["dev", "devops", "23-fix-windows-linker-issues"]
   pull_request:
     branches: ["main", "dev"]
 
@@ -68,9 +68,8 @@ jobs:
         run: ctest --build-config ${{ matrix.build_type }}
 
       - name: Upload GEngine artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          # name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }} # For artifact@v4
           name: gengine-build
           path: ${{ steps.strings.outputs.build-output-dir }}
 
