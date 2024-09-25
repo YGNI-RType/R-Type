@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 #include "structs/msg_tcp_structs.hpp"
 #include "structs/msg_udp_structs.hpp"
 

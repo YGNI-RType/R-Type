@@ -8,7 +8,13 @@
 #pragma once
 
 #include <string>
+
+#ifdef _WIN32
+#include <WS2tcpip.h>
+#include <winsock2.h>
+#else
 #include <sys/socket.h>
+#endif
 
 namespace Network {
 

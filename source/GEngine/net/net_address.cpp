@@ -7,20 +7,6 @@
 
 #include "GEngine/net/net_address.hpp"
 
-#ifdef _WIN32
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501 /* Windows XP. */
-#endif
-#include <Ws2tcpiph>
-#include <winsock2.h>
-#else
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#endif
-
 namespace Network {
 
 AddressV4::AddressV4(AddressType type, uint16_t port, ipv4_t address)

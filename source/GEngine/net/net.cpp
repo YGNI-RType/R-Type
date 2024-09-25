@@ -32,12 +32,8 @@
 #include <ws2tcpip.h>
 
 typedef int socklen_t;
-
-#define EAGAIN WSAEWOULDBLOCK
-#define EADDRNOTAVAIL WSAEADDRNOTAVAIL
-#define EAFNOSUPPORT WSAEAFNOSUPPORT
-#define ECONNRESET WSAECONNRESET
 typedef u_long ioctlarg_t;
+
 #define socketError WSAGetLastError()
 
 #else
@@ -54,6 +50,9 @@ typedef u_long ioctlarg_t;
 #if !defined(__sun) && !defined(__sgi)
 #include <ifaddrs.h>
 #endif
+
+#define socketError errno
+
 #endif
 
 namespace Network {
@@ -125,7 +124,7 @@ void NET::getLocalAddress(void) {
     struct addrinfo hint = {0};
     struct addrinfo *res = NULL;
 
-    numIP = 0;
+    size_t numIP = 0;
 
     if (gethostname(hostname, 256) == SOCKET_ERROR)
         return;
@@ -145,9 +144,9 @@ void NET::getLocalAddress(void) {
         // add all IPs from returned list.
         for (struct addrinfo *search = res; search; search = search->ai_next)
             if (search->ai_family == AF_INET)
-                addLocalAddress("", search->ai_addr, (struct sockaddr *)&mask4);
+                addLocalAddress((char *)"", search->ai_addr, (struct sockaddr *)&mask4);
             else if (search->ai_family == AF_INET6)
-                addLocalAddress("", search->ai_addr, (struct sockaddr *)&mask6);
+                addLocalAddress((char *)"", search->ai_addr, (struct sockaddr *)&mask6);
     }
 
     if (res)
@@ -231,8 +230,8 @@ SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
 
 /* returns true if has event, false otherwise */
 bool NET::sleep(uint32_t ms) {
-    struct timeval timeout = {.tv_sec = ms / 1000, .tv_usec = (ms % 1000) * 1000};
-    ASocket::SOCKET highest = ASocket::getHighestSocket();
+    struct timeval timeout = {.tv_sec = static_cast<long>(ms / 1000u), .tv_usec = (ms % 1000u) * 1000u};
+    SOCKET highest = ASocket::getHighestSocket();
 
     fd_set readSet;
     createSets(readSet);
@@ -240,7 +239,7 @@ bool NET::sleep(uint32_t ms) {
     /* The usage of select : both on windows and unix systems */
     int res = select(highest + 1, &readSet, nullptr, nullptr, &timeout);
     if (res == -1)
-        throw SocketException(strerror(errno));
+        throw SocketException(strerror(socketError));
     else if (res == 0)
         return false;
 
@@ -271,7 +270,7 @@ void NET::createSets(fd_set &readSet) {
 
 /* should it be bool ? should it returns a message instead of sending it directly ? */
 void NET::pingServers(void) {
-    for (size_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS; port++) {
+    for (uint16_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS; port++) {
         auto message = UDPMessage(0, CL_BROADCAST_PING);
         mg_socketUdp.send(message, AddressV4(AT_BROADCAST, port));
         if (CVar::net_ipv6.getIntValue())

@@ -12,6 +12,11 @@ add_library(GEngine SHARED ${SOURCES} ${HEADERS})
 
 add_library(GEngine_static STATIC ${SOURCES} ${HEADERS})
 
+if(WIN32)
+  target_link_libraries(GEngine wsock32 ws2_32)
+  target_link_libraries(GEngine_static wsock32 ws2_32)
+endif()
+
 set_target_properties(GEngine PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES

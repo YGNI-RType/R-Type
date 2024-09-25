@@ -12,13 +12,13 @@
 #include <cstring>
 #include <stdexcept>
 #include <string>
+#include <algorithm>
 
 #ifdef _WIN32
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501 /* Windows XP. */
-#endif
-#include <Ws2tcpiph>
+#include <WS2tcpip.h>
 #include <winsock2.h>
+#include <ws2spi.h>
+#include <ws2tcpip.h>
 #else
 #include <arpa/inet.h>
 #include <fcntl.h>
@@ -33,7 +33,7 @@ namespace Network {
 WSADATA ASocket::winsockdata;
 #endif
 
-ASocket::SOCKET ASocket::m_highFd = -1;
+SOCKET ASocket::m_highFd = -1;
 fd_set ASocket::m_fdSet;
 
 ASocket::~ASocket() { socketClose(); }
@@ -95,17 +95,17 @@ void ASocket::addSocketPool(SOCKET socket) {
         m_highFd = socket;
 }
 
-void ASocket::setBlocking(const SOCKET socket, bool blocking) {
+void ASocket::setBlocking(bool blocking) {
 #ifdef _WIN32
     u_long mode = blocking ? 0 : 1;
     ioctlsocket(m_sock, FIONBIO, &mode);
 #else
-    int flags = fcntl(socket, F_GETFL, 0);
+    int flags = fcntl(m_sock, F_GETFL, 0);
     if (blocking)
         flags &= ~O_NONBLOCK;
     else
         flags |= O_NONBLOCK;
-    fcntl(socket, F_SETFL, flags);
+    fcntl(m_sock, F_SETFL, flags);
 #endif
 }
 
@@ -182,8 +182,9 @@ TCPMessage SocketTCP::receive(void) const {
 
     size_t recvSz = receiveReliant(data, sizeof(AMessage));
     TCPMessage *msg = reinterpret_cast<TCPMessage *>(data);
+    /* WIN : need to use these parenthesis, to skip windows.h macro */
     recvSz = receiveReliant(
-        data + recvSz, std::min(msg->getSize(), sizeof(TCPMessage) - recvSz));
+        data + recvSz, (std::min)(msg->getSize(), sizeof(TCPMessage) - recvSz));
 
     return *msg;
 }
@@ -193,7 +194,7 @@ size_t SocketTCP::receiveReliant(byte_t *buffer, size_t size) const {
 
     while (receivedTotal < size) {
         auto received =
-            ::recv(m_sock, buffer + receivedTotal, size - receivedTotal, 0);
+            ::recv(m_sock, reinterpret_cast<char *>(buffer + receivedTotal), size - receivedTotal, 0);
         if (received < 0)
             throw SocketException("Failed to receive message");
         if (received == 0)
@@ -209,7 +210,7 @@ size_t SocketTCP::sendReliant(const TCPMessage *msg, size_t msgDataSize) const {
     msgDataSize += sizeof(TCPMessage) - MAX_TCP_MSGLEN;
 
     while (sentTotal < msgDataSize) {
-        auto sent = ::send(m_sock, msg + sentTotal, msgDataSize - sentTotal, 0);
+        auto sent = ::send(m_sock, reinterpret_cast<const char *>(msg + sentTotal), msgDataSize - sentTotal, 0);
         if (sent < 0) {
             if (errno == EWOULDBLOCK || errno == EAGAIN)
                 return 0;
@@ -264,7 +265,7 @@ bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
 
     addr.toSockAddr(reinterpret_cast<struct sockaddr *>(&sockaddr));
     auto sent =
-        sendto(m_sock, &msg, size + sizeof(UDPMessage) - MAX_UDP_MSGLEN, 0,
+        sendto(m_sock, reinterpret_cast<const char *>(&msg), size + sizeof(UDPMessage) - MAX_UDP_MSGLEN, 0,
                (struct sockaddr *)&sockaddr, sizeof(struct sockaddr));
     if (sent < 0) {
         if (errno == EWOULDBLOCK || errno == EAGAIN)
@@ -277,7 +278,7 @@ bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
 void SocketUDP::receive(struct sockaddr *addr, byte_t *data) const {
     socklen_t len;
 
-    size_t recv = recvfrom(m_sock, data, sizeof(UDPMessage), 0, addr, &len);
+    size_t recv = recvfrom(m_sock, reinterpret_cast<char *>(data), sizeof(UDPMessage), 0, addr, &len);
 
     // checking wouldblock etc... select told us to read so it's not possible
     if (recv < 0)

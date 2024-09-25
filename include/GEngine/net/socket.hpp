@@ -12,11 +12,18 @@
 #include "net_common.hpp"
 
 #include <cstdint>
-#include <netinet/in.h> // Add this line to include the header file that defines sockaddr_in
+#include <utility>
 #include <string>
+
+#ifndef _WIN32
+#include <netinet/in.h> // Add this line to include the header file that defines sockaddr_in
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <utility>
+#endif
+
+#ifndef _WIN32
+  typedef int SOCKET;
+#endif
 
 namespace Network {
 
@@ -32,13 +39,10 @@ namespace Network {
 class ASocket {
 
   public:
-#ifndef _WIN32
-    typedef int SOCKET;
-#else
+#ifdef _WIN32
     static WSADATA winsockdata;
 #endif
 
-    static void setBlocking(const SOCKET socket, bool blocking);
     static SOCKET getHighestSocket(void) { return m_highFd; }
 
     SOCKET getSocket(void) const { return m_sock; }
@@ -60,6 +64,8 @@ class ASocket {
     static fd_set m_fdSet;
     static SOCKET m_highFd;
 
+  public:
+    void setBlocking(bool blocking);
   protected:
     int socketClose(void);
 

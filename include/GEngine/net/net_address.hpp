@@ -12,11 +12,10 @@
 #include <array>
 
 #ifdef _WIN32
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501 /* Windows XP. */
-#endif
-#include <Ws2tcpiph>
 #include <winsock2.h>
+
+typedef uint32_t in_addr_t;
+
 #else
 #include <arpa/inet.h>
 #include <fcntl.h>
