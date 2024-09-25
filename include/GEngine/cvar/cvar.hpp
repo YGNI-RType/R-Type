@@ -28,13 +28,6 @@ class ConVar {
     };
 
   public:
-    static std::unordered_map<std::string, ConVar *>
-        g_hmAllCommands;
-    /* Use it for consoles !!! */
-    static std::unordered_map<std::string, ConVar *>
-        g_hmPublicCommands;
-
-  public:
     ConVar(const std::string &name, const std::string &value, short flags, const std::string &description = "");
     ~ConVar() = default;
 
@@ -44,6 +37,17 @@ class ConVar {
 
     const short getFlags(void) const { return m_flags; }
     void setValue(const std::string &value, bool isUserInput = false);
+
+  private:
+      static std::unordered_map<std::string, ConVar*>& getAllCommands() {
+        static std::unordered_map<std::string, ConVar*> instance;
+        return instance;
+    }
+
+    static std::unordered_map<std::string, ConVar*>& getPublicCommands() {
+        static std::unordered_map<std::string, ConVar*> instance;
+        return instance;
+    }
 
   private:
     std::string m_value;

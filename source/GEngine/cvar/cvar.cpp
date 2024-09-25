@@ -9,19 +9,16 @@
 
 namespace CVar {
 
-std::unordered_map<std::string, ConVar *> ConVar::g_hmAllCommands = {};
-std::unordered_map<std::string, ConVar *> ConVar::g_hmPublicCommands = {};
-
 ConVar sv_cheats("sv_cheats", "0", ConVar::CHEAT | ConVar::SERVER);
 
 ////////////////////////////////////////
 
 ConVar::ConVar(const std::string &name, const std::string &value, short flags, const std::string &description) : m_value(value), m_intValue(std::stoi(value)), m_description(description), m_flags(flags) {
-    g_hmAllCommands[name] = this;
+    getAllCommands()[name] = this;
 
     if (flags & ROM || flags & CMD)
         return;
-    g_hmPublicCommands[name] = this;
+    getPublicCommands()[name] = this;
 }
 
 void ConVar::setValue(const std::string &value, bool isUserInput) {
