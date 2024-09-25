@@ -6,23 +6,63 @@
 */
 
 #include "GEngine/driver/Engine.hpp"
+#include "GEngine/game/Engine.hpp"
+#include "GEngine/interface/Internal.hpp"
+
 #include "GEngine/net/net.hpp"
 
-int main(void)
-{
+struct Position {
+    float x, y, z;
+};
+
+struct Motion {
+    float x, y, z;
+};
+
+class StartSystem : public ecs::system::Base<StartSystem> {
+public:
+    StartSystem(const std::string &message) {
+        std::cout << "Engine starting..., it say: \"" << message << "\"" << std::endl;
+    }; // TODO args mut be const.
+
+    void init(void) override { subscribeToEvent<ecs::system::event::StartEngine>(&StartSystem::onStart); }
+
+    void onStart(ecs::system::event::StartEngine &event) {
+        spawnEntity(Position{1.0f, 1.0f, 1.0f}, Motion{2.f, 0.4f, 1.5f});
+    }
+};
+
+class MotionSystem : public ecs::system::Base<MotionSystem, Position, Motion> {
+public:
+    void init(void) override { subscribeToEvent<ecs::system::event::MainLoop>(&MotionSystem::mainLoop); }
+
+    void mainLoop(ecs::system::event::MainLoop &event) {
+        auto &positions = getComponent<Position>();
+        auto &motions = getComponent<Motion>();
+
+        for (auto &[entity, transform] : positions) {
+            if (motions.contains(entity)) {
+                auto &motion = motions.get(entity);
+                transform.x += motion.x * 1.f;
+                transform.y += motion.y * 1.f;
+                std::cout << "Entity " << entity << " moved to (" << transform.x << ", " << transform.y << ")\n";
+            }
+        }
+    }
+};
+
+int main(void) {
     Network::NET::init();
 
-    // LOOP THE GAME
-    // check each frame the commands : connect (via gui or console)
+    gengine::driver::Engine DriverEngine;
+    gengine::game::Engine GameEngine;
+    GameEngine.registerComponent<Position>();
+    GameEngine.registerComponent<Motion>();
+    GameEngine.registerSystem<StartSystem>("Hello World !");
+    GameEngine.registerSystem<MotionSystem>();
 
-    while (1) {
-        Network::NET::sleep(4000000);
-    }
-
-    // -> code/client/cl_main?c (CL_FRAME)
-    // check timeout
-    // send UDP packets
-    // update screen  
+    gengine::interface::Internal interface(GameEngine, DriverEngine);
+    interface.run();
 
     Network::NET::stop();
     return 0;

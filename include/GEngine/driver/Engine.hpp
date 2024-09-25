@@ -7,13 +7,12 @@
 
 #pragma once
 
-#include "GEngine/BaseEngine.hpp"
-#include "ecs/ECS.hpp"
 #include <memory>
 
+#include "GEngine/BaseEngine.hpp"
+
 namespace gengine::driver {
-    class Engine : public ecs::ECS, public BaseEngine {
-    public:
-        Engine(std::unique_ptr<gengine::interface::Base> interface);
-    };
-}
+class Engine : public BaseEngine {
+public:
+};
+} // namespace gengine::driver

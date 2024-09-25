@@ -1,4 +1,6 @@
 BasedOnStyle: LLVM
 RemoveBracesLLVM: true
 IndentWidth: 4
-RemoveParentheses: ReturnStatement
+AccessModifierOffset: -4
+ColumnLimit: 120
+# AlwaysBreakTemplateDeclarations: true
