@@ -12,18 +12,20 @@
 namespace Network {
 
 class SocketException : public std::exception {
-  public:
-    SocketException(const char *msg) : m_msg(msg) {}
+public:
+    SocketException(const char *msg, bool shouldRetry = true) : m_msg(msg), m_shouldRetry(shouldRetry) {}
 
-    const char *what() const noexcept override {
-        return m_msg;
-    }
-  private:
+    const char *what() const noexcept override { return m_msg; }
+
+    bool shouldRetry() const { return m_shouldRetry; }
+
+private:
     const char *m_msg;
+    bool m_shouldRetry;
 };
 
 class SocketClientDisconnected : public SocketException {
-  public:
+public:
     SocketClientDisconnected() : SocketException("Client disconnected") {}
 };
 } // namespace Network

@@ -19,8 +19,8 @@
 
 #include "GEngine/net/net.hpp"
 #include "GEngine/cvar/net.hpp"
-#include "GEngine/net/socketError.hpp"
 #include "GEngine/net/msg.hpp"
+#include "GEngine/net/socketError.hpp"
 
 #include <cstring>
 
@@ -89,8 +89,7 @@ void NET::init(void) {
             mg_socketUdp = openSocketUdp(ip, port);
             port++;
         }
-        if (ip.type == AT_IPV6 &&
-            CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
+        if (ip.type == AT_IPV6 && CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
             mg_socketListenTcpV6 = openSocketTcp(ip, port);
             port++;
             mg_socketUdpV6 = openSocketUdp(ip, port);
@@ -117,8 +116,7 @@ void NET::getLocalAddress(void) {
 
     for (ifaddrs *search = ifap; search; search = search->ifa_next)
         if (ifap->ifa_flags & IFF_UP)
-            addLocalAddress(search->ifa_name, search->ifa_addr,
-                            search->ifa_netmask);
+            addLocalAddress(search->ifa_name, search->ifa_addr, search->ifa_netmask);
 
     freeifaddrs(ifap);
 
@@ -140,8 +138,7 @@ void NET::getLocalAddress(void) {
         struct sockaddr_in6 mask6 = {0};
 
         mask4.sin_family = AF_INET;
-        std::memset(&mask4.sin_addr.s_addr, 0xFF,
-                    sizeof(mask4.sin_addr.s_addr));
+        std::memset(&mask4.sin_addr.s_addr, 0xFF, sizeof(mask4.sin_addr.s_addr));
         mask6.sin6_family = AF_INET6;
         std::memset(&mask6.sin6_addr, 0xFF, sizeof(mask6.sin6_addr));
 
@@ -158,8 +155,7 @@ void NET::getLocalAddress(void) {
 #endif
 }
 
-void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr,
-                          struct sockaddr *netmask) {
+void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockaddr *netmask) {
     // only add addresses that have all required info.
     if (!sockaddr || !netmask || !ifname)
         return;
@@ -208,8 +204,10 @@ bool NET::isLanAddress(const Address &addr) {
 SocketTCPMaster NET::openSocketTcp(const IP &ip, uint16_t wantedPort) {
     for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
         try {
-            return std::move(SocketTCPMaster(ip, wantedPort));
+            return std::move(SocketTCPMaster(ip, wantedPort + i));
         } catch (SocketException &e) {
+            if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
+                throw e;
             continue;
         }
     }
@@ -219,8 +217,10 @@ SocketTCPMaster NET::openSocketTcp(const IP &ip, uint16_t wantedPort) {
 SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
     for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
         try {
-            return std::move(SocketUDP(ip, wantedPort));
+            return std::move(SocketUDP(ip, wantedPort + i));
         } catch (SocketException &e) {
+            if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
+                throw e;
             continue;
         }
     }
@@ -231,8 +231,7 @@ SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
 
 /* returns true if has event, false otherwise */
 bool NET::sleep(uint32_t ms) {
-    struct timeval timeout = {.tv_sec = ms / 1000,
-                              .tv_usec = (ms % 1000) * 1000};
+    struct timeval timeout = {.tv_sec = ms / 1000, .tv_usec = (ms % 1000) * 1000};
     ASocket::SOCKET highest = ASocket::getHighestSocket();
 
     fd_set readSet;
@@ -272,8 +271,7 @@ void NET::createSets(fd_set &readSet) {
 
 /* should it be bool ? should it returns a message instead of sending it directly ? */
 void NET::pingServers(void) {
-    for (size_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS;
-         port++) {
+    for (size_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS; port++) {
         auto message = UDPMessage(0, CL_BROADCAST_PING);
         mg_socketUdp.send(message, AddressV4(AT_BROADCAST, port));
         if (CVar::net_ipv6.getIntValue())
