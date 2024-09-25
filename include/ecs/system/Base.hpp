@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** B-CPP-500-LYN-5-1-rtype-basile.fouquet
 ** File description:
-** Base.hpp
+** system::Base.hpp
 */
 
 #pragma once
@@ -11,6 +11,7 @@
 #include <optional>
 
 #include "ecs/ECS.hpp"
+#include "ecs/system/IsSystem.hpp"
 #include "ecs/system/event/Bus.hpp"
 
 namespace ecs::system {
@@ -23,7 +24,7 @@ struct is_one_of<T, First, Rest...>
 template <typename T> struct is_one_of<T> : std::false_type {};
 
 class Manager;
-template <class Derived, class... DependTypes> class Base {
+template <class Derived, class... DependTypes> class Base : public IsSystem {
 public:
     Base() = default;
 
@@ -38,6 +39,10 @@ public:
     template <typename T> component::SparseArray<T> &getComponent(void);
 
     template <typename... Components> void spawnEntity(Components &&...components);
+
+    template <typename T> void publishEvent(T &event) {m_eventBus->get().template publish<T>(event);}
+
+    template <typename T> void publishEvent(T &&event) {m_eventBus->get().template publish<T>(event);}
 
 private:
     friend class system::Manager;

@@ -5,58 +5,66 @@
 ** main.cpp
 */
 
-#include "GEngine/driver/Engine.hpp"
-#include "GEngine/game/Engine.hpp"
-#include "GEngine/interface/Internal.hpp"
+#include "GEngine/libdev/System.hpp"
+#include "GEngine/libdev/Component.hpp"
+#include "GEngine/libdev/systems/events/Native.hpp"
 
-struct Position {
-    float x, y, z;
-};
+#include <iostream>
 
-struct Motion {
-    float x, y, z;
-};
+template <typename T>
+struct Life: public gengine::Component {
+    T life;
+    Life(T &life_unit): life(life_unit) {};
+    Life(T &&life_unit): life(life_unit) {};
 
-class StartSystem : public ecs::system::Base<StartSystem> {
-public:
-    StartSystem(const std::string &message) {
-        std::cout << "Engine starting..., it say: \"" << message << "\"" << std::endl;
-    }; // TODO args mut be const.
-
-    void init(void) override { subscribeToEvent<ecs::system::event::StartEngine>(&StartSystem::onStart); }
-
-    void onStart(ecs::system::event::StartEngine &event) {
-        spawnEntity(Position{1.0f, 1.0f, 1.0f}, Motion{2.f, 0.4f, 1.5f});
+    Life<T> &operator++(void) {
+        life++;
+        return *this;
     }
 };
 
-class MotionSystem : public ecs::system::Base<MotionSystem, Position, Motion> {
-public:
-    void init(void) override { subscribeToEvent<ecs::system::event::MainLoop>(&MotionSystem::mainLoop); }
+struct StartSystem : public gengine::System<StartSystem> {
+    void init(void) override { subscribeToEvent<gengine::system::event::StartEngine>(&StartSystem::onStart); }
 
-    void mainLoop(ecs::system::event::MainLoop &event) {
-        auto &positions = getComponent<Position>();
-        auto &motions = getComponent<Motion>();
+    void onStart(gengine::system::event::StartEngine &e) {
+        spawnEntity(Life<int>(1));
+        publishEvent(gengine::system::event::MainLoop());
+    }
+};
 
-        for (auto &[entity, transform] : positions) {
-            if (motions.contains(entity)) {
-                auto &motion = motions.get(entity);
-                transform.x += motion.x * 1.f;
-                transform.y += motion.y * 1.f;
-                std::cout << "Entity " << entity << " moved to (" << transform.x << ", " << transform.y << ")\n";
-            }
+struct AddSystem: public gengine::System<AddSystem, Life<int>> {
+    void init(void) override { subscribeToEvent<gengine::system::event::MainLoop>(&AddSystem::onMainLoop); }
+
+    void onMainLoop(gengine::system::event::MainLoop &event) {
+        auto &lifes = getComponent<Life<int>>();
+        for (auto &[entity, life]: lifes) {
+            life.life++;
+            std::cout << life.life << std::endl;
         }
     }
 };
 
-int main(void) {
-    gengine::driver::Engine DriverEngine;
-    gengine::game::Engine GameEngine;
-    GameEngine.registerComponent<Position>();
-    GameEngine.registerComponent<Motion>();
-    GameEngine.registerSystem<StartSystem>("Hello World !");
-    GameEngine.registerSystem<MotionSystem>();
+struct AutoMainLoop: public gengine::System<AutoMainLoop> {
+    void init (void) override {subscribeToEvent<gengine::system::event::MainLoop>(&AutoMainLoop::onMainLoop);}
 
-    gengine::interface::Internal interface(GameEngine, DriverEngine);
+    void onMainLoop(gengine::system::event::MainLoop &e) {
+        auto event = gengine::system::event::MainLoop();
+        publishEvent(event);
+    }
+};
+
+#include "GEngine/driver/Engine.hpp"
+#include "GEngine/game/Engine.hpp"
+#include "GEngine/interface/Internal.hpp"
+
+int main(void) {
+    gengine::game::Engine gameEngine;
+    gengine::driver::Engine driverEngine;
+
+    gameEngine.registerSystem<StartSystem>();
+    gameEngine.registerSystem<AddSystem>();
+    gameEngine.registerSystem<AutoMainLoop>();
+    gameEngine.registerComponent<Life<int>>();
+    gengine::interface::Internal interface(gameEngine, driverEngine);
     interface.run();
 }

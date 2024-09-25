@@ -24,9 +24,6 @@ public:
 
     void killEntity(entity::Entity entity);
 
-    void start(void);
-
-    void update(void);
 };
 } // namespace ecs
 

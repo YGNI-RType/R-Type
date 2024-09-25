@@ -40,7 +40,4 @@ public:
     Base(const Base &) = default;
 };
 
-class MainLoop : public Base {};    // TODO replace
-class StartEngine : public Base {}; // TODO replace
-
 } // namespace ecs::system::event

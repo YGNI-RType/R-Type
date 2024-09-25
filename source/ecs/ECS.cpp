@@ -16,6 +16,12 @@ void ECS::killEntity(entity::Entity entity) {
     destroyEntity(entity);
 }
 
-void ECS::start(void) { publishEvent(ecs::system::event::StartEngine()); }
+template <typename T>
+void publishEvent(T &event) {
+    publishEvent<T>(event);
+}
 
-void ECS::update(void) { publishEvent(ecs::system::event::MainLoop()); }
+template <typename T>
+void publishEvent(T &&event) {
+    publishEvent<T>(event);
+}
