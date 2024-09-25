@@ -116,12 +116,6 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
-    // unsigned int opt = 1;
-    // if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
-    //                sizeof(opt)))
-    //     throw std::runtime_error(
-    //         "(TCP) Failed to set socket options (SO_REUSEADDR)");
-
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(struct sockaddr_in));
 
@@ -237,10 +231,6 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
         throw std::runtime_error("(UDP) Failed to create socket");
 
     unsigned int opt = 1;
-    // if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
-    //                sizeof(opt)))
-    //     throw std::runtime_error(
-    //         "(UDP) Failed to set socket options (SO_REUSEADDR)");
     if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
         throw std::runtime_error(
             "(UDP) Failed to set socket options (SO_BROADCAST)");

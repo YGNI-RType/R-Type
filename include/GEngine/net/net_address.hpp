@@ -51,7 +51,7 @@ class AddressV4 : public Address {
   public:
     AddressV4(AddressType type, uint16_t port, ipv4_t address);
     AddressV4(AddressType type, uint16_t port);
-    AddressV4(AddressType type, uint16_t port, uint32_t ip);
+    AddressV4(AddressType type, uint16_t port, in_addr_t ip);
     ~AddressV4() = default;
 
     const ipv4_t &getAddress() const { return m_address; };
