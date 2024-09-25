@@ -14,6 +14,7 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "ecs/system/IsSystem.hpp"
 #include "ecs/system/event/Bus.hpp"
 
 namespace ecs {
@@ -31,6 +32,10 @@ public:
     template <class T> void publishEvent(T &event);
 
     template <class T> void publishEvent(T &&event);
+
+    void executeEvent(void);
+
+    bool hasEvent(void);
 
 private:
     std::unordered_map<std::type_index, std::any> m_systemTable;

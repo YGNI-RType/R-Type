@@ -10,8 +10,6 @@
 #include <iostream>
 #include <vector>
 
-#include "ecs/ECS.hpp"
-
 namespace ecs::system::event {
 /**
  * @brief Base class for all events.

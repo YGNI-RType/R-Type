@@ -23,7 +23,6 @@ public:
     template <typename... Components> entity::Entity spawnEntity(Components &&...components);
 
     void killEntity(entity::Entity entity);
-
 };
 } // namespace ecs
 

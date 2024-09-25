@@ -7,9 +7,6 @@
 
 #pragma once
 
-#include "ecs/system/IsSystem.hpp"
-#include "ecs/system/event/Bus.hpp"
-
 namespace ecs::system {
 template <class T, class... Params> void Manager::registerSystem(Params &&...p) {
     static_assert(std::is_base_of<IsSystem, T>::value, "T must inherit from system::Base");

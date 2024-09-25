@@ -16,12 +16,6 @@ void ECS::killEntity(entity::Entity entity) {
     destroyEntity(entity);
 }
 
-template <typename T>
-void publishEvent(T &event) {
-    publishEvent<T>(event);
-}
+template <typename T> void publishEvent(T &event) { publishEvent<T>(event); }
 
-template <typename T>
-void publishEvent(T &&event) {
-    publishEvent<T>(event);
-}
+template <typename T> void publishEvent(T &&event) { publishEvent<T>(event); }

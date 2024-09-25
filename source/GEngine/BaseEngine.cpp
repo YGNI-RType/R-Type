@@ -9,7 +9,10 @@
 #include "GEngine/libdev/systems/events/Native.hpp"
 
 namespace gengine {
-void BaseEngine::update(void) {}
+void BaseEngine::compute(void) {
+    while (m_ecs.hasEvent())
+        m_ecs.executeEvent();
+}
 
 void BaseEngine::start(void) { m_ecs.publishEvent(system::event::StartEngine()); }
 } // namespace gengine
