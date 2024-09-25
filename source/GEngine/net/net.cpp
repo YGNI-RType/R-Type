@@ -270,6 +270,7 @@ void NET::createSets(fd_set &readSet) {
 
 /**************************************************************/
 
+/* should it be bool ? should it returns a message instead of sending it directly ? */
 void NET::pingServers(void) {
     for (size_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS;
          port++) {
@@ -278,6 +279,14 @@ void NET::pingServers(void) {
         if (CVar::net_ipv6.getIntValue())
             mg_socketUdpV6.send(message, AddressV6(AT_MULTICAST, port));
     }
+}
+
+void NET::respondPingServers(const UDPMessage &msg, const Address &addr) {
+    auto pingReponseMsg = UDPMessage(0, SV_BROADCAST_PING);
+    if (addr.getType() == AT_IPV4)
+        mg_socketUdp.send(pingReponseMsg, addr);
+    else if (CVar::net_ipv6.getIntValue())
+        mg_socketUdpV6.send(pingReponseMsg, addr);
 }
 
 } // namespace Network
