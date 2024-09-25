@@ -31,4 +31,22 @@ template <typename... Components>
 void Base<Derived, DependTypes...>::spawnEntity(Components &&...components) {
     m_ecs->get().spawnEntity(std::forward<Components>(components)...);
 }
+
+template <class Derived, class... DependTypes>
+void Base<Derived, DependTypes...>::killEntity(entity::Entity entity) {
+    m_ecs->get().killEntity(entity);
+}
+
+template <class Derived, class... DependTypes>
+template <typename T>
+void Base<Derived, DependTypes...>::publishEvent(T &event) {
+    m_eventBus->get().template publish<T>(event);
+}
+
+template <class Derived, class... DependTypes>
+template <typename T>
+void Base<Derived, DependTypes...>::publishEvent(T &&event) {
+    m_eventBus->get().template publish<T>(event);
+}
+
 } // namespace ecs::system

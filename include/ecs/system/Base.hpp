@@ -40,9 +40,11 @@ public:
 
     template <typename... Components> void spawnEntity(Components &&...components);
 
-    template <typename T> void publishEvent(T &event) { m_eventBus->get().template publish<T>(event); }
+    void killEntity(entity::Entity entity);
 
-    template <typename T> void publishEvent(T &&event) { m_eventBus->get().template publish<T>(event); }
+    template <typename T> void publishEvent(T &event);
+
+    template <typename T> void publishEvent(T &&event);
 
 private:
     friend class system::Manager;
