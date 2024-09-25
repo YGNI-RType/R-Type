@@ -145,7 +145,7 @@ void NET::getLocalAddress(void) {
         for (struct addrinfo *search = res; search; search = search->ai_next)
             if (search->ai_family == AF_INET)
                 addLocalAddress((char *)"", search->ai_addr, (struct sockaddr *)&mask4);
-            else if (search->ai_family == AF_INET6)
+            else if (CVar::net_ipv6.getIntValue() && search->ai_family == AF_INET6)
                 addLocalAddress((char *)"", search->ai_addr, (struct sockaddr *)&mask6);
     }
 

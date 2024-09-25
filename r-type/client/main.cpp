@@ -11,6 +11,11 @@
 
 #include "GEngine/net/net.hpp"
 
+#ifdef _WIN32
+// TEMP TEMP TEMP : place it elsewhere, reminescence of windows.h from socket apis
+#undef interface
+#endif
+
 struct Position {
     float x, y, z;
 };
@@ -61,8 +66,8 @@ int main(void) {
     GameEngine.registerSystem<StartSystem>("Hello World !");
     GameEngine.registerSystem<MotionSystem>();
 
-    gengine::interface::Internal interface(GameEngine, DriverEngine);
-    interface.run();
+    gengine::interface::Internal iface(GameEngine, DriverEngine);
+    iface.run();
 
     Network::NET::stop();
     return 0;
