@@ -17,4 +17,4 @@ void Internal::run(void) {
     m_gameEngine.compute();
     m_driverEngine.compute();
 }
-}
+} // namespace gengine::interface
