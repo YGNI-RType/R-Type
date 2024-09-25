@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS NO)
 
 
-find_library(GEngine_LIB NAMES GEngine PATHS ../build)
+find_library(GEngine_LIB NAMES GEngine PATHS ../build/Debug ../build/Release ../build)
 
 file(GLOB_RECURSE CLIENT_SOURCES client/*.cpp)
 file(GLOB_RECURSE SERVER_SOURCES server/*.cpp)
