@@ -9,10 +9,12 @@
 
 #include <functional>
 #include <memory>
+#include <queue>
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
 
+#include "ecs/system/event/Base.hpp"
 #include "ecs/system/event/Callback.hpp"
 
 namespace ecs::system::event {
@@ -61,9 +63,14 @@ public:
      */
     template <typename Type> void subscribe(std::function<void(Type &)> callback);
 
+    void execute(void);
+
+    bool isEmpty(void);
+
 private:
     std::unordered_map<std::type_index, std::vector<std::unique_ptr<Callback>>>
         m_callbacks; ///< Map of callbacks registered for each event type.
+    std::queue<std::function<void(void)>> m_toExecute;
 };
 
 } // namespace ecs::system::event

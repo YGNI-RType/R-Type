@@ -6,9 +6,13 @@
 */
 
 #include "GEngine/BaseEngine.hpp"
+#include "GEngine/libdev/systems/events/Native.hpp"
 
 namespace gengine {
-void BaseEngine::update(void) { m_ecs.update(); }
+void BaseEngine::compute(void) {
+    while (m_ecs.hasEvent())
+        m_ecs.executeEvent();
+}
 
-void BaseEngine::start(void) { m_ecs.start(); }
+void BaseEngine::start(void) { m_ecs.publishEvent(system::event::StartEngine()); }
 } // namespace gengine

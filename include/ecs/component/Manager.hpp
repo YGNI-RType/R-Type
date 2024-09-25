@@ -15,6 +15,7 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "ecs/component/IsComponent.hpp"
 #include "ecs/component/SparseArray.hpp"
 
 namespace ecs::component {
