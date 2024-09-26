@@ -40,8 +40,8 @@ void Collision2D::onMainLoop(event::MainLoop &e [[maybe_unused]]) {
     auto &hitboxSquares = getComponent<component::HitBoxSquare2D>();
     auto &hitboxCircles = getComponent<component::HitBoxCircle2D>();
 
-    for (auto &[entity1, pos1] : positions) {
-        for (auto &[entity2, pos2] : positions) {
+    for (auto [entity1, pos1] : positions) {
+        for (auto [entity2, pos2] : positions) {
             if (entity1 == entity2)
                 continue;
 
@@ -119,8 +119,8 @@ void Collision3D::onMainLoop(event::MainLoop &e [[maybe_unused]]) {
     auto &hitboxCubes = getComponent<component::HitBoxSquare3D>();
     auto &hitboxSpheres = getComponent<component::HitBoxCircle3D>();
 
-    for (auto &[entity1, pos1] : positions) {
-        for (auto &[entity2, pos2] : positions) {
+    for (auto [entity1, pos1] : positions) {
+        for (auto [entity2, pos2] : positions) {
             if (entity1 == entity2)
                 continue;
 
@@ -163,4 +163,4 @@ void Collision3D::onMainLoop(event::MainLoop &e [[maybe_unused]]) {
         }
     }
 }
-} // namespace gengine::system
+}

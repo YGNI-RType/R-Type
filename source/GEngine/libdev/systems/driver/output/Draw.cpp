@@ -16,12 +16,13 @@ void Draw::init(void) {
 void Draw::onDraw(gengine::system::event::Draw &e) {
     auto &rectangles = getComponent<component::driver::output::Rectangle>();
     auto &colors = getComponent<component::driver::output::Color>();
+    auto &positions = getComponent<gengine::component::Position2D>();
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
     for (auto &[entity, rect]: rectangles) {
         if (colors.contains(entity))
-            DrawRectangle(rect.x, rect.y, rect.width, rect.height, colors.get(entity).color);
+            DrawRectangle(positions.get(entity).x, positions.get(entity).y, rect.width, rect.height, colors.get(entity).color);
     }
     EndDrawing();
 }

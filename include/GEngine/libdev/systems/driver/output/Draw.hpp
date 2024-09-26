@@ -17,8 +17,10 @@
 #include "GEngine/libdev/systems/events/MainLoop.hpp"
 #include "GEngine/libdev/systems/events/driver/output/Draw.hpp"
 
+#include "GEngine/libdev/components/Positions.hpp"
+
 namespace gengine::system::driver::output {
-class Draw : public gengine::System<Draw, component::driver::output::Rectangle, component::driver::output::Color> {
+class Draw : public gengine::System<Draw, component::driver::output::Rectangle, component::driver::output::Color, component::Position2D> {
 public:
     void init(void) override;
 
