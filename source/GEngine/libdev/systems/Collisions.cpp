@@ -6,6 +6,7 @@
 */
 #include "GEngine/libdev/systems/Collisions.hpp"
 #include <cmath>
+#include <algorithm>
 
 namespace gengine::system {
 
