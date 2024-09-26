@@ -16,7 +16,6 @@ void RenderWindow::init(void) {
 
 void RenderWindow::onStartEngine(gengine::system::event::StartEngine &e) {
     auto &windows = getComponent<gengine::component::driver::output::Window>();
-
     if (!windows.size())
         return;
     auto &[width, height, title] = (windows.begin())->second;
@@ -31,8 +30,10 @@ void RenderWindow::onMainLoop(gengine::system::event::MainLoop &e) {
 
     auto &windows = getComponent<gengine::component::driver::output::Window>();
 
-    if (!windows.size())
+    if (!windows.size()) {
         publishEvent(gengine::system::event::StopMainLoop());
+        return;
+    }
 
     auto &[entity, window] = *windows.begin();
     if (WindowShouldClose())
