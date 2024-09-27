@@ -63,7 +63,7 @@ public:
         if (e.entity1 && e.entity2)
             return;
         if (e.entity1)
-            colors.get(e.entity1).color = GREEN;
+            colors.get(e.entity1).color = BLUE;
         if (e.entity2)
             colors.get(e.entity2).color = GREEN;
     }
