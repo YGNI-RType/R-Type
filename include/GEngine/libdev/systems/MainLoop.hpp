@@ -14,20 +14,13 @@
 namespace gengine::system {
 class AutoMainLoop : public gengine::System<AutoMainLoop> {
 public:
-    void init(void) override {
-        subscribeToEvent<gengine::system::event::StartEngine>(&AutoMainLoop::onStartEngine);
-        subscribeToEvent<gengine::system::event::MainLoop>(&AutoMainLoop::onMainLoop);
-        subscribeToEvent<gengine::system::event::StopMainLoop>(&AutoMainLoop::onStopMainLoop);
-    }
+    void init(void) override;
 
-    void onStartEngine(gengine::system::event::StartEngine &e) { publishEvent(gengine::system::event::MainLoop()); }
+    void onStartEngine(gengine::system::event::StartEngine &e);
 
-    void onMainLoop(gengine::system::event::MainLoop &e) {
-        if (m_isRunning)
-            publishEvent(e);
-    }
+    void onMainLoop(gengine::system::event::MainLoop &e);
 
-    void onStopMainLoop(gengine::system::event::StopMainLoop &e) { m_isRunning = false; }
+    void onStopMainLoop(gengine::system::event::StopMainLoop &e);
 
 private:
     bool m_isRunning = true;
