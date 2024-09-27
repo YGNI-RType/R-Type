@@ -29,9 +29,14 @@
 #include "libdev/components/Positions.hpp"
 
 #include "libdev/systems/Collisions.hpp"
+<<<<<<< HEAD
 >>>>>>> d2e9736 (updated poc: Sprite and animation)
 #include "libdev/systems/MainLoop.hpp"
+=======
+>>>>>>> 7017ea1 (added libdev: Exceptions)
 #include "libdev/systems/Logger.hpp"
+#include "libdev/systems/MainLoop.hpp"
+#include "libdev/systems/Motions.hpp"
 
 #include "libdev/systems/events/Log.hpp"
 #include "libdev/systems/Motions.hpp"
@@ -84,7 +89,10 @@ public:
 #include "libdev/systems/driver/output/Animate.hpp"
 #include "libdev/systems/driver/output/TextureManager.hpp"
 #include "libdev/systems/driver/output/RenderWindow.hpp"
+#include "libdev/systems/driver/output/Draw.hpp"
+#include "libdev/systems/driver/output/RenderWindow.hpp"
 
+#include "libdev/components/driver/output/Color.hpp"
 #include "libdev/components/driver/output/Color.hpp"
 #include "libdev/components/driver/output/Animation.hpp"
 #include "libdev/components/driver/output/Shape.hpp"
@@ -151,9 +159,13 @@ struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system:
 // };
 
 struct Killer: public gengine::OnEventSystem<Killer, gengine::system::event::Collsion, gengine::component::driver::output::Color> {
+
+struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system::event::Collsion,
+                                                   gengine::component::driver::output::Color> {
     void onEvent(gengine::system::event::Collsion &e) override {
-        // auto &colors = getComponent<gengine::component::driver::output::Color>();
-        std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+        auto &colors = getComponent<gengine::component::driver::output::Color>();
+        std::string logMessage =
+            "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
 
         publishEvent(gengine::system::event::Log(logMessage));
         // if (e.entity1 && e.entity2)
@@ -220,7 +232,7 @@ int main(void) {
 >>>>>>> aa51246 (added libdev: Exceptions)
 =======
     gameEngine.registerComponent<gengine::component::Transform2D>();
-    gameEngine.registerComponent<gengine::component::Motion2D>();
+    // gameEngine.registerComponent<gengine::component::Motion2D>();
     gameEngine.registerComponent<gengine::component::Origin2D>();
     gameEngine.registerComponent<gengine::component::driver::output::Animation>();
 >>>>>>> d2e9736 (updated poc: Sprite and animation)
@@ -246,9 +258,8 @@ int main(void) {
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     gameEngine.registerSystem<gengine::system::driver::input::MouseCatcher>();
     // std::cout << "test" << std::endl;
-    gameEngine.registerSystem<Killer>();
+    gameEngine.registerSystem<ChangeColor>();
     gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
-
 
     gengine::interface::Internal interface(gameEngine, driverEngine);
     interface.run();
