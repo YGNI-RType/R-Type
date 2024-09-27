@@ -30,13 +30,28 @@
 #include "libdev/components/driver/output/Shape.hpp"
 #include "libdev/components/driver/output/Color.hpp"
 
-class Killer: public gengine::System<Killer, gengine::component::Position2D, gengine::component::driver::output::Color> {
-public:
-    void init(void) override {
-        subscribeToEvent<gengine::system::event::Collsion>(&Killer::onCollision);
-    }
+// class Killer: public gengine::System<Killer, gengine::component::Position2D, gengine::component::driver::output::Color> {
+// public:
+//     void init(void) override {
+//         subscribeToEvent<gengine::system::event::Collsion>(&Killer::onCollision);
+//     }
 
-    void onCollision(gengine::system::event::Collsion &e) {
+//     void onCollision(gengine::system::event::Collsion &e) {
+//         auto &colors = getComponent<gengine::component::driver::output::Color>();
+//         std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+
+//         publishEvent(gengine::system::event::Log(logMessage));
+//         if (e.entity1 && e.entity2)
+//             return;
+//         if (e.entity1)
+//             colors.get(e.entity1).color = GREEN;
+//         if (e.entity2)
+//             colors.get(e.entity2).color = GREEN;
+//     }
+// };
+
+struct Killer: public gengine::OnEventSystem<Killer, gengine::system::event::Collsion, gengine::component::driver::output::Color> {
+    void onEvent(gengine::system::event::Collsion &e) override {
         auto &colors = getComponent<gengine::component::driver::output::Color>();
         std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
 
@@ -44,9 +59,9 @@ public:
         if (e.entity1 && e.entity2)
             return;
         if (e.entity1)
-            colors.get(e.entity1).color = GREEN;
+            colors.get(e.entity1).color = BLUE;
         if (e.entity2)
-            colors.get(e.entity2).color = GREEN;
+            colors.get(e.entity2).color = BLUE;
     }
 };
 
