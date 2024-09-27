@@ -9,6 +9,7 @@
 
 #include <raylib.h>
 
+#include "GEngine/libdev/components/driver/output/Color.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
 #include "GEngine/libdev/components/driver/output/Sprite.hpp"
 

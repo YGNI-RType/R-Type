@@ -11,11 +11,19 @@
 
 #include "libdev/components/HitBoxs.hpp"
 #include "libdev/components/Motions.hpp"
+<<<<<<< HEAD
 // #include "libdev/components/Positions.hpp"
 
 #include "libdev/systems/Collisions.hpp"
 #include "libdev/systems/MainLoop.hpp"
+=======
+#include "libdev/components/Positions.hpp"
+
+#include "libdev/systems/Collisions.hpp"
+>>>>>>> aa51246 (added libdev: Exceptions)
 #include "libdev/systems/Logger.hpp"
+#include "libdev/systems/MainLoop.hpp"
+#include "libdev/systems/Motions.hpp"
 
 #include "libdev/systems/events/Log.hpp"
 
@@ -23,6 +31,7 @@
 #include "systems/Start.hpp"
 
 #include "libdev/systems/driver/input/KeyboardCatcher.hpp"
+<<<<<<< HEAD
 #include "libdev/systems/driver/input/MouseCatcher.hpp"
 #include "libdev/systems/driver/output/Animate.hpp"
 #include "libdev/systems/driver/output/Draw.hpp"
@@ -56,8 +65,20 @@ public:
         }
     }
     void onCollision(gengine::system::event::Collsion &e) {
+=======
+#include "libdev/systems/driver/output/Draw.hpp"
+#include "libdev/systems/driver/output/RenderWindow.hpp"
+
+#include "libdev/components/driver/output/Color.hpp"
+#include "libdev/components/driver/output/Shape.hpp"
+
+struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system::event::Collsion,
+                                                   gengine::component::driver::output::Color> {
+    void onEvent(gengine::system::event::Collsion &e) override {
+>>>>>>> aa51246 (added libdev: Exceptions)
         auto &colors = getComponent<gengine::component::driver::output::Color>();
-        std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+        std::string logMessage =
+            "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
 
         publishEvent(gengine::system::event::Log(logMessage));
         if (e.entity1 && e.entity2)
@@ -69,6 +90,7 @@ public:
     }
 };
 
+<<<<<<< HEAD
         // auto &colors = getComponent<gengine::component::driver::output::Color>();
 
         // for (auto &[_, color] : colors)
@@ -94,6 +116,8 @@ public:
 //     }
 // };
 
+=======
+>>>>>>> aa51246 (added libdev: Exceptions)
 int main(void) {
     gengine::game::Engine gameEngine;
     gengine::driver::Engine driverEngine;
@@ -101,10 +125,17 @@ int main(void) {
     // Components
     gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
     gameEngine.registerComponent<gengine::component::HitBoxSquare2D>();
+<<<<<<< HEAD
     gameEngine.registerComponent<gengine::component::Transform2D>();
     gameEngine.registerComponent<gengine::component::Motion2D>();
     // gameEngine.registerComponent<gengine::component::Origin2D>();
     gameEngine.registerComponent<gengine::component::driver::output::Animation>();
+=======
+    gameEngine.registerComponent<gengine::component::Position2D>();
+    // gameEngine.registerComponent<gengine::component::Motion2D>();
+    gameEngine.registerComponent<gengine::component::Origin2D>();
+    gameEngine.registerComponent<gengine::component::driver::output::Window>();
+>>>>>>> aa51246 (added libdev: Exceptions)
     gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
     gameEngine.registerComponent<gengine::component::driver::output::Circle>();
     gameEngine.registerComponent<gengine::component::driver::output::Sprite>();
@@ -125,9 +156,8 @@ int main(void) {
     gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::AutoMainLoop>();
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
-    gameEngine.registerSystem<Killer>();
+    gameEngine.registerSystem<ChangeColor>();
     gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
-
 
     gengine::interface::Internal interface(gameEngine, driverEngine);
     interface.run();

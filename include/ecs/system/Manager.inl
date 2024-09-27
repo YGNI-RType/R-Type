@@ -22,7 +22,7 @@ template <class T> T &Manager::getSystem(void) {
 
     if (it == m_systemTable.end())
         throw "";
-    return *static_cast<T*>(it->second.get());
+    return *static_cast<T *>(it->second.get());
 }
 
 template <class T> void Manager::publishEvent(T &event) { m_eventBus.publish<T>(event); }
