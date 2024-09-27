@@ -15,9 +15,8 @@
 
 #include "libdev/systems/Collisions.hpp"
 #include "libdev/systems/MainLoop.hpp"
-#include "libdev/systems/Motions.hpp"
+#include "libdev/systems/Logger.hpp"
 
-#include "libdev/systems/Motions.hpp"
 #include "libdev/systems/events/Log.hpp"
 
 #include "systems/AutoMotion.hpp"
@@ -57,16 +56,16 @@ public:
         }
     }
     void onCollision(gengine::system::event::Collsion &e) {
-        // auto &colors = getComponent<gengine::component::driver::output::Color>();
-        // std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+        auto &colors = getComponent<gengine::component::driver::output::Color>();
+        std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
 
-        // publishEvent(gengine::system::event::Log(logMessage));
-        // if (e.entity1 && e.entity2)
-        //     return;
-        // if (e.entity1)
-        //     colors.get(e.entity1).color = GREEN;
-        // if (e.entity2)
-        //     colors.get(e.entity2).color = GREEN;
+        publishEvent(gengine::system::event::Log(logMessage));
+        if (e.entity1 && e.entity2)
+            return;
+        if (e.entity1)
+            colors.get(e.entity1).color = GREEN;
+        if (e.entity2)
+            colors.get(e.entity2).color = GREEN;
     }
 };
 
@@ -126,10 +125,9 @@ int main(void) {
     gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::AutoMainLoop>();
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
-    gameEngine.registerSystem<gengine::system::driver::input::MouseCatcher>();
-    // std::cout << "test" << std::endl;
-    // gameEngine.registerSystem<ChangeColor>();
-    // gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
+    gameEngine.registerSystem<Killer>();
+    gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
+
 
     gengine::interface::Internal interface(gameEngine, driverEngine);
     interface.run();
