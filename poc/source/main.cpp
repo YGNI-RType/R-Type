@@ -16,6 +16,9 @@
 #include "libdev/systems/Collisions.hpp"
 #include "libdev/systems/Motions.hpp"
 #include "libdev/systems/MainLoop.hpp"
+#include "libdev/systems/Logger.hpp"
+
+#include "libdev/systems/events/Log.hpp"
 
 #include "systems/Start.hpp"
 #include "systems/AutoMotion.hpp"
@@ -35,6 +38,9 @@ public:
 
     void onCollision(gengine::system::event::Collsion &e) {
         auto &colors = getComponent<gengine::component::driver::output::Color>();
+        std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+
+        publishEvent(gengine::system::event::Log(logMessage));
         if (e.entity1 && e.entity2)
             return;
         if (e.entity1)
@@ -73,6 +79,8 @@ int main(void)
     gameEngine.registerSystem<gengine::system::AutoMainLoop>();
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     gameEngine.registerSystem<Killer>();
+    gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
+
 
     gengine::interface::Internal interface(gameEngine, driverEngine);
     interface.run();
