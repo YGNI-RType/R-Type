@@ -9,18 +9,19 @@
 
 #include <raylib.h>
 
-#include "GEngine/libdev/components/driver/output/Shape.hpp"
 #include "GEngine/libdev/components/driver/output/Color.hpp"
+#include "GEngine/libdev/components/driver/output/Shape.hpp"
 
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/systems/events/Native.hpp"
 #include "GEngine/libdev/systems/events/MainLoop.hpp"
+#include "GEngine/libdev/systems/events/Native.hpp"
 #include "GEngine/libdev/systems/events/driver/output/Draw.hpp"
 
 #include "GEngine/libdev/components/Positions.hpp"
 
 namespace gengine::system::driver::output {
-class Draw : public gengine::System<Draw, component::driver::output::Rectangle, component::driver::output::Color, component::Position2D> {
+class Draw : public gengine::System<Draw, component::driver::output::Rectangle, component::driver::output::Color,
+                                    component::Position2D> {
 public:
     void init(void) override;
 

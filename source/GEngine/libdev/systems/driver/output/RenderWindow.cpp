@@ -46,4 +46,4 @@ void RenderWindow::onMainLoop(gengine::system::event::MainLoop &e) {
         window.height = GetRenderHeight();
     }
 }
-} // namespace gengine::system
+} // namespace gengine::system::driver::output

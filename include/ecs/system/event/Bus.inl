@@ -20,7 +20,7 @@ template <typename Type> void Bus::publish(const Type &event) {
     });
 }
 
-template <typename T, typename Type> void Bus::subscribe(T &instance, void (T::*callbackMethod)(Type &)) {
+template <typename T, typename Type> void Bus::subscribe(T &instance, void (T::*callbackMethod)(Type &)) { // never use
     auto callback = std::make_unique<MethodCallback<T, Type>>(instance, callbackMethod);
     m_callbacks[typeid(Type)].emplace_back(std::move(callback));
 }

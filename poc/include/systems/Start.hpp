@@ -11,9 +11,9 @@
 #include "libdev/systems/events/Native.hpp"
 
 namespace hagarioop::systems {
-    class Start: public gengine::System<Start> {
-    public:
-        void init(void) override;
-        void onStartEngine(gengine::system::event::StartEngine &);
-    };
-}
+class Start : public gengine::System<Start> {
+public:
+    void init(void) override;
+    void onStartEngine(gengine::system::event::StartEngine &);
+};
+} // namespace hagarioop::systems

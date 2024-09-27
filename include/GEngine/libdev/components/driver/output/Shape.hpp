@@ -15,7 +15,7 @@ namespace gengine::component::driver::output {
 struct Rectangle : public gengine::Component {
     int x, y, width, height;
 
-    Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
+    Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height){};
     // Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
 };
-}
+} // namespace gengine::component::driver::output

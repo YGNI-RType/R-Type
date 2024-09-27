@@ -15,7 +15,7 @@ namespace gengine::component::driver::output {
 struct Color : public gengine::Component {
     ::Color color;
 
-    Color(const ::Color &color) : color(color) {};
-    Color(const ::Color &&color) : color(color) {};
+    Color(const ::Color &color) : color(color){};
+    Color(const ::Color &&color) : color(color){};
 };
 } // namespace gengine::component::driver::output
