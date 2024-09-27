@@ -5,8 +5,8 @@
 ** Collision.cpp
 */
 #include "GEngine/libdev/systems/Collisions.hpp"
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 namespace gengine::system {
 
@@ -164,4 +164,4 @@ void Collision3D::onMainLoop(event::MainLoop &e [[maybe_unused]]) {
         }
     }
 }
-}
+} // namespace gengine::system

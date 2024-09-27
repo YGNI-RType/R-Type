@@ -11,11 +11,10 @@
 
 #include "GEngine/libdev/components/driver/output/Sprite.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
-#include "GEngine/libdev/components/driver/output/Color.hpp"
 
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/systems/events/Native.hpp"
 #include "GEngine/libdev/systems/events/MainLoop.hpp"
+#include "GEngine/libdev/systems/events/Native.hpp"
 #include "GEngine/libdev/systems/events/driver/output/Draw.hpp"
 
 #include "GEngine/libdev/components/Transforms.hpp"

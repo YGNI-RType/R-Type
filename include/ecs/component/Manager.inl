@@ -29,14 +29,14 @@ template <typename T, class... Params> void Manager::setComponent(entity::Entity
 template <class T> SparseArray<T> &Manager::getComponents() {
     auto it = m_componentArrays.find(std::type_index(typeid(T)));
     if (it == m_componentArrays.end())
-        throw std::runtime_error("The component " + std::string(typeid(T).name()) + " does not exist in the Manager");
+        THROW_ERROR("The component " + std::string(READABLE_TYPE_NAME(T)) + " does not exist in the Manager");
     return std::any_cast<SparseArray<T> &>(it->second.first);
 }
 
 template <class T> const SparseArray<T> &Manager::getComponents() const {
     auto it = m_componentArrays.find(std::type_index(typeid(T)));
     if (it == m_componentArrays.end())
-        throw std::runtime_error("The component " + std::string(typeid(T).name()) + " does not exist in the Manager");
+        THROW_ERROR("The component " + std::string(READABLE_TYPE_NAME(T)) + " does not exist in the Manager");
     return std::any_cast<const SparseArray<T> &>(it->second);
 }
 } // namespace ecs::component

@@ -17,6 +17,7 @@
 
 #include "ecs/component/IsComponent.hpp"
 #include "ecs/component/SparseArray.hpp"
+#include "exceptions/Base.hpp"
 
 namespace ecs::component {
 class Manager {

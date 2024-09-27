@@ -28,10 +28,10 @@ private:
     void processKeyInput(int key, InputState state);
 };
 
-KeyboardKey &operator++(KeyboardKey& key) {
-    if (key <= 348) {
+KeyboardKey &operator++(KeyboardKey &key) {
+    if (key <= 348)
         key = static_cast<KeyboardKey>(static_cast<int>(key) + 1);
-    } else
+    else
         key = KEY_NULL;
     return key;
 }

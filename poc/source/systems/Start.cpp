@@ -11,6 +11,7 @@
 #include "libdev/components/Motions.hpp"
 #include "libdev/components/HitBoxs.hpp"
 
+#include "libdev/components/driver/output/Color.hpp"
 #include "libdev/components/driver/output/Shape.hpp"
 #include "libdev/components/driver/output/Sprite.hpp"
 #include "libdev/components/driver/output/Animation.hpp"
@@ -20,9 +21,7 @@
 #include <random>
 
 namespace hagarioop::systems {
-    void Start::init(void) {
-        subscribeToEvent<gengine::system::event::StartEngine>(&Start::onStartEngine);
-    }
+void Start::init(void) { subscribeToEvent<gengine::system::event::StartEngine>(&Start::onStartEngine); }
 
     void Start::onStartEngine(gengine::system::event::StartEngine &e) {
         auto &txtMan = getSystem<gengine::system::driver::output::TextureManager>();
@@ -57,7 +56,7 @@ namespace hagarioop::systems {
                 gengine::component::driver::output::Sprite(txtMan.get("r-typesheet3.gif"), Rectangle{0, 0, 17, 18}, WHITE),
                 gengine::component::driver::output::Animation(12, rand()%12, 0.1f, false)
 
-            );
-        }
+        );
     }
 }
+} // namespace hagarioop::systems

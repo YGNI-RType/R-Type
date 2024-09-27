@@ -29,9 +29,7 @@ public:
 
 class Logger : public gengine::System<Logger> {
 public:
-    void init(void) override {
-        subscribeToEvent<gengine::system::driver::input::KeyAEvent>(&Logger::onKeyA);
-    }
+    void init(void) override { subscribeToEvent<gengine::system::driver::input::KeyAEvent>(&Logger::onKeyA); }
 
     void onKeyA(gengine::system::driver::input::KeyAEvent &e) {
         switch (e.state) {

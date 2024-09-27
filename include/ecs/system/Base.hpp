@@ -8,7 +8,6 @@
 #pragma once
 
 #include <functional>
-#include <optional>
 
 #include "ecs/ECS.hpp"
 #include "ecs/system/IsSystem.hpp"
@@ -24,6 +23,7 @@ struct is_one_of<T, First, Rest...>
 template <typename T> struct is_one_of<T> : std::false_type {};
 
 class Manager;
+
 template <class Derived, class... DependTypes> class Base : public IsSystem {
 public:
     Base() = default;
@@ -38,6 +38,10 @@ public:
 
     template <typename T> component::SparseArray<T> &getComponent(void);
 
+    template <class T, class... Params> void registerSystem(Params &&...p);
+
+    template <class T> void registerComponent(void);
+
     template <typename... Components> void spawnEntity(Components &&...components);
 
     void killEntity(entity::Entity entity);
@@ -46,11 +50,16 @@ public:
 
     template <typename T> void publishEvent(T &&event);
 
+    void pause(void);
+
+    void resume(void);
+
 private:
     friend class system::Manager;
 
     std::optional<std::reference_wrapper<ECS>> m_ecs;
     std::optional<std::reference_wrapper<event::Bus>> m_eventBus;
+    bool m_isRunning = true;
 };
 } // namespace ecs::system
 
