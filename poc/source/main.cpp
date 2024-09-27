@@ -31,6 +31,9 @@
 #include "libdev/systems/Collisions.hpp"
 >>>>>>> d2e9736 (updated poc: Sprite and animation)
 #include "libdev/systems/MainLoop.hpp"
+#include "libdev/systems/Logger.hpp"
+
+#include "libdev/systems/events/Log.hpp"
 #include "libdev/systems/Motions.hpp"
 
 #include "systems/AutoMotion.hpp"
@@ -135,6 +138,9 @@ public:
 
     void onCollision(gengine::system::event::Collsion &e) {
         // auto &colors = getComponent<gengine::component::driver::output::Color>();
+        std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+
+        publishEvent(gengine::system::event::Log(logMessage));
         // if (e.entity1 && e.entity2)
         //     return;
         // if (e.entity1)
@@ -222,6 +228,8 @@ int main(void) {
     gameEngine.registerSystem<gengine::system::driver::input::MouseCatcher>();
     // std::cout << "test" << std::endl;
     gameEngine.registerSystem<Killer>();
+    gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
+
 
     gengine::interface::Internal interface(gameEngine, driverEngine);
     interface.run();
