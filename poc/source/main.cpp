@@ -7,11 +7,15 @@
 
 #include "driver/Engine.hpp"
 #include "game/Engine.hpp"
+<<<<<<< HEAD
 #include "game/Engine.hpp"
+=======
+>>>>>>> feat/libdev
 #include "interface/Internal.hpp"
 
 #include "libdev/components/HitBoxs.hpp"
 #include "libdev/components/Motions.hpp"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 // #include "libdev/components/Positions.hpp"
@@ -39,10 +43,20 @@
 #include "libdev/systems/Motions.hpp"
 
 #include "libdev/systems/Motions.hpp"
+=======
+#include "libdev/components/Positions.hpp"
+
+#include "libdev/systems/Collisions.hpp"
+#include "libdev/systems/Logger.hpp"
+#include "libdev/systems/MainLoop.hpp"
+#include "libdev/systems/Motions.hpp"
+
+>>>>>>> feat/libdev
 #include "libdev/systems/events/Log.hpp"
 
 #include "systems/AutoMotion.hpp"
 #include "systems/Start.hpp"
+<<<<<<< HEAD
 #include "systems/Start.hpp"
 
 #include "libdev/systems/driver/input/KeyboardCatcher.hpp"
@@ -103,6 +117,19 @@ struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system:
                                                    gengine::component::driver::output::Color> {
     void onEvent(gengine::system::event::Collsion &e) override {
 >>>>>>> aa51246 (added libdev: Exceptions)
+=======
+
+#include "libdev/systems/driver/input/KeyboardCatcher.hpp"
+#include "libdev/systems/driver/output/Draw.hpp"
+#include "libdev/systems/driver/output/RenderWindow.hpp"
+
+#include "libdev/components/driver/output/Color.hpp"
+#include "libdev/components/driver/output/Shape.hpp"
+
+struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system::event::Collsion,
+                                                   gengine::component::driver::output::Color> {
+    void onEvent(gengine::system::event::Collsion &e) override {
+>>>>>>> feat/libdev
         auto &colors = getComponent<gengine::component::driver::output::Color>();
         std::string logMessage =
             "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
@@ -113,6 +140,7 @@ struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system:
         if (e.entity1)
             colors.get(e.entity1).color = BLUE;
         if (e.entity2)
+<<<<<<< HEAD
             colors.get(e.entity2).color = GREEN;
 =======
 #include <random>
@@ -232,6 +260,12 @@ struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system:
 
 =======
 >>>>>>> aa51246 (added libdev: Exceptions)
+=======
+            colors.get(e.entity2).color = BLUE;
+    }
+};
+
+>>>>>>> feat/libdev
 int main(void) {
     gengine::game::Engine gameEngine;
     gengine::driver::Engine driverEngine;
@@ -241,11 +275,14 @@ int main(void) {
     gameEngine.registerComponent<gengine::component::HitBoxSquare2D>();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     gameEngine.registerComponent<gengine::component::Transform2D>();
     gameEngine.registerComponent<gengine::component::Motion2D>();
     // gameEngine.registerComponent<gengine::component::Origin2D>();
     gameEngine.registerComponent<gengine::component::driver::output::Animation>();
 =======
+=======
+>>>>>>> feat/libdev
     gameEngine.registerComponent<gengine::component::Position2D>();
     // gameEngine.registerComponent<gengine::component::Motion2D>();
     gameEngine.registerComponent<gengine::component::Origin2D>();
@@ -277,10 +314,15 @@ int main(void) {
     gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::AutoMainLoop>();
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
+<<<<<<< HEAD
     gameEngine.registerSystem<gengine::system::driver::input::MouseCatcher>();
     // std::cout << "test" << std::endl;
     // gameEngine.registerSystem<ChangeColor>();
     // gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
+=======
+    gameEngine.registerSystem<ChangeColor>();
+    gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
+>>>>>>> feat/libdev
 
     gengine::interface::Internal interface(gameEngine, driverEngine);
     interface.run();
