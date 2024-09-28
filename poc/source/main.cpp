@@ -26,7 +26,7 @@
 #include "libdev/systems/Logger.hpp"
 =======
 #include "libdev/components/Motions.hpp"
-#include "libdev/components/Positions.hpp"
+// #include "libdev/components/Positions.hpp"
 
 #include "libdev/systems/Collisions.hpp"
 <<<<<<< HEAD
@@ -38,8 +38,8 @@
 #include "libdev/systems/MainLoop.hpp"
 #include "libdev/systems/Motions.hpp"
 
-#include "libdev/systems/events/Log.hpp"
 #include "libdev/systems/Motions.hpp"
+#include "libdev/systems/events/Log.hpp"
 
 #include "systems/AutoMotion.hpp"
 #include "systems/Start.hpp"
@@ -63,6 +63,7 @@ class Killer : public gengine::System<Killer, gengine::component::Transform2D, g
 public:
     void init(void) override {
         subscribeToEvent<gengine::system::event::Collsion>(&Killer::onCollision);
+<<<<<<< HEAD
         subscribeToEvent<gengine::system::event::driver::input::Mouse_Left>(&Killer::onClickLeft);
     }
 
@@ -122,6 +123,8 @@ struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system:
 // public:
 //     void init(void) override {
 //         subscribeToEvent<gengine::system::event::Collsion>(&Killer::onCollision);
+=======
+>>>>>>> 49fa317 (fixed poc: merge conflicts)
         subscribeToEvent<gengine::system::event::driver::input::Mouse_Left>(&Killer::onClickLeft);
     }
 
@@ -137,6 +140,20 @@ struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system:
                 }
             }
         }
+    }
+    void onCollision(gengine::system::event::Collsion &e) {
+        // auto &colors = getComponent<gengine::component::driver::output::Color>();
+        // std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+
+        // publishEvent(gengine::system::event::Log(logMessage));
+        // if (e.entity1 && e.entity2)
+        //     return;
+        // if (e.entity1)
+        //     colors.get(e.entity1).color = GREEN;
+        // if (e.entity2)
+        //     colors.get(e.entity2).color = GREEN;
+    }
+};
 
         // auto &colors = getComponent<gengine::component::driver::output::Color>();
 
@@ -144,17 +161,22 @@ struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system:
         //     color = e.state == gengine::system::driver::input::InputState::RELEASE ? BLUE : GREEN;
 //     }
 
-//     void onCollision(gengine::system::event::Collsion &e) {
+// };
+
+// struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system::event::Collsion,
+//                                                    gengine::component::driver::output::Color> {
+//     void onEvent(gengine::system::event::Collsion &e) override {
 //         auto &colors = getComponent<gengine::component::driver::output::Color>();
-//         std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+//         std::string logMessage =
+//             "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
 
 //         publishEvent(gengine::system::event::Log(logMessage));
-//         if (e.entity1 && e.entity2)
-//             return;
-//         if (e.entity1)
-//             colors.get(e.entity1).color = GREEN;
-//         if (e.entity2)
-//             colors.get(e.entity2).color = GREEN;
+//         // if (e.entity1 && e.entity2)
+//         //     return;
+//         // if (e.entity1)
+//         //     colors.get(e.entity1).color = BLUE;
+//         // if (e.entity2)
+//         //     colors.get(e.entity2).color = BLUE;
 //     }
 // };
 
@@ -211,7 +233,6 @@ struct ChangeColor : public gengine::OnEventSystem<ChangeColor, gengine::system:
 =======
 >>>>>>> aa51246 (added libdev: Exceptions)
 int main(void) {
-int main(void) {
     gengine::game::Engine gameEngine;
     gengine::driver::Engine driverEngine;
 
@@ -232,8 +253,8 @@ int main(void) {
 >>>>>>> aa51246 (added libdev: Exceptions)
 =======
     gameEngine.registerComponent<gengine::component::Transform2D>();
-    // gameEngine.registerComponent<gengine::component::Motion2D>();
-    gameEngine.registerComponent<gengine::component::Origin2D>();
+    gameEngine.registerComponent<gengine::component::Motion2D>();
+    // gameEngine.registerComponent<gengine::component::Origin2D>();
     gameEngine.registerComponent<gengine::component::driver::output::Animation>();
 >>>>>>> d2e9736 (updated poc: Sprite and animation)
     gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
@@ -258,8 +279,8 @@ int main(void) {
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     gameEngine.registerSystem<gengine::system::driver::input::MouseCatcher>();
     // std::cout << "test" << std::endl;
-    gameEngine.registerSystem<ChangeColor>();
-    gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
+    // gameEngine.registerSystem<ChangeColor>();
+    // gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
 
     gengine::interface::Internal interface(gameEngine, driverEngine);
     interface.run();
