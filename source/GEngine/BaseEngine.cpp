@@ -16,6 +16,12 @@ void BaseEngine::compute(void) {
         m_ecs.executeEvent();
         // std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+    m_ecs.publishEvent(system::event::StopEngine());
+    m_ecs.executeEvent();
+    // while (m_ecs.hasEvent()) {
+    //     m_ecs.executeEvent();
+    //     // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // }
 }
 
 void BaseEngine::start(void) { m_ecs.publishEvent(system::event::StartEngine()); }
