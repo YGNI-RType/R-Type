@@ -12,7 +12,7 @@
 #include "libdev/components/Transforms.hpp"
 
 #include "libdev/components/driver/output/Animation.hpp"
-#include "libdev/components/driver/output/Color.hpp"
+// #include "libdev/components/driver/output/Color.hpp"
 #include "libdev/components/driver/output/Shape.hpp"
 #include "libdev/components/driver/output/Sprite.hpp"
 
