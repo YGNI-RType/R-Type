@@ -9,8 +9,8 @@
 
 #include <raylib.h>
 
-#include "GEngine/libdev/components/driver/output/Sprite.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
+#include "GEngine/libdev/components/driver/output/Sprite.hpp"
 
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/MainLoop.hpp"
@@ -20,7 +20,8 @@
 #include "GEngine/libdev/components/Transforms.hpp"
 
 namespace gengine::system::driver::output {
-class Draw2D : public gengine::System<Draw2D, component::driver::output::Sprite, component::driver::output::Rectangle, component::driver::output::Circle, component::Transform2D> {
+class Draw2D : public gengine::System<Draw2D, component::driver::output::Sprite, component::driver::output::Rectangle,
+                                      component::driver::output::Circle, component::Transform2D> {
 public:
     void init(void) override;
 

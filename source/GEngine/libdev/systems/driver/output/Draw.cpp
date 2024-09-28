@@ -23,7 +23,7 @@ void Draw2D::onDraw(gengine::system::event::Draw &e) {
         if (transforms.contains(entity)) {
             auto &[pos, scale, rotation] = transforms.get(entity);
             Rectangle r = {pos.x, pos.y, rect.width * scale.x, rect.height * scale.y};
-            DrawRectanglePro(r, {0, 0}, rotation, rect.color); //TODO origin
+            DrawRectanglePro(r, {0, 0}, rotation, rect.color); // TODO origin
             // DrawRectangle(pos.x, pos.y, rect.width * scale.x, rect.height * scale.y, rect.color);
         }
     }

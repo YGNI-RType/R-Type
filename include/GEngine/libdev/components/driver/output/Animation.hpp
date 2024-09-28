@@ -20,12 +20,14 @@
 
 namespace gengine::component::driver::output {
 struct Animation : public gengine::Component {
-    int nbFrames;           // Total number of frames in the animation
-    int currentFrame;       // The current frame of the animation
-    float frameDuration;    // Time each frame is displayed (in seconds)
-    float currentTime;      // Accumulated time used to track when to switch frames
-    bool looping;           // Should the animation loop?
+    int nbFrames;        // Total number of frames in the animation
+    int currentFrame;    // The current frame of the animation
+    float frameDuration; // Time each frame is displayed (in seconds)
+    float currentTime;   // Accumulated time used to track when to switch frames
+    bool looping;        // Should the animation loop?
 
-    Animation(int nbFrames, int currentFrame, float frameDuration, bool looping = true) : nbFrames(nbFrames), currentFrame(0), frameDuration(frameDuration), currentTime(currentFrame * frameDuration), looping(looping) {}
+    Animation(int nbFrames, int currentFrame, float frameDuration, bool looping = true)
+        : nbFrames(nbFrames), currentFrame(0), frameDuration(frameDuration), currentTime(currentFrame * frameDuration),
+          looping(looping) {}
 };
-}
+} // namespace gengine::component::driver::output

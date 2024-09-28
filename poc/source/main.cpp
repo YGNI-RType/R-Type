@@ -25,18 +25,18 @@
 
 #include "libdev/systems/driver/input/KeyboardCatcher.hpp"
 #include "libdev/systems/driver/input/MouseCatcher.hpp"
-#include "libdev/systems/driver/output/Draw.hpp"
 #include "libdev/systems/driver/output/Animate.hpp"
-#include "libdev/systems/driver/output/TextureManager.hpp"
+#include "libdev/systems/driver/output/Draw.hpp"
 #include "libdev/systems/driver/output/RenderWindow.hpp"
 #include "libdev/systems/driver/output/Draw.hpp"
 #include "libdev/systems/driver/output/Animate.hpp"
-#include "libdev/systems/driver/output/TextureManager.hpp"
+#include "libdev/systems/driver/output/Draw.hpp"
 #include "libdev/systems/driver/output/RenderWindow.hpp"
+#include "libdev/systems/driver/output/TextureManager.hpp"
 
 #include "libdev/components/driver/output/Color.hpp"
-#include "libdev/components/driver/output/Color.hpp"
 #include "libdev/components/driver/output/Animation.hpp"
+#include "libdev/components/driver/output/Color.hpp"
 #include "libdev/components/driver/output/Shape.hpp"
 
 #include <random>
@@ -57,7 +57,8 @@
             if (hitboxes.contains(entity)) {
                 auto &hitbox = hitboxes.get(entity);
                 if (e.cursorPos.x >= transf.pos.x && e.cursorPos.y >= transf.pos.y &&
-                    e.cursorPos.x <= transf.pos.x + hitbox.width * transf.scale.x && e.cursorPos.y <= transf.pos.y + hitbox.height * transf.scale.y) {
+                    e.cursorPos.x <= transf.pos.x + hitbox.width * transf.scale.x &&
+                    e.cursorPos.y <= transf.pos.y + hitbox.height * transf.scale.y) {
                     killEntity(entity);
                 }
             }

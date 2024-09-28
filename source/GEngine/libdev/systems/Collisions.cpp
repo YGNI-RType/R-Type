@@ -14,8 +14,8 @@ void Collision2D::init(void) { subscribeToEvent<event::MainLoop>(&Collision2D::o
 
 bool checkSquareCollision(const component::HitBoxSquare2D &square1, const component::Transform2D &tr1,
                           const component::HitBoxSquare2D &square2, const component::Transform2D &tr2) {
-    return !(tr1.pos.x > tr2.pos.x + square2.width || tr1.pos.x + square1.width < tr2.pos.x || tr1.pos.y > tr2.pos.y + square2.height ||
-             tr1.pos.y + square1.height < tr2.pos.y);
+    return !(tr1.pos.x > tr2.pos.x + square2.width || tr1.pos.x + square1.width < tr2.pos.x ||
+             tr1.pos.y > tr2.pos.y + square2.height || tr1.pos.y + square1.height < tr2.pos.y);
 }
 
 bool checkCircleCollision(const component::HitBoxCircle2D &circle1, const component::Transform2D &tr1,
@@ -90,8 +90,9 @@ void Collision3D::init(void) { subscribeToEvent<event::MainLoop>(&Collision3D::o
 
 bool checkCubeCollision(const component::HitBoxSquare3D &cube1, const component::Transform3D &tr1,
                         const component::HitBoxSquare3D &cube2, const component::Transform3D &tr2) {
-    return !(tr1.pos.x > tr2.pos.x + cube2.width || tr1.pos.x + cube1.width < tr2.pos.x || tr1.pos.y > tr2.pos.y + cube2.height ||
-             tr1.pos.y + cube1.height < tr2.pos.y || tr1.pos.z > tr2.pos.z + cube2.depth || tr1.pos.z + cube1.depth < tr2.pos.z);
+    return !(tr1.pos.x > tr2.pos.x + cube2.width || tr1.pos.x + cube1.width < tr2.pos.x ||
+             tr1.pos.y > tr2.pos.y + cube2.height || tr1.pos.y + cube1.height < tr2.pos.y ||
+             tr1.pos.z > tr2.pos.z + cube2.depth || tr1.pos.z + cube1.depth < tr2.pos.z);
 }
 
 bool checkSphereCollision(const component::HitBoxCircle3D &sphere1, const component::Transform3D &tr1,

@@ -33,9 +33,10 @@ public:
     void setHeight(int height);
     const std::string &getTitle(void) const;
     void setTitle(const std::string &title);
-    private:
-        int m_width;
-        int m_height;
-        std::string m_title;
+
+private:
+    int m_width;
+    int m_height;
+    std::string m_title;
 };
 } // namespace gengine::system::driver::output

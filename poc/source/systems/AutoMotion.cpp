@@ -30,9 +30,8 @@ void AutoMotion::onMainLoop(gengine::system::event::MainLoop &e) {
     auto &motions = getComponent<gengine::component::Motion2D>();
 
     for (auto &[entity, motion] : motions) {
-        if (!entity) {
+        if (!entity)
             continue;
-        }
         if (change_chance_fork(gen) == 0)
             motion.x = motion_fork(gen);
         if (change_chance_fork(gen) == 1)
