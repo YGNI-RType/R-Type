@@ -13,9 +13,19 @@
 
 namespace gengine::component::driver::output {
 struct Rectangle : public gengine::Component {
-    int x, y, width, height;
+    int width;
+    int height;
+    Color color;
 
-    Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
+    Rectangle(int width, int height, const Color &&color) : width(width), height(height), color(color) {};
     // Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
+};
+
+struct Circle : public gengine::Component {
+    int r;
+    Color color;
+
+    Circle(int r, const Color &&color) :r(r), color(color) {};
+    // Circle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
 };
 }
