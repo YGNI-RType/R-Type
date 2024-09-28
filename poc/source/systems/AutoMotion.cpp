@@ -55,13 +55,13 @@ void AutoMotion::onKeyRight(gengine::system::event::driver::input::Key_Right &e)
         motions.get(0).x += 1000;
 }
 
-void AutoMotion::onKeyUp(gengine::system::event::driver::input::Key_Up &e) {
-    auto &motions = getComponent<gengine::component::Motion2D>();
-    if (e.state == gengine::system::event::driver::input::RELEASE)
-        motions.get(0).y += 1000;
-    else if (e.state == gengine::system::event::driver::input::PRESSED)
-        motions.get(0).y -= 1000;
-}
+    void AutoMotion::onKeyUp(gengine::system::event::driver::input::Key_Up &e) {
+        auto &motions = getComponent<gengine::component::Motion2D>();
+        if (e.state == gengine::system::event::driver::input::RELEASE)
+            motions.get(0).y += 1000;
+        else if (e.state == gengine::system::event::driver::input::PRESSED)
+            motions.get(0).y -= 1000;
+    }
 
 void AutoMotion::onKeyDown(gengine::system::event::driver::input::Key_Down &e) {
     auto &motions = getComponent<gengine::component::Motion2D>();

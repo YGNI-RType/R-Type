@@ -7,6 +7,8 @@
 
 #include "systems/Start.hpp"
 
+#include "libdev/components/Transforms.hpp"
+#include "libdev/components/Motions.hpp"
 #include "libdev/components/HitBoxs.hpp"
 #include "libdev/components/Motions.hpp"
 #include "libdev/components/Transforms.hpp"
