@@ -14,7 +14,6 @@
 #include "libdev/components/Positions.hpp"
 
 #include "libdev/systems/Collisions.hpp"
-#include "libdev/systems/Logger.hpp"
 #include "libdev/systems/MainLoop.hpp"
 #include "libdev/systems/Motions.hpp"
 
@@ -31,6 +30,8 @@
 #include "libdev/systems/driver/output/TextureManager.hpp"
 #include "libdev/systems/driver/output/RenderWindow.hpp"
 #include "libdev/systems/driver/output/Draw.hpp"
+#include "libdev/systems/driver/output/Animate.hpp"
+#include "libdev/systems/driver/output/TextureManager.hpp"
 #include "libdev/systems/driver/output/RenderWindow.hpp"
 
 #include "libdev/components/driver/output/Color.hpp"
