@@ -5,73 +5,106 @@
 ** main.cpp
 */
 
-#include "game/Engine.hpp"
 #include "driver/Engine.hpp"
+#include "game/Engine.hpp"
 #include "interface/Internal.hpp"
 
 #include "libdev/components/HitBoxs.hpp"
-#include "libdev/components/Positions.hpp"
 #include "libdev/components/Motions.hpp"
+#include "libdev/components/Positions.hpp"
 
 #include "libdev/systems/Collisions.hpp"
-#include "libdev/systems/Motions.hpp"
 #include "libdev/systems/MainLoop.hpp"
+#include "libdev/systems/Motions.hpp"
 
-#include "systems/Start.hpp"
 #include "systems/AutoMotion.hpp"
+#include "systems/Start.hpp"
 
-#include "libdev/systems/driver/output/RenderWindow.hpp"
-#include "libdev/systems/driver/output/Draw.hpp"
 #include "libdev/systems/driver/input/KeyboardCatcher.hpp"
+#include "libdev/systems/driver/input/MouseCatcher.hpp"
+#include "libdev/systems/driver/output/Draw.hpp"
+#include "libdev/systems/driver/output/Animate.hpp"
+#include "libdev/systems/driver/output/TextureManager.hpp"
+#include "libdev/systems/driver/output/RenderWindow.hpp"
 
-#include "libdev/components/driver/output/Shape.hpp"
 #include "libdev/components/driver/output/Color.hpp"
+#include "libdev/components/driver/output/Animation.hpp"
+#include "libdev/components/driver/output/Shape.hpp"
 
-class Killer: public gengine::System<Killer, gengine::component::Position2D, gengine::component::driver::output::Color> {
+#include <random>
+
+
+class Killer : public gengine::System<Killer, gengine::component::Transform2D,
+                                      gengine::component::HitBoxSquare2D> {
 public:
     void init(void) override {
         subscribeToEvent<gengine::system::event::Collsion>(&Killer::onCollision);
+        subscribeToEvent<gengine::system::event::driver::input::Mouse_Left>(&Killer::onClickLeft);
+    }
+
+    void onClickLeft(gengine::system::driver::input::MouseLeftEvent &e) {
+        auto &transforms = getComponent<gengine::component::Transform2D>();
+        auto &hitboxes = getComponent<gengine::component::HitBoxSquare2D>();
+        for (auto &[entity, transf] : transforms) {
+            if (hitboxes.contains(entity)) {
+                auto &hitbox = hitboxes.get(entity);
+                if (e.cursorPos.x >= transf.pos.x && e.cursorPos.y >= transf.pos.y &&
+                    e.cursorPos.x <= transf.pos.x + hitbox.width * transf.scale.x && e.cursorPos.y <= transf.pos.y + hitbox.height * transf.scale.y) {
+                    killEntity(entity);
+                }
+            }
+        }
+
+        // auto &colors = getComponent<gengine::component::driver::output::Color>();
+
+        // for (auto &[_, color] : colors)
+        //     color = e.state == gengine::system::driver::input::InputState::RELEASE ? BLUE : GREEN;
     }
 
     void onCollision(gengine::system::event::Collsion &e) {
-        auto &colors = getComponent<gengine::component::driver::output::Color>();
-        if (e.entity1 && e.entity2)
-            return;
-        if (e.entity1)
-            colors.get(e.entity1).color = GREEN;
-        if (e.entity2)
-            colors.get(e.entity2).color = GREEN;
+        // auto &colors = getComponent<gengine::component::driver::output::Color>();
+        // if (e.entity1 && e.entity2)
+        //     return;
+        // if (e.entity1)
+        //     colors.get(e.entity1).color = GREEN;
+        // if (e.entity2)
+        //     colors.get(e.entity2).color = GREEN;
     }
 };
 
-int main(void)
-{
+int main(void) {
     gengine::game::Engine gameEngine;
     gengine::driver::Engine driverEngine;
 
     // Components
     gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
     gameEngine.registerComponent<gengine::component::HitBoxSquare2D>();
-    gameEngine.registerComponent<gengine::component::Position2D>();
+    gameEngine.registerComponent<gengine::component::Transform2D>();
     gameEngine.registerComponent<gengine::component::Motion2D>();
     gameEngine.registerComponent<gengine::component::Origin2D>();
-    gameEngine.registerComponent<gengine::component::driver::output::Window>();
+    gameEngine.registerComponent<gengine::component::driver::output::Animation>();
     gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
-    gameEngine.registerComponent<gengine::component::driver::output::Color>();
+    gameEngine.registerComponent<gengine::component::driver::output::Circle>();
+    gameEngine.registerComponent<gengine::component::driver::output::Sprite>();
+    // gameEngine.registerComponent<gengine::component::driver::output::Color>();
 
     // Systems
     // customs
-    gameEngine.registerSystem<hagarioop::systems::Start>();
-    gameEngine.registerSystem<hagarioop::systems::AutoMotion>();
+    gameEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1080, 720, "hagar");
+    gameEngine.registerSystem<gengine::system::driver::output::TextureManager>("../sprites");
+    // gameEngine.registerSystem<hagarioop::systems::AutoMotion>();
     // gameEngine.registerSystem<LogCollision>();
 
     // libdev
+    gameEngine.registerSystem<hagarioop::systems::Start>();
     gameEngine.registerSystem<gengine::system::Motion2D>();
     gameEngine.registerSystem<gengine::system::Collision2D>();
-    gameEngine.registerSystem<gengine::system::driver::output::RenderWindow>();
-    gameEngine.registerSystem<gengine::system::driver::output::Draw>();
+    gameEngine.registerSystem<gengine::system::driver::output::Draw2D>();
+    gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::AutoMainLoop>();
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
+    gameEngine.registerSystem<gengine::system::driver::input::MouseCatcher>();
+    // std::cout << "test" << std::endl;
     gameEngine.registerSystem<Killer>();
 
     gengine::interface::Internal interface(gameEngine, driverEngine);

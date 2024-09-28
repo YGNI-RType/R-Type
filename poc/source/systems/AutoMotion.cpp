@@ -61,7 +61,7 @@ namespace hagarioop::systems {
     }
 
     void AutoMotion::onKeyUp(gengine::system::event::driver::input::Key_Up &e) {
-        auto &motions = getCmponent<gengine::component::Motion2D>();
+        auto &motions = getComponent<gengine::component::Motion2D>();
         if (e.state == gengine::system::event::driver::input::RELEASE)
             motions.get(0).y += 1000;
         else if (e.state == gengine::system::event::driver::input::PRESSED)
