@@ -35,6 +35,11 @@ typedef unsigned short sa_family_t;
 #define MAX_TRY_PORTS 5
 #define DEFAULT_PORT 4242
 
+#define MAX_CLIENTS 100
+
+#define MAX_UDP_MSGLEN 16384
+#define MAX_TCP_MSGLEN 32768
+
 typedef uint8_t byte_t;
 
 typedef enum { AT_NONE = 0, AT_BOT, AT_LOOPBACK, AT_BROADCAST, AT_MULTICAST, AT_IPV4, AT_IPV6, AT_UNSPEC } AddressType;

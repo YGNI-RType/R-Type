@@ -7,17 +7,13 @@
 
 #pragma once
 
+#include "net_common.hpp"
 #include "structs/msg_tcp_structs.hpp"
 #include "structs/msg_udp_structs.hpp"
 #include <cstddef>
 #include <cstdint>
 
 namespace Network {
-
-typedef uint8_t byte_t;
-
-#define MAX_UDP_MSGLEN 16384
-#define MAX_TCP_MSGLEN 32768
 
 class AMessage {
 public:

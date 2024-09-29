@@ -47,6 +47,7 @@ private:
     /* Usage of "select" */
 public:
     static bool sleep(uint32_t ms);
+    static void handleEvents(void);
 
 private:
     static void createSets(fd_set &readSet);

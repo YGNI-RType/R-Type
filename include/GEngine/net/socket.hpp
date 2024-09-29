@@ -50,13 +50,13 @@ public:
 public:
     static void initLibs(void);
 
-    ASocket() = default;
     ASocket(const ASocket &other) = delete;
     ASocket &operator=(const ASocket &other) = delete;
     ASocket(ASocket &&other);
     ASocket &operator=(ASocket &&other);
 
 protected:
+    ASocket() = default;
     static void addSocketPool(SOCKET socket);
     virtual ~ASocket();
 

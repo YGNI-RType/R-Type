@@ -266,6 +266,28 @@ void NET::createSets(fd_set &readSet) {
     FD_SET(mg_socketListenTcp.getSocket(), &readSet);
 }
 
+void NET::handleEvents(void) {
+    if (FD_ISSET(mg_socketUdp.getSocket(), &readSet))
+        mg_socketUdp.handleEvent();
+    if (FD_ISSET(mg_socketListenTcp.getSocket(), &readSet))
+        mg_socketListenTcp.handleEvent();
+    if (CVar::net_ipv6.getIntValue()) {
+        if (FD_ISSET(mg_socketUdpV6.getSocket(), &readSet))
+            mg_socketUdpV6.handleEvent();
+        if (FD_ISSET(mg_socketListenTcpV6.getSocket(), &readSet))
+            mg_socketListenTcpV6.handleEvent();
+    }
+    for (SocketTCP &socket : g_clientSocketsTCP) {
+        auto eventType = socket.getEventType();
+        auto socketId = socket.getSocket();
+
+        if (eventType == SocketTCP::EventType::READ && FD_ISSET(socketId, &readSet)) {
+            socket.handleEvent();
+        }
+    }
+}
+
+
 /**************************************************************/
 
 /* should it be bool ? should it returns a message instead of sending it directly ? */
