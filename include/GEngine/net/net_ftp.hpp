@@ -16,7 +16,7 @@ namespace Network {
 
 class FileService {
 public:
-    FileService(const std::string &filename);
+    FileService(const std::string &filename, uint8_t priority = -1);
     ~FileService();
 
     void openFile(const std::string &filename);
@@ -25,8 +25,14 @@ public:
     void writeFile(const TCPMessage &msg);
     bool readFile(TCPMessage &msg); /* store the chunk inside */
 
+    static uint8_t determinePriority(const std::string &filename); /* add any other information */
+
 private:
     std::string m_filePath;
+
+    /* 1 - 10, it's how many time the server loops back to that same file (1 loop = N Chunk of file, and move on to the
+     * other pending list, rotating everything) */
+    uint8_t m_priority;
 
     // speed calculation
     double m_completion;
@@ -57,7 +63,11 @@ private:
     /* todo : add a priority system, certain files are most likely to be complemted, however with multithreads it's ok
      */
     /* should the ftp service be a seperated thread ? Like only one instance across multiple server in one process ?
-     * Like it will tell if a certain client has finished all services and continue normal process ? */
+     * Like it will tell if a certain client has finished all download services and continue normal process to join the
+     * game ? */
+
+    /* TODO : add a checking for the file prior to everything (is the size allowed, is the mime type authorized, don't
+     * allow the client to upload everytime, add a cooldown etc...)*/
 
     /* TODO : make windows / linux behavior via classes to get necesary information, get it through a custom rate of tcp
      * socket */

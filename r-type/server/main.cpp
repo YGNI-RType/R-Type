@@ -11,6 +11,8 @@
 int main(void) {
     Network::NET::init();
 
+    Network::NET::initServer();
+
     while (1)
         Network::NET::sleep(4000);
 

@@ -28,12 +28,18 @@ private:
     static std::vector<IP> g_localIPs;
 
     static bool enabled;
-    static bool isHostingServer;
+
+    static bool inittedServer;
+    static bool inittedClient;
+
+    static uint16_t currentUnusedPort;
 
     /* Init everything */
 public:
     static void init(void);
     static void stop(void);
+
+    static void initServer(void);
 
 private:
     static void getLocalAddress(void);
@@ -47,7 +53,9 @@ private:
     /* Usage of "select" */
 public:
     static bool sleep(uint32_t ms);
-    static void handleEvents(void);
+    static void handleEvents(fd_set &readSet);
+    static void handleUdpEvent(const UDPMessage &msg, const Address &addr);
+    static void handleTCPEvent(const TCPMessage &msg);
 
 private:
     static void createSets(fd_set &readSet);

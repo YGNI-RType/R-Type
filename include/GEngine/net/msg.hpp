@@ -40,8 +40,6 @@ class TCPMessage : public AMessage {
 public:
     TCPMessage(std::size_t maxSize, uint8_t type);
 
-    void writeHeader(); // override final;
-    void readHeader();  // override final;
     const byte_t *getData() const { return m_data; }
 
 private:
@@ -55,8 +53,6 @@ class UDPMessage : public AMessage {
 public:
     UDPMessage(std::size_t maxSize, uint8_t type);
 
-    void writeHeader(); // override final;
-    void readHeader();  // override final;
     const byte_t *getData() const { return m_data; }
 
 private:

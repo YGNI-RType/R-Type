@@ -10,12 +10,22 @@
 #include "GEngine/interface/Internal.hpp"
 #include "GEngine/libdev/systems/MainLoop.hpp"
 
+#include "GEngine/net/net.hpp"
+
 #ifdef _WIN32
 // TEMP TEMP TEMP : place it elsewhere, reminescence of windows.h from socket apis
 #undef interface
 #endif
 
 int main(void) {
+    Network::NET::init();
+
+    Network::NET::pingServers();
+
+    while (1)
+        Network::NET::sleep(4000);
+
+    Network::NET::stop();
     gengine::game::Engine gameEngine;
     gengine::driver::Engine driverEngine;
 

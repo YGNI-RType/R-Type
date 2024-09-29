@@ -109,6 +109,17 @@ void ASocket::setBlocking(bool blocking) {
 #endif
 }
 
+bool ASocket::isBlocking(void) const {
+#ifdef _WIN32
+    u_long mode;
+    ioctlsocket(m_sock, FIONBIO, &mode);
+    return mode == 0;
+#else
+    int flags = fcntl(m_sock, F_GETFL, 0);
+    return (flags & O_NONBLOCK) == 0;
+#endif
+}
+
 /***********************************************/
 
 SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
@@ -146,6 +157,26 @@ SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster) : m
     if (m_sock < 0) {
         if (errno != EWOULDBLOCK) /* it should never block right ? */
             throw std::runtime_error("Failed to accept connection");
+    }
+
+    addSocketPool(m_sock);
+}
+
+SocketTCP::SocketTCP(const Address &addr, uint16_t port) {
+    m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (m_sock == -1)
+        throw std::runtime_error("(TCP) Failed to create socket");
+
+    struct sockaddr_in address;
+    std::memcpy(&address, &addr, sizeof(struct sockaddr_in));
+
+    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+
+    if (connect(m_sock, (sockaddr *)&address, sizeof(address)) < 0) {
+        if (errno == EINPROGRESS)
+            return;
+        socketClose();
+        throw SocketException("(TCP) Failed to connect to server");
     }
 
     addSocketPool(m_sock);
@@ -230,6 +261,7 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
 
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_port = port == PORT_ANY ? 0 : htons(port);
 
     if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)

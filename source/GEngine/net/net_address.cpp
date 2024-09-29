@@ -20,20 +20,20 @@ void AddressV4::toSockAddr(sockaddr *addr) const {
     struct sockaddr_in *s = reinterpret_cast<struct sockaddr_in *>(addr);
 
     s->sin_family = AF_INET;
-    s->sin_port = m_port;
+    s->sin_port = htons(m_port);
 
     switch (m_type) {
     case AT_IPV4:
-        s->sin_addr.s_addr = *(int *)&m_address;
+        s->sin_addr.s_addr = htonl(*(int *)&m_address);
         break;
     case AT_BROADCAST:
-        s->sin_addr.s_addr = INADDR_BROADCAST;
+        s->sin_addr.s_addr = htonl(INADDR_BROADCAST);
         break;
     case AT_LOOPBACK:
-        s->sin_addr.s_addr = INADDR_LOOPBACK;
+        s->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
         break;
     case AT_UNSPEC:
-        s->sin_addr.s_addr = INADDR_ANY;
+        s->sin_addr.s_addr = htonl(INADDR_ANY);
         break;
     }
 }

@@ -66,6 +66,7 @@ private:
 
 public:
     void setBlocking(bool blocking);
+    bool isBlocking(void) const;
 
 protected:
     int socketClose(void);
@@ -126,6 +127,7 @@ public:
 public:
     SocketTCP(size_t pos_accept,
               const SocketTCPMaster &socketMaster); // accepts it from the socket master
+    SocketTCP(const Address &addr, uint16_t port);  // connect to the address (only for client)
     SocketTCP(const SocketTCP &other) = delete;
     SocketTCP &operator=(const SocketTCP &) = delete;
     SocketTCP(SocketTCP &&other);
@@ -148,7 +150,7 @@ private:
 
     EventType m_eventType = READ;
 
-    const size_t m_posAccept; /* posititon in array for fast removal */
+    const size_t m_posAccept = -1; /* posititon in array for fast removal */
 };
 
 } // namespace Network
