@@ -93,7 +93,7 @@ public:
     std::pair<UDPMessage, AddressV6> receiveV6(void) const;
 
 private:
-    void receive(struct sockaddr *addr, byte_t *data) const;
+    void receive(struct sockaddr *addr, byte_t *data, socklen_t *len) const;
 };
 
 ////////////////////////////////////////

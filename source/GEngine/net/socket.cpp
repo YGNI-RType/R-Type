@@ -291,15 +291,13 @@ bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
     if (sent < 0) {
         if (errno == EWOULDBLOCK || errno == EAGAIN)
             return false;
-        throw SocketException("Failed to send message");
+        throw SocketException("Failed to send message (invalid address)");
     }
     return true;
 }
 
-void SocketUDP::receive(struct sockaddr *addr, byte_t *data) const {
-    socklen_t len;
-
-    size_t recv = recvfrom(m_sock, reinterpret_cast<char *>(data), sizeof(UDPMessage), 0, addr, &len);
+void SocketUDP::receive(struct sockaddr *addr, byte_t *data, socklen_t *len) const {
+    size_t recv = recvfrom(m_sock, reinterpret_cast<char *>(data), sizeof(UDPMessage), 0, addr, len);
 
     // checking wouldblock etc... select told us to read so it's not possible
     if (recv < 0)
@@ -311,23 +309,25 @@ void SocketUDP::receive(struct sockaddr *addr, byte_t *data) const {
 
 std::pair<UDPMessage, AddressV4> SocketUDP::receiveV4(void) const {
     byte_t data[sizeof(UDPMessage)];
-    struct sockaddr_in addr;
+    struct sockaddr_in addr = {0};
+    socklen_t len = sizeof(addr);
 
-    receive(reinterpret_cast<struct sockaddr *>(&addr), data);
+    receive(reinterpret_cast<struct sockaddr *>(&addr), data, &len);
     UDPMessage *msg = reinterpret_cast<UDPMessage *>(data);
 
-    AddressV4 a(AT_IPV4, addr.sin_port, addr.sin_addr.s_addr);
+    AddressV4 a(AT_IPV4, ntohs(addr.sin_port), ntohl(addr.sin_addr.s_addr));
     return std::make_pair(*msg, a);
 }
 
 std::pair<UDPMessage, AddressV6> SocketUDP::receiveV6(void) const {
     byte_t data[sizeof(UDPMessage)];
     struct sockaddr_in6 addr;
+    socklen_t len = sizeof(addr);
 
-    receive(reinterpret_cast<struct sockaddr *>(&addr), data);
+    receive(reinterpret_cast<struct sockaddr *>(&addr), data, &len);
     UDPMessage *msg = reinterpret_cast<UDPMessage *>(data);
 
-    AddressV6 a(AT_IPV6, addr.sin6_port, addr.sin6_addr, addr.sin6_scope_id);
+    AddressV6 a(AT_IPV6, ntohs(addr.sin6_port), addr.sin6_addr, addr.sin6_scope_id);
     return std::make_pair(*msg, a);
 }
 

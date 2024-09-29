@@ -267,7 +267,6 @@ bool NET::sleep(uint32_t ms) {
     else if (res == 0)
         return false;
 
-    std::cout << "Event detected" << std::endl;
     handleEvents(readSet);
     return true;
 }
@@ -296,9 +295,13 @@ void NET::handleUdpEvent(const UDPMessage &msg, const Address &addr)
 {
     switch (msg.getType()) {
         case CL_BROADCAST_PING:
-            NET::respondPingServers(msg, addr);
+            if (NET::inittedServer) {
+                std::cout << "SV: Received ping" << std::endl;
+                NET::respondPingServers(msg, addr);
+            }
             break;
         case SV_BROADCAST_PING:
+            std::cout << "CL: received ping response" << std::endl;
             return;
             // handlePingResponse(msg, addr);
         default: // handleUdpMessage(msg, addr);
@@ -342,7 +345,7 @@ void NET::handleEvents(fd_set &readSet) {
 void NET::pingServers(void) {
     for (uint16_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS; port++) {
         auto message = UDPMessage(0, CL_BROADCAST_PING);
-        std::cout << "sending to port " << port << std::endl;
+        std::cout << "CL: sending ping broadcast to port " << port << std::endl;
         mg_socketUdp.send(message, AddressV4(AT_BROADCAST, port));
         if (CVar::net_ipv6.getIntValue())
             mg_socketUdpV6.send(message, AddressV6(AT_MULTICAST, port));
@@ -351,6 +354,7 @@ void NET::pingServers(void) {
 
 void NET::respondPingServers(const UDPMessage &msg, const Address &addr) {
     auto pingReponseMsg = UDPMessage(0, SV_BROADCAST_PING);
+    std::cout << "SV: respond to ping, sending to port " << addr.getPort() << std::endl;
     if (addr.getType() == AT_IPV4)
         mg_socketUdp.send(pingReponseMsg, addr);
     else if (CVar::net_ipv6.getIntValue())
