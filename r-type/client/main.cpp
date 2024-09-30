@@ -20,6 +20,8 @@
 int main(void) {
     Network::NET::init();
 
+    Network::NET::initClient();
+
     Network::NET::pingServers();
 
     while (1)

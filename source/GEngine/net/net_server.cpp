@@ -61,7 +61,7 @@ void NetServer::respondPingServers(const UDPMessage &msg, SocketUDP &udpsocket, 
 
     auto pingReponseMsg = UDPMessage(0, SV_BROADCAST_PING);
     UDPSV_PingResponse data = {.tcpv4Port = m_socketv4.getPort(),
-                               .tcpv6Port = m_socketv6.getPort(),
+                               .tcpv6Port = CVar::net_ipv6.getIntValue() ? m_socketv6.getPort() : (uint16_t)(-1),
                                .maxPlayers = getMaxClients(),
                                .currentPlayers = getNumClients()};
 
@@ -87,6 +87,9 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
 }
 
 bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+    if (!isRunning())
+        return false;
+
     switch (msg.getType()) {
     case CL_BROADCAST_PING:
         respondPingServers(msg, socket, addr);

@@ -105,6 +105,13 @@ void NET::initServer(void) {
     currentUnusedPort = NET::mg_server.start(CVar::sv_maxplayers.getIntValue(), g_localIPs, currentUnusedPort);
 }
 
+void NET::initClient(void) {
+    if (!NET::enabled)
+        return;
+
+    mg_client.init();
+}
+
 void NET::stop(void) {
     NET::mg_server.stop();
 
@@ -269,13 +276,6 @@ void NET::pingServers(void) {
     if (CVar::net_ipv6.getIntValue())
         return mg_client.pingLanServers(mg_socketUdpV6, AT_IPV6);
     return mg_client.pingLanServers(mg_socketUdp, AT_IPV4);
-}
-
-void NET::respondPingServers(const UDPMessage &msg, const Address &addr) {
-    if (addr.getType() == AT_IPV4)
-        mg_server.respondPingServers(msg, mg_socketUdp, addr);
-    else if (CVar::net_ipv6.getIntValue())
-        mg_server.respondPingServers(msg, mg_socketUdpV6, addr);
 }
 
 } // namespace Network

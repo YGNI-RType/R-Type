@@ -253,6 +253,7 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
     if (m_sock == -1)
         throw std::runtime_error("(UDP) Failed to create socket");
 
+    m_port = port;
     unsigned int opt = 1;
     if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
         throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");

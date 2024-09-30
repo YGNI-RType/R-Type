@@ -9,6 +9,18 @@
 
 namespace Network {
 
+
+void CLNetClient::init(void)
+{
+    enabled = true;
+}
+
+void CLNetClient::stop(void)
+{
+    enabled = false;
+}
+
+
 bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
     if (!enabled)
         return false;
