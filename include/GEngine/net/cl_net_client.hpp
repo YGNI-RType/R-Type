@@ -7,40 +7,37 @@
 
 #pragma once
 
-#include "net_common.hpp"
 #include "net_channel.hpp"
+#include "net_common.hpp"
 
-namespace Network
-{
-    class CLNetClient {
-        public:
-            CLNetClient();
-            ~CLNetClient() = default;
+namespace Network {
+class CLNetClient {
+public:
+    CLNetClient() = default;
+    ~CLNetClient() = default;
 
-            void init(void);
-            void stop(void);
+    void init(void);
+    void stop(void);
 
-            void connectToServer(const Address &serverAddress);
-            void disconnectFromServer(void);
+    void connectToServer(const Address &serverAddress);
+    void disconnectFromServer(void);
 
-            void handleTCPEvents(fd_set &readSet);
-            void handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
+    bool handleTCPEvents(fd_set &readSet);
+    bool handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
 
-            void setChallenge(int challenge) { m_challenge = challenge; }
-            int getChallenge(void) const { return m_challenge; }
+    void setChallenge(int challenge) { m_challenge = challenge; }
+    int getChallenge(void) const { return m_challenge; }
 
-        public:
-            void pingLanServers(SocketUDP &socketUDP, AddressType type);
-            void getPingResponse(const UDPMessage &msg, const Address &addr);
+public:
+    void pingLanServers(SocketUDP &socketUDP, AddressType type);
+    void getPingResponse(const UDPMessage &msg, const Address &addr);
 
-        private:
-            int m_challenge = -1;
+private:
+    int m_challenge = -1;
 
-            bool enabled = false;
+    bool enabled = false;
 
-            SocketTCP m_socket;
-
-            NetChannel m_netChannel;
-            std::vector<UDPSV_PingResponse> m_pingedServers;
-    };
+    NetChannel m_netChannel;
+    std::vector<UDPSV_PingResponse> m_pingedServers;
+};
 } // namespace Network

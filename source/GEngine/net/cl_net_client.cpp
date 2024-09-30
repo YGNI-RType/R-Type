@@ -8,15 +8,30 @@
 #include "GEngine/net/cl_net_client.hpp"
 
 namespace Network {
-void CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+
+bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+    if (!enabled)
+        return false;
+
     switch (msg.getType()) {
     case SV_BROADCAST_PING:
-
-        break;
+        getPingResponse(msg, addr);
+        return true;
         // handlePingResponse(msg, addr);
     default: // handleUdpMessage(msg, addr);
-        break;
+        return false;
     }
+}
+
+bool CLNetClient::handleTCPEvents(fd_set &readSet) {
+    if (!enabled)
+        return false;
+
+    if (FD_ISSET(m_netChannel.getTcpSocket().getSocket(), &readSet)) {
+        // handleEvent();
+        return true;
+    }
+    return false;
 }
 
 void CLNetClient::getPingResponse(const UDPMessage &msg, const Address &addr) {

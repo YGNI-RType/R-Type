@@ -66,6 +66,9 @@ SocketTCPMaster NET::mg_socketListenTcp;
 SocketUDP NET::mg_socketUdpV6;
 SocketTCPMaster NET::mg_socketListenTcpV6;
 
+NetServer NET::mg_server;
+CLNetClient NET::mg_client;
+
 std::vector<IP> NET::g_localIPs;
 
 uint16_t NET::currentUnusedPort = DEFAULT_PORT;
@@ -238,7 +241,7 @@ void NET::handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address
     if (mg_server.handleUDPEvent(socket, msg, addr))
         return;
 
-    return mg_client.handleUDPEvents(socket, msg, addr);
+    mg_client.handleUDPEvents(socket, msg, addr);
 }
 
 void NET::handleEvents(fd_set &readSet) {
@@ -255,7 +258,7 @@ void NET::handleEvents(fd_set &readSet) {
 
     if (mg_server.handleTCPEvent(readSet))
         return;
-    
+
     mg_client.handleTCPEvents(readSet);
 }
 

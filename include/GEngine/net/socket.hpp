@@ -130,8 +130,9 @@ public:
     };
 
 public:
+    SocketTCP() = default;
     SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr); // accepts it from the socket master
-    SocketTCP(const Address &addr, uint16_t port);  // connect to the address (only for client)
+    SocketTCP(const Address &addr, uint16_t port); // connect to the address (only for client)
     SocketTCP(const SocketTCP &other) = delete;
     SocketTCP &operator=(const SocketTCP &) = delete;
     SocketTCP(SocketTCP &&other);

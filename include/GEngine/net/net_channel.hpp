@@ -25,7 +25,7 @@
 namespace Network {
 class PacketPool {
 public:
-    PacketPool();
+    PacketPool() = default;
     ~PacketPool() = default;
 
     void addMessage(const AMessage &msg, byte_t *pool);
@@ -59,6 +59,7 @@ private:
 */
 class NetChannel {
 public:
+    NetChannel() = default;
     NetChannel(std::unique_ptr<Address> addr, SocketTCP &socket);
     ~NetChannel() = default;
 

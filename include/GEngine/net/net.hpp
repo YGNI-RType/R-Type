@@ -7,12 +7,12 @@
 
 #pragma once
 
+#include "cl_net_client.hpp"
 #include "msg.hpp"
 #include "net_address.hpp"
-#include "net_common.hpp"
 #include "net_client.hpp"
+#include "net_common.hpp"
 #include "net_server.hpp"
-#include "cl_net_client.hpp"
 #include "socket.hpp"
 
 #include <vector>
@@ -48,9 +48,6 @@ private:
     static void getLocalAddress(void);
     static void addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockaddr *netmask);
     static bool isLanAddress(const Address &addr);
-
-    static SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);
-    static SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort);
     /*********************/
 
     /* Usage of "select" */
