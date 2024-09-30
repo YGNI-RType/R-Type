@@ -21,7 +21,7 @@ template <class T> T &Manager::getSystem(void) {
     auto it = m_systemTable.find(std::type_index(typeid(T)));
 
     if (it == m_systemTable.end())
-        throw "";
+        THROW_ERROR("System " + READABLE_TYPE_NAME(T) + " not found.");
     return *static_cast<T *>(it->second.get());
 }
 

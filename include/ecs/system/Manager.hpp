@@ -16,6 +16,7 @@
 
 #include "ecs/system/IsSystem.hpp"
 #include "ecs/system/event/Bus.hpp"
+#include "exceptions/Base.hpp"
 
 #include "IsSystem.hpp"
 
