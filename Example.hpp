@@ -1,7 +1,7 @@
 template <typename T> struct Life : public gengine::Component {
     T life;
-    Life(T &life_unit) : life(life_unit){};
-    Life(T &&life_unit) : life(life_unit){};
+    Life(T &life_unit) : life(life_unit) {};
+    Life(T &&life_unit) : life(life_unit) {};
 
     Life<T> &operator++(void) {
         life++;

@@ -6,7 +6,11 @@ find_package(raylib REQUIRED)
 
 file(GLOB_RECURSE SOURCES source/*.cpp)
 
+list(FILTER SOURCES EXCLUDE REGEX ".*/deprecated/.*")
+
 file(GLOB_RECURSE HEADERS include/*.h)
+
+list(FILTER HEADERS EXCLUDE REGEX ".*/deprecated/.*")
 
 include_directories(include)
 

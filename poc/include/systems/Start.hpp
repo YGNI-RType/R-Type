@@ -8,10 +8,12 @@
 #pragma once
 
 #include "libdev/System.hpp"
+#include "libdev/systems/driver/output/TextureManager.hpp"
 #include "libdev/systems/events/Native.hpp"
+#include "libdev/systems/driver/output/TextureManager.hpp"
 
 namespace hagarioop::systems {
-class Start : public gengine::System<Start> {
+class Start : public gengine::System<Start, gengine::system::driver::output::TextureManager> {
 public:
     void init(void) override;
     void onStartEngine(gengine::system::event::StartEngine &);

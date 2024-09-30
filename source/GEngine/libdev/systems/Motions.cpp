@@ -12,29 +12,29 @@ namespace gengine::system {
 void Motion2D::init(void) { subscribeToEvent<event::MainLoop>(&Motion2D::onMainLoop); }
 
 void Motion2D::onMainLoop(event::MainLoop &e) {
-    auto &positions = getComponent<component::Position2D>();
+    auto &transforms = getComponent<component::Transform2D>();
     auto &motions = getComponent<component::Motion2D>();
 
     for (auto &[entity, motion] : motions) {
-        if (positions.contains(entity)) {
-            auto &position = positions.get(entity);
-            position.x += (motion.x * e.deltaTime);
-            position.y += (motion.y * e.deltaTime);
+        if (transforms.contains(entity)) {
+            auto &transform = transforms.get(entity);
+            transform.pos.x += (motion.x * e.deltaTime);
+            transform.pos.y += (motion.y * e.deltaTime);
         }
     }
 }
 
 void Motion3D::init(void) { subscribeToEvent<event::MainLoop>(&Motion3D::onMainLoop); }
 void Motion3D::onMainLoop(event::MainLoop &e) {
-    auto &positions = getComponent<component::Position3D>();
+    auto &transforms = getComponent<component::Transform3D>();
     auto &motions = getComponent<component::Motion3D>();
 
     for (auto &[entity, motion] : motions) {
-        if (positions.contains(entity)) {
-            auto &position = positions.get(entity);
-            position.x += (motion.x * e.deltaTime);
-            position.y += (motion.y * e.deltaTime);
-            position.z += (motion.z * e.deltaTime);
+        if (transforms.contains(entity)) {
+            auto &transform = transforms.get(entity);
+            transform.pos.x += (motion.x * e.deltaTime);
+            transform.pos.y += (motion.y * e.deltaTime);
+            transform.pos.z += (motion.z * e.deltaTime);
         }
     }
 }

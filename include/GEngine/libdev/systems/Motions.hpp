@@ -9,17 +9,17 @@
 
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/components/Motions.hpp"
-#include "GEngine/libdev/components/Positions.hpp"
+#include "GEngine/libdev/components/Transforms.hpp"
 #include "GEngine/libdev/systems/events/MainLoop.hpp"
 
 namespace gengine::system {
-class Motion2D : public System<Motion2D, component::Position2D, component::Motion2D> {
+class Motion2D : public System<Motion2D, component::Transform2D, component::Motion2D> {
 public:
     void init(void);
     void onMainLoop(event::MainLoop &);
 };
 
-class Motion3D : public System<Motion3D, component::Position3D, component::Motion3D> {
+class Motion3D : public System<Motion3D, component::Transform3D, component::Motion3D> {
 public:
     void init(void);
     void onMainLoop(event::MainLoop &);

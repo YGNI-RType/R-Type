@@ -11,4 +11,5 @@
 
 namespace gengine::system::event {
 class StartEngine : public Event {};
+class StopEngine : public Event {};
 } // namespace gengine::system::event
