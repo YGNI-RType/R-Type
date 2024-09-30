@@ -96,4 +96,18 @@ bool AddressV6::isLanAddr(void) const {
     return false;
 }
 
+/************************************************************/
+
+AddressV4 UnknownAddress::getV4() const {
+    sockaddr_in *m_addr = reinterpret_cast<sockaddr_in*>(&m_addr);
+
+    return AddressV4(m_type, ntohs(m_addr->sin_port), htonl(m_addr->sin_addr.s_addr));
+}
+
+AddressV6 UnknownAddress::getV6() const {
+    sockaddr_in6 *m_addr = reinterpret_cast<sockaddr_in6*>(&m_addr);
+
+    return AddressV6(m_type, ntohs(m_addr->sin6_port), m_addr->sin6_addr, m_addr->sin6_scope_id);
+}
+
 } // namespace Network

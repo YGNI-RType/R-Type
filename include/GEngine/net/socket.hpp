@@ -68,11 +68,13 @@ public:
     void setBlocking(bool blocking);
     bool isBlocking(void) const;
 
-    uint16_t getPort(void) const { return m_port; }
-
-protected:
     int socketClose(void);
 
+    uint16_t getPort(void) const { return m_port; }
+    bool isFdSet(fd_set &set) const { return FD_ISSET(m_sock, &m_fdSet); }
+    void setFdSet(fd_set &set) const { FD_SET(m_sock, &set); }
+
+protected:
     SOCKET m_sock = -1;
     uint16_t m_port = -1;
 };
@@ -116,7 +118,7 @@ public:
 
     ~SocketTCPMaster() = default;
 
-    SocketTCP accept(size_t pos) const;
+    SocketTCP accept(UnknownAddress &unkwAddr) const;
 };
 
 class SocketTCP : public ASocket {
@@ -128,8 +130,7 @@ public:
     };
 
 public:
-    SocketTCP(size_t pos_accept,
-              const SocketTCPMaster &socketMaster); // accepts it from the socket master
+    SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr); // accepts it from the socket master
     SocketTCP(const Address &addr, uint16_t port);  // connect to the address (only for client)
     SocketTCP(const SocketTCP &other) = delete;
     SocketTCP &operator=(const SocketTCP &) = delete;
@@ -140,20 +141,16 @@ public:
     bool send(const TCPMessage &msg) const;
     void receive(TCPMessage &msg) const;
 
-    std::size_t getPosAccept(void) const { return m_posAccept; }
     const EventType getEventType(void) const { return m_eventType; }
 
 private:
     std::size_t receiveReliant(TCPSerializedMessage *buffer, std::size_t size) const;
     std::size_t sendReliant(const TCPSerializedMessage *msg, std::size_t msgDataSize) const;
 
-    /* since accept can block, set it's here when it will be applied anyway */
-    struct sockaddr m_addr;
-    socklen_t m_szAddr;
-
     EventType m_eventType = READ;
-
-    const size_t m_posAccept = -1; /* posititon in array for fast removal */
 };
+
+SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);
+SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort);
 
 } // namespace Network

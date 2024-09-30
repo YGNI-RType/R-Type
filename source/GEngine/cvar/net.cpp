@@ -9,4 +9,6 @@
 
 namespace CVar {
 ConVar net_ipv6("net_ipv6", "0", ConVar::flag::CMD, "Enable ipv6 (set in convar)");
+
+ConVar sv_maxplayers("sv_maxplayers", "4", ConVar::flag::SERVER | ConVar::flag::SETUP, "Set the maxmium number of players a server can accept");
 } // namespace CVar

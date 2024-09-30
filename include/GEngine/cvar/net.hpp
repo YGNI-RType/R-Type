@@ -11,4 +11,5 @@
 
 namespace CVar {
 extern ConVar net_ipv6;
+extern ConVar sv_maxplayers;
 } // namespace CVar

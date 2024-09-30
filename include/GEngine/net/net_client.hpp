@@ -9,6 +9,7 @@
 
 #include "net_channel.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -22,42 +23,41 @@ this info is transmitted to network, WE NEED TO USE C ARRAYS
 this is global TO ALL TYPE OF GAMES, we need to set custom data information one day
 */
 class NetClientInfo {
-    public:
-        NetClientInfo() = default;
-        ~NetClientInfo() = default;
+public:
+    NetClientInfo() = default;
+    ~NetClientInfo() = default;
 
-        void setName(const std::string &name);
-        const std::string &getName(void) const;
+    void setName(const std::string &name);
+    const std::string &getName(void) const;
 
-    private:
-        char m_name[MAX_SZ_NAME];
-
+private:
+    char m_name[MAX_SZ_NAME];
 };
 
 /* Since the engine and the snapshots are not defined in advance, we store them in heap with a predefined size */
 class NetClientSnapshot {
-    public:
-        NetClientSnapshot(size_t size);
-        ~NetClientSnapshot() = default;
+public:
+    NetClientSnapshot(size_t size);
+    ~NetClientSnapshot() = default;
 
-    private:
-        std::vector<byte_t> m_data;
+private:
+    std::vector<byte_t> m_data;
 };
 
 /* likely composed */
 class NetClient {
 
     typedef enum {
-        CS_FREE,   // can be reused for a new connection
-        CS_ZOMBIE, // client has been disconnected, but don't reuse
-                   // connection for a couple seconds
+        CS_FREE,      // can be reused for a new connection
+        CS_ZOMBIE,    // client has been disconnected, but don't reuse
+                      // connection for a couple seconds
         CS_CONNECTED, // has been assigned to a client_t, but no gamestate yet
         CS_PRIMED,    // gamestate has been sent, but client hasn't sent a usercmd
         CS_ACTIVE     // client is fully in game
-    } clientState ;
+    } clientState;
 
 public:
-    NetClient(const Address &clientAddress, SocketTCP &socket);
+    NetClient(std::unique_ptr<Address> addr, SocketTCP &socket);
     ~NetClient() = default;
 
     const NetChannel &getChannel(void) const { return m_channel; }
@@ -70,13 +70,10 @@ private:
 
     // NetClientSnapshot m_snapshots[PACKET_BACKUP];
 
-
-
     /* sends CMD, not any data */
-    
-    uint16_t ping;
-    uint16_t rate; /* bytes per second */
-    uint16_t snapshotRate; /* rate of snapshots (msec)*/
 
+    uint16_t ping;
+    uint16_t rate;         /* bytes per second */
+    uint16_t snapshotRate; /* rate of snapshots (msec)*/
 };
 } // namespace Network

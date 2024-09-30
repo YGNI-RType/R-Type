@@ -151,15 +151,15 @@ SocketTCPMaster &SocketTCPMaster::operator=(SocketTCPMaster &&other) {
     return *this;
 }
 
-SocketTCP SocketTCPMaster::accept(size_t pos) const { return SocketTCP(pos, *this); }
+SocketTCP SocketTCPMaster::accept(UnknownAddress &unkwAddr) const { return SocketTCP(*this, unkwAddr); }
 
 /***********************************************/
 
-SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster) : m_posAccept(m_posAccept) {
-    m_sock = accept(socketMaster.getSocket(), &m_addr, &m_szAddr);
+SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr) {
+    m_sock = accept(socketMaster.getSocket(), unkwAddr.getAddr(), &unkwAddr.getLen());
     if (m_sock < 0) {
-        if (errno != EWOULDBLOCK) /* it should never block right ? */
-            throw std::runtime_error("Failed to accept connection");
+        // if (errno != EWOULDBLOCK) /* it should never block right ? */
+        throw std::runtime_error("Failed to accept connection");
     }
 
     m_port = socketMaster.getPort();
@@ -187,16 +187,10 @@ SocketTCP::SocketTCP(const Address &addr, uint16_t port) {
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(SocketTCP &&other) : ASocket(std::move(other)), m_posAccept(other.m_posAccept) {
-    m_addr = other.m_addr;
-    m_szAddr = other.m_szAddr;
-}
+SocketTCP::SocketTCP(SocketTCP &&other) : ASocket(std::move(other)) {}
 SocketTCP &SocketTCP::operator=(SocketTCP &&other) {
-    if (this != &other) {
+    if (this != &other)
         ASocket::operator=(std::move(other));
-        m_addr = other.m_addr;
-        m_szAddr = other.m_szAddr;
-    }
     return *this;
 }
 
@@ -338,6 +332,34 @@ AddressV6 SocketUDP::receiveV6(UDPMessage &msg) const {
     msg.setSerialize(sMsg);
 
     return AddressV6(AT_IPV6, ntohs(addr.sin6_port), addr.sin6_addr, addr.sin6_scope_id);
+}
+
+/*****************************************************/
+
+SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort) {
+    for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
+        try {
+            return std::move(SocketTCPMaster(ip, wantedPort + i));
+        } catch (SocketException &e) {
+            if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
+                throw e;
+            continue;
+        }
+    }
+    throw SocketException("Failed to open TCP socket");
+}
+
+SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort) {
+    for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
+        try {
+            return std::move(SocketUDP(ip, wantedPort + i));
+        } catch (SocketException &e) {
+            if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
+                throw e;
+            continue;
+        }
+    }
+    throw SocketException("Failed to open UDP socket");
 }
 
 } // namespace Network

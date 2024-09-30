@@ -40,7 +40,7 @@ public:
     uint16_t getPort() const { return m_port; };
 
 protected:
-    Address(AddressType type, uint16_t port) : m_type(type), m_port(port){};
+    Address(AddressType type, uint16_t port) : m_type(type), m_port(port) {};
 
     AddressType m_type;
     uint16_t m_port;
@@ -78,4 +78,24 @@ private:
     ipv6_t m_address;
     uint64_t m_scopeId;
 };
+
+class UnknownAddress {
+
+public:
+    UnknownAddress() = default;
+    ~UnknownAddress() = default;
+
+    AddressType getType() const { return m_type; };
+    AddressV6 getV6() const;
+    AddressV4 getV4() const;
+
+    sockaddr *getAddr(void) { return reinterpret_cast<sockaddr *>(&m_addr); };
+    socklen_t &getLen(void) { return m_len; };
+
+private:
+    AddressType m_type;
+    sockaddr_storage m_addr;
+    socklen_t m_len;
+};
+
 } // namespace Network

@@ -22,10 +22,9 @@
 #include "GEngine/net/msg.hpp"
 #include "GEngine/net/socketError.hpp"
 
-#include <cstring>
+#include "GEngine/cvar/net.hpp"
 
-// temp
-#include <iostream>
+#include <cstring>
 
 #ifdef _WIN32
 // TODO : remove unused
@@ -67,15 +66,11 @@ SocketTCPMaster NET::mg_socketListenTcp;
 SocketUDP NET::mg_socketUdpV6;
 SocketTCPMaster NET::mg_socketListenTcpV6;
 
-std::vector<std::unique_ptr<NetClient>> NET::g_netClients;
-
 std::vector<IP> NET::g_localIPs;
 
 uint16_t NET::currentUnusedPort = DEFAULT_PORT;
 
 bool NET::enabled = false;
-bool NET::inittedServer = false;
-bool NET::inittedClient = false;
 
 /***************/
 
@@ -104,28 +99,12 @@ void NET::initServer(void) {
     if (!NET::enabled)
         return;
 
-    // TODO : cloes everything if already initted
-    if (inittedServer)
-        return;
-
-    for (const IP &ip : g_localIPs) { // todo : force an ip, find the best ip
-                                      // (privileging pubilc interface)
-        if (ip.type == AT_IPV4) {
-            mg_socketListenTcp = openSocketTcp(ip, currentUnusedPort);
-            currentUnusedPort++;
-        }
-        if (ip.type == AT_IPV6 && CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
-            mg_socketListenTcpV6 = openSocketTcp(ip, currentUnusedPort);
-            currentUnusedPort++;
-        }
-        break;
-    }
-
-    inittedServer = true;
+    currentUnusedPort = NET::mg_server.start(CVar::sv_maxplayers.getIntValue(), g_localIPs, currentUnusedPort);
 }
 
 void NET::stop(void) {
-    g_netClients.clear();
+    NET::mg_server.stop();
+
     g_localIPs.clear();
     enabled = false;
 }
@@ -224,32 +203,6 @@ bool NET::isLanAddress(const Address &addr) {
     return addr.isLanAddr();
 }
 
-SocketTCPMaster NET::openSocketTcp(const IP &ip, uint16_t wantedPort) {
-    for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
-        try {
-            return std::move(SocketTCPMaster(ip, wantedPort + i));
-        } catch (SocketException &e) {
-            if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
-                throw e;
-            continue;
-        }
-    }
-    throw SocketException("Failed to open TCP socket");
-}
-
-SocketUDP NET::openSocketUdp(const IP &ip, uint16_t wantedPort) {
-    for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
-        try {
-            return std::move(SocketUDP(ip, wantedPort + i));
-        } catch (SocketException &e) {
-            if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
-                throw e;
-            continue;
-        }
-    }
-    throw SocketException("Failed to open UDP socket");
-}
-
 /**************************************************************/
 
 /* returns true if has event, false otherwise */
@@ -274,104 +227,52 @@ bool NET::sleep(uint32_t ms) {
 void NET::createSets(fd_set &readSet) {
     FD_ZERO(&readSet);
 
-    for (const auto &client : g_netClients) {
-        auto &socket = client->getChannel().getTcpSocket();
-        auto eventType = socket.getEventType();
-        auto socketId = socket.getSocket();
+    mg_server.createSets(readSet);
 
-        if (eventType == SocketTCP::EventType::READ)
-            FD_SET(socketId, &readSet);
-    }
-
-    if (CVar::net_ipv6.getIntValue()) {
-        FD_SET(mg_socketUdpV6.getSocket(), &readSet);
-        FD_SET(mg_socketListenTcpV6.getSocket(), &readSet);
-    }
     FD_SET(mg_socketUdp.getSocket(), &readSet);
-    if (inittedServer)
-        FD_SET(mg_socketListenTcp.getSocket(), &readSet);
+    if (CVar::net_ipv6.getIntValue())
+        FD_SET(mg_socketUdpV6.getSocket(), &readSet);
 }
 
-void NET::handleUdpEvent(const UDPMessage &msg, const Address &addr) {
-    switch (msg.getType()) {
-    case CL_BROADCAST_PING:
-        if (NET::inittedServer) {
-            std::cout << "SV: Received ping" << std::endl;
-            NET::respondPingServers(msg, addr);
-        }
-        break;
-    case SV_BROADCAST_PING:
-        UDPSV_PingResponse data;
-        msg.readData<UDPSV_PingResponse>(data);
-
-        std::cout << "CL: received ping response:" << data.maxPlayers << std::endl;
+void NET::handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+    if (mg_server.handleUDPEvent(socket, msg, addr))
         return;
-        // handlePingResponse(msg, addr);
-    default: // handleUdpMessage(msg, addr);
-        break;
-    }
+
+    return mg_client.handleUDPEvents(socket, msg, addr);
 }
 
 void NET::handleEvents(fd_set &readSet) {
     if (FD_ISSET(mg_socketUdp.getSocket(), &readSet)) {
         UDPMessage msg(0, 0);
         auto addr = mg_socketUdp.receiveV4(msg);
-        return NET::handleUdpEvent(msg, addr);
+        return handleUdpEvent(mg_socketUdp, msg, addr);
     }
-    if (NET::inittedServer) {
-        if (FD_ISSET(mg_socketListenTcp.getSocket(), &readSet))
-            return;
-        // mg_socketListenTcp.handleEvent();
+    if (CVar::net_ipv6.getIntValue() && FD_ISSET(mg_socketUdpV6.getSocket(), &readSet)) {
+        UDPMessage msg(0, 0);
+        auto addr = mg_socketUdpV6.receiveV6(msg);
+        return handleUdpEvent(mg_socketUdpV6, msg, addr);
     }
-    if (CVar::net_ipv6.getIntValue()) {
-        if (FD_ISSET(mg_socketUdpV6.getSocket(), &readSet))
-            // mg_socketUdpV6.handleEvent();
-            return;
-        if (NET::inittedServer) {
-            if (FD_ISSET(mg_socketListenTcpV6.getSocket(), &readSet))
-                // mg_socketListenTcpV6.handleEvent();
-                return;
-        }
-    }
-    for (const auto &client : g_netClients) {
-        auto &socket = client->getChannel().getTcpSocket();
-        auto eventType = socket.getEventType();
-        auto socketId = socket.getSocket();
 
-        if (eventType == SocketTCP::EventType::READ && FD_ISSET(socketId, &readSet))
-            return;
-        //     socket.handleEvent();
-    }
+    if (mg_server.handleTCPEvent(readSet))
+        return;
+    
+    mg_client.handleTCPEvents(readSet);
 }
 
 /**************************************************************/
 
 /* should it be bool ? should it returns a message instead of sending it directly ? */
 void NET::pingServers(void) {
-    for (uint16_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS; port++) {
-        auto message = UDPMessage(0, CL_BROADCAST_PING);
-        std::cout << "CL: sending ping broadcast to port " << port << std::endl;
-        mg_socketUdp.send(message, AddressV4(AT_BROADCAST, port));
-        if (CVar::net_ipv6.getIntValue())
-            mg_socketUdpV6.send(message, AddressV6(AT_MULTICAST, port));
-    }
+    if (CVar::net_ipv6.getIntValue())
+        return mg_client.pingLanServers(mg_socketUdpV6, AT_IPV6);
+    return mg_client.pingLanServers(mg_socketUdp, AT_IPV4);
 }
 
 void NET::respondPingServers(const UDPMessage &msg, const Address &addr) {
-    auto pingReponseMsg = UDPMessage(0, SV_BROADCAST_PING);
-    std::cout << "SV: respond to ping, sending to port " << addr.getPort() << std::endl;
-
-    UDPSV_PingResponse data = {.tcpPort = mg_socketListenTcp.getPort(),
-                               .udpPort = mg_socketUdp.getPort(),
-                               .maxPlayers = 4,
-                               .currentPlayers = 1};
-
-    pingReponseMsg.writeData<UDPSV_PingResponse>(data);
-
     if (addr.getType() == AT_IPV4)
-        mg_socketUdp.send(pingReponseMsg, addr);
+        mg_server.respondPingServers(msg, mg_socketUdp, addr);
     else if (CVar::net_ipv6.getIntValue())
-        mg_socketUdpV6.send(pingReponseMsg, addr);
+        mg_server.respondPingServers(msg, mg_socketUdpV6, addr);
 }
 
 } // namespace Network

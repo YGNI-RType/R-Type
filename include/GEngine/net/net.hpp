@@ -11,6 +11,8 @@
 #include "net_address.hpp"
 #include "net_common.hpp"
 #include "net_client.hpp"
+#include "net_server.hpp"
+#include "cl_net_client.hpp"
 #include "socket.hpp"
 
 #include <vector>
@@ -24,13 +26,13 @@ private:
     static SocketUDP mg_socketUdpV6;
     static SocketTCPMaster mg_socketListenTcpV6;
 
-    static std::vector<std::unique_ptr<NetClient>> g_netClients;
+    static NetServer mg_server;
+    static CLNetClient mg_client;
 
     static std::vector<IP> g_localIPs;
 
     static bool enabled;
 
-    static bool inittedServer;
     static bool inittedClient;
 
     static uint16_t currentUnusedPort;
@@ -55,7 +57,7 @@ private:
 public:
     static bool sleep(uint32_t ms);
     static void handleEvents(fd_set &readSet);
-    static void handleUdpEvent(const UDPMessage &msg, const Address &addr);
+    static void handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
     static void handleTCPEvent(const TCPMessage &msg);
 
 private:

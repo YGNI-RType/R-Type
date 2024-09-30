@@ -59,13 +59,13 @@ private:
 */
 class NetChannel {
 public:
-    NetChannel(const Address &clientAddress, SocketTCP &socket);
+    NetChannel(std::unique_ptr<Address> addr, SocketTCP &socket);
     ~NetChannel() = default;
 
     const SocketTCP &getTcpSocket(void) const { return m_tcpSocket; }
 
 private:
-    std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
+    const std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
 
     /* UDP */
 

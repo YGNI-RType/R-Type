@@ -8,5 +8,5 @@
 #include "GEngine/net/net_client.hpp"
 
 namespace Network {
-NetClient::NetClient(const Address &clientAddress, SocketTCP &socket) : m_channel(clientAddress, socket) {}
+NetClient::NetClient(std::unique_ptr<Address> addr, SocketTCP &socket) : m_channel(std::move(addr), socket) {}
 } // namespace Network
