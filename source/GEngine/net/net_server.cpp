@@ -70,22 +70,23 @@ void NetServer::respondPingServers(const UDPMessage &msg, SocketUDP &udpsocket, 
 }
 
 void NetServer::handleNewClient(SocketTCPMaster &socket) {
-    UnknownAddress unkwAddr; 
-    auto newSocket = socket.accept(unkwAddr);
+    UnknownAddress unkwAddr;
+    SocketTCP newSocket = socket.accept(unkwAddr);
 
     if (getNumClients() >= getMaxClients()) {
         newSocket.socketClose();
         return;
     }
-    
+
     if (unkwAddr.getType() == AT_IPV4)
-        m_clients.push_back(std::move(std::make_unique<NetClient>(std::make_unique<AddressV4>(unkwAddr.getV4()), newSocket)));
-    else if(unkwAddr.getType() == AT_IPV6) 
-        m_clients.push_back(std::move(std::make_unique<NetClient>(std::make_unique<AddressV6>(unkwAddr.getV6()), newSocket)));
+        m_clients.push_back(
+            std::make_unique<NetClient>(std::make_unique<AddressV4>(unkwAddr.getV4()), newSocket));
+    else if (unkwAddr.getType() == AT_IPV6)
+        m_clients.push_back(
+            std::make_unique<NetClient>(std::make_unique<AddressV6>(unkwAddr.getV6()), newSocket));
 }
 
-bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr)
-{
+bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
     switch (msg.getType()) {
     case CL_BROADCAST_PING:
         respondPingServers(msg, socket, addr);
@@ -115,7 +116,7 @@ bool NetServer::handleTCPEvent(fd_set &readSet) {
         auto socketId = socket.getSocket();
 
         if (eventType == SocketTCP::EventType::READ && FD_ISSET(socketId, &readSet))
-        //     socket.handleEvent();
+            //     socket.handleEvent();
             return true;
     }
 

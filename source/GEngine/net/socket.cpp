@@ -151,16 +151,14 @@ SocketTCPMaster &SocketTCPMaster::operator=(SocketTCPMaster &&other) {
     return *this;
 }
 
-SocketTCP SocketTCPMaster::accept(UnknownAddress &unkwAddr) const { return SocketTCP(*this, unkwAddr); }
+SocketTCP SocketTCPMaster::accept(UnknownAddress &unkwAddr) const { return std::move(SocketTCP(*this, unkwAddr)); }
 
 /***********************************************/
 
 SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr) {
     m_sock = accept(socketMaster.getSocket(), unkwAddr.getAddr(), &unkwAddr.getLen());
-    if (m_sock < 0) {
-        // if (errno != EWOULDBLOCK) /* it should never block right ? */
+    if (m_sock < 0)
         throw std::runtime_error("Failed to accept connection");
-    }
 
     m_port = socketMaster.getPort();
     addSocketPool(m_sock);
