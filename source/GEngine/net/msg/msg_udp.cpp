@@ -12,7 +12,7 @@ UDPMessage::UDPMessage(std::size_t maxSize, uint8_t type) : AMessage(maxSize, ty
 
 UDPMessage &UDPMessage::operator=(const UDPMessage &other) {
     m_isCompressed = other.m_isCompressed;
-    fragments = other.fragments;
+    m_fragments = other.m_fragments;
     m_curSize = other.m_curSize;
     m_type = other.m_type;
     std::memcpy(m_data, other.m_data, m_curSize);
@@ -31,18 +31,18 @@ void UDPMessage::readData(void *data, std::size_t size) const {
 }
 
 void UDPMessage::setSerialize(UDPSerializedMessage &msg) {
-    m_type = msg.m_type;
-    m_curSize = msg.m_curSize;
-    m_isCompressed = msg.m_isCompressed;
-    fragments = msg.fragments;
+    m_type = msg.type;
+    m_curSize = msg.curSize;
+    m_isCompressed = msg.isCompressed;
+    m_fragments = msg.fragments;
     std::memcpy(m_data, &msg.data, m_curSize);
 }
 
 void UDPMessage::getSerialize(UDPSerializedMessage &msg) const {
-    msg.m_type = m_type;
-    msg.m_curSize = m_curSize;
-    msg.m_isCompressed = m_isCompressed;
-    msg.fragments = fragments;
+    msg.type = m_type;
+    msg.curSize = m_curSize;
+    msg.isCompressed = m_isCompressed;
+    msg.fragments = m_fragments;
     std::memcpy(&msg.data, m_data, m_curSize);
 }
 

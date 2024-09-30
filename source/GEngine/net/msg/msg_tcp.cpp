@@ -19,4 +19,18 @@ TCPMessage &TCPMessage::operator=(const TCPMessage &other) {
     return *this;
 }
 
+void TCPMessage::setSerialize(TCPSerializedMessage &msg) {
+    m_type = msg.type;
+    m_curSize = msg.curSize;
+    m_isFinished = msg.isFinished;
+    std::memcpy(m_data, &msg.data, m_curSize);
+}
+
+void TCPMessage::getSerialize(TCPSerializedMessage &msg) const {
+    msg.type = m_type;
+    msg.curSize = m_curSize;
+    msg.isFinished = m_isFinished;
+    std::memcpy(&msg.data, m_data, m_curSize);
+}
+
 } // namespace Network

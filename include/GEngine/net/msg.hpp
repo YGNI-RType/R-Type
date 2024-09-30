@@ -17,6 +17,28 @@
 
 namespace Network {
 
+struct __attribute__((__packed__)) HeaderSerializedMessage {
+    uint8_t type;
+    std::size_t curSize;
+};
+
+/* TODO : make a pack for MSVC */
+struct __attribute__((__packed__)) UDPSerializedMessage {
+    uint8_t type;
+    std::size_t curSize;
+    bool isCompressed;
+    uint16_t fragments;
+    byte_t data[MAX_UDP_MSGLEN];
+};
+
+/* TODO : make a pack for MSVC */
+struct __attribute__((__packed__)) TCPSerializedMessage {
+    uint8_t type;
+    std::size_t curSize;
+    bool isFinished = true;
+    byte_t data[MAX_TCP_MSGLEN];
+};
+
 class AMessage {
 public:
     /* there is no constructor, the data is casted as the class it was meant to
@@ -46,20 +68,14 @@ public:
 
     const byte_t *getData() const { return m_data; }
 
+    void getSerialize(TCPSerializedMessage &msg) const;
+    void setSerialize(TCPSerializedMessage &msg);
+
 private:
     bool m_isFinished = true;
 
     /* always set field to last, this is not a header !!!*/
     byte_t m_data[MAX_TCP_MSGLEN];
-};
-
-/* TODO : make a pack for MSVC */
-struct __attribute__((__packed__)) UDPSerializedMessage {
-    uint8_t m_type;
-    std::size_t m_curSize;
-    bool m_isCompressed;
-    uint16_t fragments;
-    byte_t data[MAX_UDP_MSGLEN];
 };
 
 class UDPMessage : public AMessage {
@@ -89,7 +105,7 @@ public:
 
 private:
     bool m_isCompressed = false;
-    uint16_t fragments = 0;
+    uint16_t m_fragments = 0;
 
     /* always set field to last, this is not a header !!!*/
     byte_t m_data[MAX_UDP_MSGLEN];

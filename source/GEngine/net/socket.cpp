@@ -204,21 +204,23 @@ bool SocketTCP::send(const TCPMessage &msg) const {
     /* TODO : here, we guess the size is enough to
     send, should we break it here or before ? */
 
-    return sendReliant(&msg, msg.getSize()) != 0; // if it did not block
+    TCPSerializedMessage sMsg;
+    msg.getSerialize(sMsg);
+
+    return sendReliant(&sMsg, msg.getSize()) != 0; // if it did not block
 }
 
-TCPMessage SocketTCP::receive(void) const {
-    byte_t data[sizeof(TCPMessage)];
+void SocketTCP::receive(TCPMessage &msg) const {
+    TCPSerializedMessage sMsg;
 
-    size_t recvSz = receiveReliant(data, sizeof(AMessage));
-    TCPMessage *msg = reinterpret_cast<TCPMessage *>(data);
+    size_t recvSz = receiveReliant(&sMsg, sizeof(HeaderSerializedMessage));
     /* WIN : need to use these parenthesis, to skip windows.h macro */
-    recvSz = receiveReliant(data + recvSz, (std::min)(msg->getSize(), sizeof(TCPMessage) - recvSz));
+    recvSz = receiveReliant(&sMsg + recvSz, (std::min)(sMsg.curSize, sizeof(TCPSerializedMessage) - recvSz));
 
-    return *msg;
+    msg.setSerialize(sMsg);
 }
 
-size_t SocketTCP::receiveReliant(byte_t *buffer, size_t size) const {
+size_t SocketTCP::receiveReliant(TCPSerializedMessage *buffer, size_t size) const {
     size_t receivedTotal = 0;
 
     while (receivedTotal < size) {
@@ -233,7 +235,7 @@ size_t SocketTCP::receiveReliant(byte_t *buffer, size_t size) const {
 }
 
 /* THIS IS THE ALL MESSAGE, NOT THE JUST DATA */
-size_t SocketTCP::sendReliant(const TCPMessage *msg, size_t msgDataSize) const {
+size_t SocketTCP::sendReliant(const TCPSerializedMessage *msg, size_t msgDataSize) const {
     size_t sentTotal = 0;
     msgDataSize += sizeof(TCPMessage) - MAX_TCP_MSGLEN;
 

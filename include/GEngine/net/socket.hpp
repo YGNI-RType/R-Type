@@ -138,14 +138,14 @@ public:
     ~SocketTCP() = default;
 
     bool send(const TCPMessage &msg) const;
-    TCPMessage receive(void) const;
+    void receive(TCPMessage &msg) const;
 
     std::size_t getPosAccept(void) const { return m_posAccept; }
     const EventType getEventType(void) const { return m_eventType; }
 
 private:
-    std::size_t receiveReliant(byte_t *buffer, std::size_t size) const;
-    std::size_t sendReliant(const TCPMessage *msg, std::size_t msgDataSize) const;
+    std::size_t receiveReliant(TCPSerializedMessage *buffer, std::size_t size) const;
+    std::size_t sendReliant(const TCPSerializedMessage *msg, std::size_t msgDataSize) const;
 
     /* since accept can block, set it's here when it will be applied anyway */
     struct sockaddr m_addr;
