@@ -96,7 +96,7 @@ public:
     AddressV6 receiveV6(UDPMessage &msg) const;
 
 private:
-    void receive(struct sockaddr *addr, byte_t *data, socklen_t *len) const;
+    void receive(struct sockaddr *addr, UDPSerializedMessage &sMsg, socklen_t *len) const;
 };
 
 ////////////////////////////////////////

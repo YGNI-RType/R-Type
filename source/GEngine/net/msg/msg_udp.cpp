@@ -24,6 +24,28 @@ void UDPMessage::writeData(const void *data, std::size_t size) {
     m_curSize += size;
 }
 
+void UDPMessage::readData(void *data, std::size_t size) const {
+    if (size > m_curSize)
+        throw std::runtime_error("Not enough data to read");
+    std::memcpy(data, m_data + m_curSize, size);
+}
+
+void UDPMessage::setSerialize(UDPSerializedMessage &msg) {
+    m_type = msg.m_type;
+    m_curSize = msg.m_curSize;
+    m_isCompressed = msg.m_isCompressed;
+    fragments = msg.fragments;
+    std::memcpy(m_data, &msg.data, m_curSize);
+}
+
+void UDPMessage::getSerialize(UDPSerializedMessage &msg) const {
+    msg.m_type = m_type;
+    msg.m_curSize = m_curSize;
+    msg.m_isCompressed = m_isCompressed;
+    msg.fragments = fragments;
+    std::memcpy(&msg.data, m_data, m_curSize);
+}
+
 // void UDPMessage::writeHeader() {
 //     // put the time
 //     // put the mode

@@ -67,7 +67,7 @@ SocketTCPMaster NET::mg_socketListenTcp;
 SocketUDP NET::mg_socketUdpV6;
 SocketTCPMaster NET::mg_socketListenTcpV6;
 
-std::vector<std::unique_ptr<NetClient>> NET::g_netClients = std::vector<std::unique_ptr<NetClient>>(MAX_CLIENTS);
+std::vector<std::unique_ptr<NetClient>> NET::g_netClients;
 
 std::vector<IP> NET::g_localIPs;
 
@@ -292,21 +292,23 @@ void NET::createSets(fd_set &readSet) {
         FD_SET(mg_socketListenTcp.getSocket(), &readSet);
 }
 
-void NET::handleUdpEvent(const UDPMessage &msg, const Address &addr)
-{
+void NET::handleUdpEvent(const UDPMessage &msg, const Address &addr) {
     switch (msg.getType()) {
-        case CL_BROADCAST_PING:
-            if (NET::inittedServer) {
-                std::cout << "SV: Received ping" << std::endl;
-                NET::respondPingServers(msg, addr);
-            }
-            break;
-        case SV_BROADCAST_PING:
-            std::cout << "CL: received ping response" << std::endl;
-            return;
-            // handlePingResponse(msg, addr);
-        default: // handleUdpMessage(msg, addr);
-            break;
+    case CL_BROADCAST_PING:
+        if (NET::inittedServer) {
+            std::cout << "SV: Received ping" << std::endl;
+            NET::respondPingServers(msg, addr);
+        }
+        break;
+    case SV_BROADCAST_PING:
+        UDPSV_PingResponse data;
+        msg.readData<UDPSV_PingResponse>(data);
+
+        std::cout << "CL: received ping response:" << data.maxPlayers << std::endl;
+        return;
+        // handlePingResponse(msg, addr);
+    default: // handleUdpMessage(msg, addr);
+        break;
     }
 }
 
@@ -319,7 +321,7 @@ void NET::handleEvents(fd_set &readSet) {
     if (NET::inittedServer) {
         if (FD_ISSET(mg_socketListenTcp.getSocket(), &readSet))
             return;
-            // mg_socketListenTcp.handleEvent();
+        // mg_socketListenTcp.handleEvent();
     }
     if (CVar::net_ipv6.getIntValue()) {
         if (FD_ISSET(mg_socketUdpV6.getSocket(), &readSet))
@@ -359,7 +361,10 @@ void NET::respondPingServers(const UDPMessage &msg, const Address &addr) {
     auto pingReponseMsg = UDPMessage(0, SV_BROADCAST_PING);
     std::cout << "SV: respond to ping, sending to port " << addr.getPort() << std::endl;
 
-    UDPSV_PingResponse data = {.tcpPort = mg_socketListenTcp.getPort(), .udpPort = mg_socketUdp.getPort(), .maxPlayers = 4, .currentPlayers = 1};
+    UDPSV_PingResponse data = {.tcpPort = mg_socketListenTcp.getPort(),
+                               .udpPort = mg_socketUdp.getPort(),
+                               .maxPlayers = 4,
+                               .currentPlayers = 1};
 
     pingReponseMsg.writeData<UDPSV_PingResponse>(data);
 
