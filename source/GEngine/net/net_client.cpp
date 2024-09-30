@@ -7,7 +7,6 @@
 
 #include "GEngine/net/net_client.hpp"
 
-namespace Network
-{
-    NetClient::NetClient(const Address &clientAddress, SocketTCP &socket) : m_channel(clientAddress, socket) {}
+namespace Network {
+NetClient::NetClient(const Address &clientAddress, SocketTCP &socket) : m_channel(clientAddress, socket) {}
 } // namespace Network

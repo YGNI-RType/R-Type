@@ -127,6 +127,7 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
+    m_port = port;
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(struct sockaddr_in));
 
@@ -159,6 +160,7 @@ SocketTCP::SocketTCP(size_t pos_accept, const SocketTCPMaster &socketMaster) : m
             throw std::runtime_error("Failed to accept connection");
     }
 
+    m_port = socketMaster.getPort();
     addSocketPool(m_sock);
 }
 
@@ -167,6 +169,7 @@ SocketTCP::SocketTCP(const Address &addr, uint16_t port) {
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
+    m_port = port;
     struct sockaddr_in address;
     std::memcpy(&address, &addr, sizeof(struct sockaddr_in));
 

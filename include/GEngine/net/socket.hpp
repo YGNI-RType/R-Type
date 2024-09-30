@@ -68,10 +68,13 @@ public:
     void setBlocking(bool blocking);
     bool isBlocking(void) const;
 
+    uint16_t getPort(void) const { return m_port; }
+
 protected:
     int socketClose(void);
 
     SOCKET m_sock = -1;
+    uint16_t m_port = -1;
 };
 
 ////////////////////////////////////////

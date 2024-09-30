@@ -9,5 +9,6 @@
 
 namespace Network {
 
-    NetChannel::NetChannel(const Address &clientAddress, SocketTCP &socket) : m_toAddress(std::make_unique<Address>(clientAddress)), m_tcpSocket(std::move(socket)) {}
+NetChannel::NetChannel(const Address &clientAddress, SocketTCP &socket)
+    : m_toAddress(std::make_unique<Address>(clientAddress)), m_tcpSocket(std::move(socket)) {}
 } // namespace Network

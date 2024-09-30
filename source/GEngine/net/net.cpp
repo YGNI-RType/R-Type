@@ -358,6 +358,11 @@ void NET::pingServers(void) {
 void NET::respondPingServers(const UDPMessage &msg, const Address &addr) {
     auto pingReponseMsg = UDPMessage(0, SV_BROADCAST_PING);
     std::cout << "SV: respond to ping, sending to port " << addr.getPort() << std::endl;
+
+    UDPSV_PingResponse data = {.tcpPort = mg_socketListenTcp.getPort(), .udpPort = mg_socketUdp.getPort(), .maxPlayers = 4, .currentPlayers = 1};
+
+    pingReponseMsg.writeData<UDPSV_PingResponse>(data);
+
     if (addr.getType() == AT_IPV4)
         mg_socketUdp.send(pingReponseMsg, addr);
     else if (CVar::net_ipv6.getIntValue())
