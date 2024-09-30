@@ -12,6 +12,7 @@
 #include "structs/msg_udp_structs.hpp"
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 
 namespace Network {
 
@@ -52,6 +53,8 @@ private:
 class UDPMessage : public AMessage {
 public:
     UDPMessage(std::size_t maxSize, uint8_t type);
+
+    UDPMessage& operator=(const Network::UDPMessage& other);
 
     const byte_t *getData() const { return m_data; }
 

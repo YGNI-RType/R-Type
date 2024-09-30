@@ -311,7 +311,8 @@ void NET::handleUdpEvent(const UDPMessage &msg, const Address &addr)
 
 void NET::handleEvents(fd_set &readSet) {
     if (FD_ISSET(mg_socketUdp.getSocket(), &readSet)) {
-        auto [msg, addr] = mg_socketUdp.receiveV4();
+        UDPMessage msg(0, 0);
+        auto addr = mg_socketUdp.receiveV4(msg);
         return NET::handleUdpEvent(msg, addr);
     }
     if (NET::inittedServer) {

@@ -10,6 +10,15 @@
 namespace Network {
 UDPMessage::UDPMessage(std::size_t maxSize, uint8_t type) : AMessage(maxSize, type) {}
 
+UDPMessage &UDPMessage::operator=(const Network::UDPMessage &other) {
+    m_isCompressed = other.m_isCompressed;
+    fragments = other.fragments;
+    m_curSize = other.m_curSize;
+    m_type = other.m_type;
+    std::memcpy(m_data, other.m_data, MAX_UDP_MSGLEN);
+    return *this;
+}
+
 // void UDPMessage::writeHeader() {
 //     // put the time
 //     // put the mode

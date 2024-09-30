@@ -277,6 +277,7 @@ SocketUDP &SocketUDP::operator=(SocketUDP &&other) {
     return *this;
 }
 
+/* TODO : sending some unitialized bytes by default */
 bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
     /*
         BY THE WAY, m_sock is the same for EVERY CLASS, i don't put it on static
@@ -307,28 +308,26 @@ void SocketUDP::receive(struct sockaddr *addr, byte_t *data, socklen_t *len) con
         throw SocketException("Received message is too small");
 }
 
-std::pair<UDPMessage, AddressV4> SocketUDP::receiveV4(void) const {
+AddressV4 SocketUDP::receiveV4(UDPMessage &msg) const {
     byte_t data[sizeof(UDPMessage)];
     struct sockaddr_in addr = {0};
     socklen_t len = sizeof(addr);
 
     receive(reinterpret_cast<struct sockaddr *>(&addr), data, &len);
-    UDPMessage *msg = reinterpret_cast<UDPMessage *>(data);
+    msg = *(reinterpret_cast<UDPMessage *>(data));
 
-    AddressV4 a(AT_IPV4, ntohs(addr.sin_port), ntohl(addr.sin_addr.s_addr));
-    return std::make_pair(*msg, a);
+    return AddressV4(AT_IPV4, ntohs(addr.sin_port), ntohl(addr.sin_addr.s_addr));
 }
 
-std::pair<UDPMessage, AddressV6> SocketUDP::receiveV6(void) const {
+AddressV6 SocketUDP::receiveV6(UDPMessage &msg) const {
     byte_t data[sizeof(UDPMessage)];
     struct sockaddr_in6 addr;
     socklen_t len = sizeof(addr);
 
     receive(reinterpret_cast<struct sockaddr *>(&addr), data, &len);
-    UDPMessage *msg = reinterpret_cast<UDPMessage *>(data);
+    msg = *(reinterpret_cast<UDPMessage *>(data));
 
-    AddressV6 a(AT_IPV6, ntohs(addr.sin6_port), addr.sin6_addr, addr.sin6_scope_id);
-    return std::make_pair(*msg, a);
+    return AddressV6(AT_IPV6, ntohs(addr.sin6_port), addr.sin6_addr, addr.sin6_scope_id);
 }
 
 } // namespace Network

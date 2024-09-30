@@ -89,8 +89,8 @@ public:
     bool send(const UDPMessage &msg, const Address &addr) const;
 
     /* this seems redundant, but to avoid any heap calls, this is necessary */
-    std::pair<UDPMessage, AddressV4> receiveV4(void) const;
-    std::pair<UDPMessage, AddressV6> receiveV6(void) const;
+    AddressV4 receiveV4(UDPMessage &msg) const;
+    AddressV6 receiveV6(UDPMessage &msg) const;
 
 private:
     void receive(struct sockaddr *addr, byte_t *data, socklen_t *len) const;
