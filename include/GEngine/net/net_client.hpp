@@ -54,16 +54,21 @@ class NetClient {
         CS_CONNECTED, // has been assigned to a client_t, but no gamestate yet
         CS_PRIMED,    // gamestate has been sent, but client hasn't sent a usercmd
         CS_ACTIVE     // client is fully in game
-    } clientState_t;
+    } clientState ;
 
 public:
-    NetClient(size_t szSnapshot);
+    NetClient(const Address &clientAddress, SocketTCP &socket);
     ~NetClient() = default;
 
-private:
-    int challenge; /* challenge for authoring / avoid ddos */
+    const NetChannel &getChannel(void) const { return m_channel; }
 
-    NetClientSnapshot snapshots[PACKET_BACKUP];
+private:
+    NetChannel m_channel;
+
+    int m_challenge = -1; /* challenge for authoring / avoid ddos */
+    clientState m_state = CS_FREE;
+
+    // NetClientSnapshot m_snapshots[PACKET_BACKUP];
 
 
 

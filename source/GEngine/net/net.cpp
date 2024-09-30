@@ -67,7 +67,7 @@ SocketTCPMaster NET::mg_socketListenTcp;
 SocketUDP NET::mg_socketUdpV6;
 SocketTCPMaster NET::mg_socketListenTcpV6;
 
-std::vector<SocketTCP> NET::g_clientSocketsTCP;
+std::vector<std::unique_ptr<NetClient>> NET::g_netClients = std::vector<std::unique_ptr<NetClient>>(MAX_CLIENTS);
 
 std::vector<IP> NET::g_localIPs;
 
@@ -125,7 +125,7 @@ void NET::initServer(void) {
 }
 
 void NET::stop(void) {
-    g_clientSocketsTCP.clear();
+    g_netClients.clear();
     g_localIPs.clear();
     enabled = false;
 }
@@ -274,7 +274,8 @@ bool NET::sleep(uint32_t ms) {
 void NET::createSets(fd_set &readSet) {
     FD_ZERO(&readSet);
 
-    for (SocketTCP &socket : g_clientSocketsTCP) {
+    for (const auto &client : g_netClients) {
+        auto &socket = client->getChannel().getTcpSocket();
         auto eventType = socket.getEventType();
         auto socketId = socket.getSocket();
 
@@ -330,7 +331,8 @@ void NET::handleEvents(fd_set &readSet) {
                 return;
         }
     }
-    for (SocketTCP &socket : g_clientSocketsTCP) {
+    for (const auto &client : g_netClients) {
+        auto &socket = client->getChannel().getTcpSocket();
         auto eventType = socket.getEventType();
         auto socketId = socket.getSocket();
 

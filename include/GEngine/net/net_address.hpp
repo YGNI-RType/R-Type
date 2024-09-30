@@ -32,6 +32,7 @@ protected:
     typedef std::array<byte_t, 16> ipv6_t;
 
 public:
+    virtual ~Address() = default;
     virtual void toSockAddr(sockaddr *addr) const = 0;
     virtual bool isLanAddr(void) const = 0;
 
@@ -40,7 +41,6 @@ public:
 
 protected:
     Address(AddressType type, uint16_t port) : m_type(type), m_port(port){};
-    virtual ~Address() = default;
 
     AddressType m_type;
     uint16_t m_port;

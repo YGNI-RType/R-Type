@@ -10,6 +10,7 @@
 #include "msg.hpp"
 #include "net_address.hpp"
 #include "net_common.hpp"
+#include "net_client.hpp"
 #include "socket.hpp"
 
 #include <vector>
@@ -23,7 +24,7 @@ private:
     static SocketUDP mg_socketUdpV6;
     static SocketTCPMaster mg_socketListenTcpV6;
 
-    static std::vector<SocketTCP> g_clientSocketsTCP;
+    static std::vector<std::unique_ptr<NetClient>> g_netClients;
 
     static std::vector<IP> g_localIPs;
 

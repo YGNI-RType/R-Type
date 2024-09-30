@@ -16,4 +16,12 @@ enum {
     SV_BROADCAST_PING
 };
 
+struct UDPSV_PingResponse {
+    uint16_t tcpPort;
+    uint16_t udpPort;
+
+    std::size_t maxPlayers;
+    std::size_t currentPlayers;
+};
+
 } // namespace Network

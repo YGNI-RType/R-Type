@@ -10,13 +10,18 @@
 namespace Network {
 UDPMessage::UDPMessage(std::size_t maxSize, uint8_t type) : AMessage(maxSize, type) {}
 
-UDPMessage &UDPMessage::operator=(const Network::UDPMessage &other) {
+UDPMessage &UDPMessage::operator=(const UDPMessage &other) {
     m_isCompressed = other.m_isCompressed;
     fragments = other.fragments;
     m_curSize = other.m_curSize;
     m_type = other.m_type;
-    std::memcpy(m_data, other.m_data, MAX_UDP_MSGLEN);
+    std::memcpy(m_data, other.m_data, m_curSize);
     return *this;
+}
+
+void UDPMessage::writeData(const void *data, std::size_t size) {
+    std::memcpy(m_data + m_curSize, data, size);
+    m_curSize += size;
 }
 
 // void UDPMessage::writeHeader() {

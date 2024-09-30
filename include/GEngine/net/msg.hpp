@@ -41,6 +41,8 @@ class TCPMessage : public AMessage {
 public:
     TCPMessage(std::size_t maxSize, uint8_t type);
 
+    TCPMessage& operator=(const TCPMessage& other);
+
     const byte_t *getData() const { return m_data; }
 
 private:
@@ -54,9 +56,18 @@ class UDPMessage : public AMessage {
 public:
     UDPMessage(std::size_t maxSize, uint8_t type);
 
-    UDPMessage& operator=(const Network::UDPMessage& other);
+    UDPMessage& operator=(const UDPMessage& other);
 
     const byte_t *getData() const { return m_data; }
+
+    template <typename T>
+    void writeData(const T &data) {
+        std::memcpy(m_data + m_curSize, &data, sizeof(T));
+        m_curSize += sizeof(T);
+    }
+    void writeData(const void *data, std::size_t size);
+
+
 
 private:
     bool m_isCompressed = false;
