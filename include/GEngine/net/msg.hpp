@@ -10,6 +10,8 @@
 #include "net_common.hpp"
 #include "structs/msg_tcp_structs.hpp"
 #include "structs/msg_udp_structs.hpp"
+#include "utils/pack.hpp"
+
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -17,27 +19,25 @@
 
 namespace Network {
 
-struct __attribute__((__packed__)) HeaderSerializedMessage {
+PACK(struct HeaderSerializedMessage {
     uint8_t type;
     std::size_t curSize;
-};
+});
 
-/* TODO : make a pack for MSVC */
-struct __attribute__((__packed__)) UDPSerializedMessage {
+PACK(struct UDPSerializedMessage {
     uint8_t type;
     std::size_t curSize;
     bool isCompressed;
     uint16_t fragments;
     byte_t data[MAX_UDP_MSGLEN];
-};
+});
 
-/* TODO : make a pack for MSVC */
-struct __attribute__((__packed__)) TCPSerializedMessage {
+PACK(struct TCPSerializedMessage {
     uint8_t type;
     std::size_t curSize;
     bool isFinished = true;
     byte_t data[MAX_TCP_MSGLEN];
-};
+});
 
 class AMessage {
 public:

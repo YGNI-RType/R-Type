@@ -9,20 +9,40 @@
 
 namespace Network {
 
+void CLNetClient::connectToServer(const Address &serverAddress) {
+
+    /* Connects to something */
+    try {
+        m_netChannel.setTcpSocket(SocketTCP(serverAddress));
+    } catch (const std::exception &e) {
+        /* todo : some error handling just in case ? */
+        throw e;
+    }
+
+    m_state = CS_CONNECTED;
+    m_connectionState = CON_CONNECTING;
+}
+
+void CLNetClient::disconnectFromServer(void) {
+    m_netChannel.setTcpSocket(SocketTCP());
+
+    m_state = CS_FREE;
+    m_connectionState = CON_DISCONNECTED;
+}
 
 void CLNetClient::init(void)
 {
-    enabled = true;
+    m_enabled = true;
 }
 
 void CLNetClient::stop(void)
 {
-    enabled = false;
+    m_enabled = false;
 }
 
 
 bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
-    if (!enabled)
+    if (!m_enabled)
         return false;
 
     switch (msg.getType()) {
@@ -36,7 +56,7 @@ bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, cons
 }
 
 bool CLNetClient::handleTCPEvents(fd_set &readSet) {
-    if (!enabled)
+    if (!m_enabled)
         return false;
 
     if (FD_ISSET(m_netChannel.getTcpSocket().getSocket(), &readSet)) {

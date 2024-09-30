@@ -23,6 +23,29 @@
 #define TCP_POOL_SZ MAX_TCP_MSGLEN
 
 namespace Network {
+
+typedef enum {
+    CS_FREE,      // can be reused for a new connection
+    CS_ZOMBIE,    // client has been disconnected, but don't reuse
+                  // connection for a couple seconds
+    CS_CONNECTED, // has been assigned to a client_t, but no gamestate yet
+    CS_PRIMED,    // gamestate has been sent, but client hasn't sent a usercmd
+    CS_ACTIVE     // client is fully in game
+} clientState;
+
+typedef enum {
+    CON_UNINITIALIZED,
+    CON_DISCONNECTED, // not talking to a server
+    CON_AUTHORIZING,  // not used any more, was checking cd key
+    CON_CONNECTING,   // sending request packets to the server
+    CON_CHALLENGING,  // sending challenge packets to the server
+    CON_CONNECTED,    // netchan_t established, getting gamestate
+    CON_LOADING,      // only during cgame initialization, never during main loop
+    CON_PRIMED,       // got gamestate, waiting for first frame
+    CON_ACTIVE,       // game views should be displayed
+    CON_CINEMATIC     // playing a cinematic or a static pic, not connected to a server
+} connectionState;
+
 class PacketPool {
 public:
     PacketPool() = default;
@@ -64,6 +87,7 @@ public:
     ~NetChannel() = default;
 
     const SocketTCP &getTcpSocket(void) const { return m_tcpSocket; }
+    void setTcpSocket(SocketTCP &&socket) { m_tcpSocket = std::move(socket); }
 
 private:
     const std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */

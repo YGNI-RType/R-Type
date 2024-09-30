@@ -164,16 +164,16 @@ SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAd
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(const Address &addr, uint16_t port) {
+SocketTCP::SocketTCP(const Address &addr) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
-    m_port = port;
+    m_port = addr.getPort();
     struct sockaddr_in address;
     std::memcpy(&address, &addr, sizeof(struct sockaddr_in));
 
-    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+    address.sin_port = m_port == PORT_ANY ? 0 : htons(m_port);
 
     if (connect(m_sock, (sockaddr *)&address, sizeof(address)) < 0) {
         if (errno == EINPROGRESS)

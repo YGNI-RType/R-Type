@@ -35,7 +35,9 @@ public:
 private:
     int m_challenge = -1;
 
-    bool enabled = false;
+    bool m_enabled = false;
+    clientState m_state = CS_FREE;
+    connectionState m_connectionState = CON_UNINITIALIZED;
 
     NetChannel m_netChannel;
     std::vector<UDPSV_PingResponse> m_pingedServers;

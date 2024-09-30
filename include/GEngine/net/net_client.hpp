@@ -47,15 +47,6 @@ private:
 /* likely composed */
 class NetClient {
 
-    typedef enum {
-        CS_FREE,      // can be reused for a new connection
-        CS_ZOMBIE,    // client has been disconnected, but don't reuse
-                      // connection for a couple seconds
-        CS_CONNECTED, // has been assigned to a client_t, but no gamestate yet
-        CS_PRIMED,    // gamestate has been sent, but client hasn't sent a usercmd
-        CS_ACTIVE     // client is fully in game
-    } clientState;
-
 public:
     NetClient(std::unique_ptr<Address> addr, SocketTCP &socket);
     ~NetClient() = default;
@@ -67,6 +58,7 @@ private:
 
     int m_challenge = -1; /* challenge for authoring / avoid ddos */
     clientState m_state = CS_FREE;
+    connectionState m_connectionState = CON_UNINITIALIZED;
 
     // NetClientSnapshot m_snapshots[PACKET_BACKUP];
 
