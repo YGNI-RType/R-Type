@@ -16,6 +16,7 @@
 #include <unordered_map>
 
 #include "ecs/component/IsComponent.hpp"
+#include "ecs/component/Iterator.hpp"
 #include "ecs/component/SparseArray.hpp"
 #include "exceptions/Base.hpp"
 
