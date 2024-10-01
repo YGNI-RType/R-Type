@@ -7,7 +7,41 @@
 
 #include "GEngine/net/net_address.hpp"
 
+#include <cstring>
+
 namespace Network {
+
+bool Address::operator==(const Address &other) const {
+    if (m_type == AT_LOOPBACK)
+        return true;
+
+    if (m_type != other.getType())
+        return false;
+
+    return isEqual(getData(), other.getData(), m_mask);
+}
+
+bool Address::isEqual(const byte_t *addr1, const byte_t *addr2, uint32_t mask) const {
+    uint32_t curbyte = mask >> 3;
+    uint32_t cmpmask;
+
+    if (curbyte && std::memcmp(addr1, addr2, curbyte))
+        return false;
+
+    mask &= 0x07;
+    if (mask) {
+        cmpmask = (1 << mask) - 1;
+        cmpmask <<= 8 - mask;
+
+        if ((addr1[curbyte] & cmpmask) == (addr2[curbyte] & cmpmask))
+            return true;
+    } else
+        return true;
+
+    return false;
+}
+
+/**********************************************/
 
 AddressV4::AddressV4(AddressType type, uint16_t port, ipv4_t address) : Address(type, port), m_address(address) {};
 AddressV4::AddressV4(AddressType type, uint16_t port) : Address(type, port) {};
@@ -99,13 +133,13 @@ bool AddressV6::isLanAddr(void) const {
 /************************************************************/
 
 AddressV4 UnknownAddress::getV4() const {
-    sockaddr_in *m_addr = reinterpret_cast<sockaddr_in*>(&m_addr);
+    sockaddr_in *m_addr = reinterpret_cast<sockaddr_in *>(&m_addr);
 
     return AddressV4(m_type, ntohs(m_addr->sin_port), htonl(m_addr->sin_addr.s_addr));
 }
 
 AddressV6 UnknownAddress::getV6() const {
-    sockaddr_in6 *m_addr = reinterpret_cast<sockaddr_in6*>(&m_addr);
+    sockaddr_in6 *m_addr = reinterpret_cast<sockaddr_in6 *>(&m_addr);
 
     return AddressV6(m_type, ntohs(m_addr->sin6_port), m_addr->sin6_addr, m_addr->sin6_scope_id);
 }

@@ -38,15 +38,25 @@ public:
 
     AddressType getType() const { return m_type; };
     uint16_t getPort() const { return m_port; };
+    uint32_t getMask() const { return m_mask; };
+
+    bool operator==(const Address &other) const;
+
+    void setMask(uint32_t mask) { m_mask = mask; };
 
 protected:
+    virtual const byte_t *getData() const = 0;
     Address(AddressType type, uint16_t port) : m_type(type), m_port(port) {};
+
+    bool isEqual(const byte_t *addr1, const byte_t *addr2, uint32_t mask) const;
 
     AddressType m_type;
     uint16_t m_port;
+    uint32_t m_mask;
 };
 
 class AddressV4 : public Address {
+
 public:
     AddressV4(AddressType type, uint16_t port, ipv4_t address);
     AddressV4(AddressType type, uint16_t port);
@@ -59,10 +69,13 @@ public:
     bool isLanAddr(void) const override final;
 
 private:
+    const byte_t *getData() const override final { return m_address.data(); };
+
     ipv4_t m_address;
 };
 
 class AddressV6 : public Address {
+
 public:
     AddressV6(AddressType type, uint16_t port, ipv6_t address, uint64_t scopeId);
     AddressV6(AddressType type, uint16_t port);
@@ -75,6 +88,8 @@ public:
     bool isLanAddr(void) const override final;
 
 private:
+    const byte_t *getData() const override final  { return m_address.data(); };
+
     ipv6_t m_address;
     uint64_t m_scopeId;
 };
