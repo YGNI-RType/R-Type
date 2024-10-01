@@ -18,4 +18,10 @@ enum {
     CL_DOWNLOAD,
     CL_UPLOAD,
 };
+
+struct TCPSV_ClientInit {
+    int challenge;
+    // todo : add more information, that client needs to know that the server won't change
+};
+
 } // namespace Network

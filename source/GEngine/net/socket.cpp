@@ -7,6 +7,7 @@
 
 #include "GEngine/net/socket.hpp"
 #include "GEngine/net/socketError.hpp"
+#include "GEngine/cvar/net.hpp"
 
 #include <algorithm>
 #include <cerrno>
@@ -277,12 +278,18 @@ SocketUDP &SocketUDP::operator=(SocketUDP &&other) {
     return *this;
 }
 
-/* TODO : sending some unitialized bytes by default */
-bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
+size_t SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
     /*
         BY THE WAY, m_sock is the same for EVERY CLASS, i don't put it on static
         because it's inherited
     */
+
+    int simval = CVar::net_send_dropsim.getIntValue();
+    if (simval > 0) {
+        if (rand() < (int)(((double)RAND_MAX) / 100.0 * (double)simval))
+            return 0; // drop this packet
+    }
+
     UDPSerializedMessage sMsg;
     size_t size = msg.getSize();
     struct sockaddr_storage sockaddr = {0};
@@ -294,14 +301,20 @@ bool SocketUDP::send(const UDPMessage &msg, const Address &addr) const {
                (struct sockaddr *)&sockaddr, sizeof(struct sockaddr));
     if (sent < 0) {
         if (errno == EWOULDBLOCK || errno == EAGAIN)
-            return false;
+            return 0;
         throw SocketException("Failed to send message (invalid address)");
     }
-    return true;
+    return sent;
 }
 
-void SocketUDP::receive(struct sockaddr *addr, UDPSerializedMessage &data, socklen_t *len) const {
+bool SocketUDP::receive(struct sockaddr *addr, UDPSerializedMessage &data, socklen_t *len) const {
     size_t recv = recvfrom(m_sock, reinterpret_cast<char *>(&data), sizeof(UDPSerializedMessage), 0, addr, len);
+
+    int simval = CVar::net_recv_dropsim.getIntValue();
+    if (simval > 0) {
+        if (rand() < (int)(((double)RAND_MAX) / 100.0 * (double)simval))
+            return false; // drop this packet
+    }
 
     // checking wouldblock etc... select told us to read so it's not possible
     if (recv < 0)
@@ -309,6 +322,7 @@ void SocketUDP::receive(struct sockaddr *addr, UDPSerializedMessage &data, sockl
 
     if (recv < sizeof(UDPSerializedMessage) - MAX_UDP_MSGLEN)
         throw SocketException("Received message is too small");
+    return true;
 }
 
 AddressV4 SocketUDP::receiveV4(UDPMessage &msg) const {
@@ -322,6 +336,7 @@ AddressV4 SocketUDP::receiveV4(UDPMessage &msg) const {
     return AddressV4(AT_IPV4, ntohs(addr.sin_port), ntohl(addr.sin_addr.s_addr));
 }
 
+/* TODO : one day i might directly pack the udpmessage at this point */
 AddressV6 SocketUDP::receiveV6(UDPMessage &msg) const {
     UDPSerializedMessage sMsg;
     struct sockaddr_in6 addr;

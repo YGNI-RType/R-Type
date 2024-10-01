@@ -22,6 +22,8 @@
 #define UDP_POOL_SZ MAX_UDP_MSGLEN * 2
 #define TCP_POOL_SZ MAX_TCP_MSGLEN
 
+#define NETCHAN_GENCHECKSUM(challenge, sequence) ((challenge) ^ ((sequence) * (challenge)))
+
 namespace Network {
 
 typedef enum {
@@ -89,16 +91,34 @@ public:
     const SocketTCP &getTcpSocket(void) const { return m_tcpSocket; }
     void setTcpSocket(SocketTCP &&socket) { m_tcpSocket = std::move(socket); }
 
+    bool readDatagram(const UDPMessage &msg, const Address &addr);
+    bool readStream(const TCPMessage &msg);
+
+    bool sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address &addr);
+    bool sendStream(const TCPMessage &msg);
+
 private:
     const std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
 
+
     /* UDP */
 
-    PacketPoolUdp m_udpPoolUnsent;
-    /* most likely fragments, since the packets may be too big (mostly for client from server) */
-    PacketPoolUdp m_udpPoolReceived;
+    /* TODO : add delay (?) */
+    // PacketPoolUdp m_udpPoolUnsent;
+
+    int m_challenge = -1;
+
+
+    /* most likely fragments, since the packets may be too big (mostly (always) for client from server) */
+    PacketPoolUdp m_udpPoolSend;
 
     uint32_t m_droppedPackets = 0;
+
+    uint64_t m_udpInSequence = 0;
+    uint64_t m_udpOutSequence = 1;
+    uint64_t m_udplastsent = 0;
+    size_t m_udplastsentsize = 0;
+
 
     /*******/
 

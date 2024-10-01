@@ -32,6 +32,10 @@ public:
 
 private:
     char m_name[MAX_SZ_NAME];
+
+    uint16_t rate; /* rate of requests, if lan don't care */
+    uint16_t snapshotRate; /* rate of sending snapshots (msec) */
+    bool transmitHighFreqData; /* voip, webcam feed etc...*/
 };
 
 /* Since the engine and the snapshots are not defined in advance, we store them in heap with a predefined size */
@@ -55,6 +59,7 @@ public:
 
 private:
     NetChannel m_channel;
+    NetClientInfo m_info;
 
     int m_challenge = -1; /* challenge for authoring / avoid ddos */
     clientState m_state = CS_FREE;
@@ -65,7 +70,5 @@ private:
     /* sends CMD, not any data */
 
     uint16_t ping;
-    uint16_t rate;         /* bytes per second */
-    uint16_t snapshotRate; /* rate of snapshots (msec)*/
 };
 } // namespace Network

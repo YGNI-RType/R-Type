@@ -16,8 +16,13 @@
 #include <cstdint>
 #include <cstring>
 #include <stdexcept>
+#include <vector>
 
 namespace Network {
+
+#define FRAGMENT_SIZE (MAX_PACKETLEN - 100)
+#define FRAGMENT_BIT (1U << 31)
+#define PACKET_HEADER 10 // two ints and a short
 
 PACK(struct HeaderSerializedMessage {
     uint8_t type;
@@ -27,7 +32,7 @@ PACK(struct HeaderSerializedMessage {
 PACK(struct UDPSerializedMessage {
     uint8_t type;
     std::size_t curSize;
-    bool isCompressed;
+    uint8_t flag;
     uint16_t fragments;
     byte_t data[MAX_UDP_MSGLEN];
 });
@@ -80,12 +85,35 @@ private:
 
 class UDPMessage : public AMessage {
 public:
-    UDPMessage(std::size_t maxSize, uint8_t type);
+    enum Flag {
+        COMPRESSED = 1,
+        HEADER = 2,
+        FRAGMENTED = 4,
+        ENCRYPTED = 8,
+    };
+
+public:
+    /* hasHeader = tell if it will be transmitted into the channel, with the necessity to have additional headers */
+    UDPMessage(bool hasHeader, uint8_t type);
 
     UDPMessage &operator=(const UDPMessage &other);
 
     const byte_t *getData() const { return m_data; }
+
+    bool isCompressed() const { return m_flags & COMPRESSED; }
+    bool hasHeader() const { return m_flags & HEADER; }
+    bool isFragmented() const { return m_flags & FRAGMENTED; }
+    bool isEncrypted() const { return m_flags & ENCRYPTED; }
+    void setCompressed(bool compressed);
+    void setHeader(bool header);
+    void setFragmented(bool fragmented);
+    void setEncrypted(bool encrypted);
+
+    void writeHeader(const UDPG_NetChannelHeader &header);
+    void readHeader(UDPG_NetChannelHeader &header) const;
+
     void getSerialize(UDPSerializedMessage &msg) const;
+    std::vector<UDPSerializedMessage> getSerializeFragmented(void) const;
     void setSerialize(UDPSerializedMessage &msg);
 
     template <typename T> void writeData(const T &data) {
@@ -104,8 +132,7 @@ public:
     void readData(void *data, std::size_t size) const;
 
 private:
-    bool m_isCompressed = false;
-    uint16_t m_fragments = 0;
+    uint8_t m_flags;
 
     /* always set field to last, this is not a header !!!*/
     byte_t m_data[MAX_UDP_MSGLEN];

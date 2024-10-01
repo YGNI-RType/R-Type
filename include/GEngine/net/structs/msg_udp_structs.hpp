@@ -24,4 +24,9 @@ struct UDPSV_PingResponse {
     std::size_t currentPlayers;
 };
 
+struct UDPG_NetChannelHeader {
+    int challenge;
+    uint64_t sequence;
+};
+
 } // namespace Network

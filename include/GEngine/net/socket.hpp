@@ -29,9 +29,6 @@ namespace Network {
 
 #define MAX_PACKETLEN 1400 // max size of a network packet
 
-#define FRAGMENT_SIZE (MAX_PACKETLEN - 100)
-#define PACKET_HEADER 10 // two ints and a short
-
 #define UDP_SO_RCVBUF_SIZE 131072
 
 ////////////////////////////////////////
@@ -91,14 +88,15 @@ public:
     SocketUDP &operator=(SocketUDP &&other);
     ~SocketUDP() = default;
 
-    bool send(const UDPMessage &msg, const Address &addr) const;
+    /* return the nb bytes sent */
+    size_t send(const UDPMessage &msg, const Address &addr) const;
 
     /* this seems redundant, but to avoid any heap calls, this is necessary */
     AddressV4 receiveV4(UDPMessage &msg) const;
     AddressV6 receiveV6(UDPMessage &msg) const;
 
 private:
-    void receive(struct sockaddr *addr, UDPSerializedMessage &sMsg, socklen_t *len) const;
+    bool receive(struct sockaddr *addr, UDPSerializedMessage &sMsg, socklen_t *len) const;
 };
 
 ////////////////////////////////////////
