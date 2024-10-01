@@ -13,13 +13,11 @@
 namespace ecs::component {
 template <class... Element>
 Zipper<Element...>::Iterator::Iterator(std::tuple<SparseArray<Element> &...> &tuple) : m_arrays(tuple) {
-    m_smallestIt = std::get<0>(tuple).begin();
-    m_max = std::get<0>(tuple).size();
+    setSmallest(std::index_sequence_for<Element...>());
 };
 template <class... Element>
 Zipper<Element...>::Iterator::Iterator(std::tuple<SparseArray<Element> &...> &tuple, bool end) : m_arrays(tuple) {
-    m_smallestIt = std::get<0>(tuple).end();
-    m_max = std::get<0>(tuple).size();
+    setSmallest(std::index_sequence_for<Element...>(), true);
 };
 
 template <class... Element> Zipper<Element...>::Iterator Zipper<Element...>::Iterator::operator++(void) {
@@ -66,6 +64,32 @@ template <std::size_t... I>
 std::tuple<const entity::Entity, Element &...>
 Zipper<Element...>::Iterator::m_getAllElement(entity::Entity entity, std::index_sequence<I...>) const {
     return std::tie(entity, std::get<I>(m_arrays).get(entity)...);
+}
+
+template <class... Element>
+template <std::size_t F, std::size_t... I>
+void Zipper<Element...>::Iterator::setSmallest(std::index_sequence<F, I...>, bool end) {
+    m_max = std::get<F>(m_arrays).size();
+    m_smallestIt = !end ? std::get<F>(m_arrays).begin() : std::get<F>(m_arrays).end();
+
+    auto updateSmallest = [&](auto &container) {
+        auto size = container.size();
+        if (size < m_max) {
+            m_max = size;
+            m_smallestIt = !end ? container.begin() : container.end();
+        }
+    };
+
+    (updateSmallest(std::get<I>(m_arrays)), ...);
+
+    std::visit(
+        [&](auto &&it) {
+            while (!end && m_idx < m_max && !m_hasAllElement(it->first, std::index_sequence_for<Element...>())) {
+                ++m_idx;
+                ++it;
+            }
+        },
+        m_smallestIt);
 }
 
 template <class... Element> Zipper<Element...>::Zipper(SparseArray<Element> &...elem) : m_elements(elem...) {}

@@ -41,6 +41,8 @@ private:
         template <std::size_t... I>
         std::tuple<const entity::Entity, Element &...> m_getAllElement(entity::Entity entity,
                                                                        std::index_sequence<I...>) const;
+
+        template <std::size_t F, std::size_t... I> void setSmallest(std::index_sequence<F, I...>, bool end = false);
     };
 
 public:
