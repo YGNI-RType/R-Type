@@ -8,7 +8,11 @@
 #pragma once
 
 #include "ecs/component/IsComponent.hpp"
+#include "ecs/component/Iterator.hpp"
 
 namespace gengine {
 using Component = ecs::component::IsComponent;
+
+template <class ...Element>
+using Zip = ecs::component::Zipper<Element...>;
 }

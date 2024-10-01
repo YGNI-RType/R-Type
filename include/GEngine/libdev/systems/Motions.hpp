@@ -8,8 +8,9 @@
 #pragma once
 
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/components/Velocities.hpp"
+
 #include "GEngine/libdev/components/Transforms.hpp"
+#include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/systems/events/MainLoop.hpp"
 
 namespace gengine::system {
