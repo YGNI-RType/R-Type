@@ -25,13 +25,13 @@ find_library(GEngine_LIB NAMES GEngine PATHS ../build/Debug ../build/Release ../
 target_link_libraries(hagar-i-oop PRIVATE ${GEngine_LIB})
 
 # Ajouter les frameworks macOS nécessaires
-target_link_libraries(hagar-i-oop PRIVATE
-    "-framework CoreVideo"
-    "-framework IOKit"
-    "-framework Cocoa"
-    "-framework GLUT"
-    "-framework OpenGL"
-)
+# target_link_libraries(hagar-i-oop PRIVATE
+#     "-framework CoreVideo"
+#     "-framework IOKit"
+#     "-framework Cocoa"
+#     "-framework GLUT"
+#     "-framework OpenGL"
+# )
 
 # Installer l'exécutable
 install(TARGETS hagar-i-oop

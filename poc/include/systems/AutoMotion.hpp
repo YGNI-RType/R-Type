@@ -10,12 +10,12 @@
 #include "libdev/System.hpp"
 #include "libdev/systems/events/MainLoop.hpp"
 
-#include "libdev/components/Motions.hpp"
+#include "libdev/components/Velocities.hpp"
 
 #include "libdev/systems/events/driver/input/Keyboard.hpp"
 
 namespace hagarioop::systems {
-class AutoMotion : public gengine::System<AutoMotion, gengine::component::Motion2D> {
+class AutoMotion : public gengine::System<AutoMotion, gengine::component::Velocity2D> {
 public:
     void init(void) override;
     void onMainLoop(gengine::system::event::MainLoop &);
