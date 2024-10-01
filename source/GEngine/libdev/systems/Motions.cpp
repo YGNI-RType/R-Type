@@ -13,13 +13,13 @@ void Motion2D::init(void) { subscribeToEvent<event::MainLoop>(&Motion2D::onMainL
 
 void Motion2D::onMainLoop(event::MainLoop &e) {
     auto &transforms = getComponent<component::Transform2D>();
-    auto &motions = getComponent<component::Motion2D>();
+    auto &velocities = getComponent<component::Velocity2D>();
 
-    for (auto &[entity, motion] : motions) {
+    for (auto &[entity, vel] : velocities) {
         if (transforms.contains(entity)) {
             auto &transform = transforms.get(entity);
-            transform.pos.x += (motion.x * e.deltaTime);
-            transform.pos.y += (motion.y * e.deltaTime);
+            transform.pos.x += (vel.x * e.deltaTime);
+            transform.pos.y += (vel.y * e.deltaTime);
         }
     }
 }
@@ -27,14 +27,14 @@ void Motion2D::onMainLoop(event::MainLoop &e) {
 void Motion3D::init(void) { subscribeToEvent<event::MainLoop>(&Motion3D::onMainLoop); }
 void Motion3D::onMainLoop(event::MainLoop &e) {
     auto &transforms = getComponent<component::Transform3D>();
-    auto &motions = getComponent<component::Motion3D>();
+    auto &velocities = getComponent<component::Velocity3D>();
 
-    for (auto &[entity, motion] : motions) {
+    for (auto &[entity, vel] : velocities) {
         if (transforms.contains(entity)) {
             auto &transform = transforms.get(entity);
-            transform.pos.x += (motion.x * e.deltaTime);
-            transform.pos.y += (motion.y * e.deltaTime);
-            transform.pos.z += (motion.z * e.deltaTime);
+            transform.pos.x += (vel.x * e.deltaTime);
+            transform.pos.y += (vel.y * e.deltaTime);
+            transform.pos.z += (vel.z * e.deltaTime);
         }
     }
 }

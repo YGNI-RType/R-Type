@@ -29,7 +29,7 @@ void RenderWindow::onMainLoop(gengine::system::event::MainLoop &e) {
     if (WindowShouldClose())
         publishEvent(gengine::system::event::StopMainLoop());
     else
-        publishEvent(gengine::system::event::Draw());
+        publishEvent(gengine::system::event::RenderLoop(e.deltaTime));
 
     if (IsWindowResized()) {
         m_width = GetRenderWidth();
