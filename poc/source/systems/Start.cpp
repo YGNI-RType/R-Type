@@ -7,16 +7,14 @@
 
 #include "systems/Start.hpp"
 
-#include "libdev/components/Transforms.hpp"
-#include "libdev/components/Motions.hpp"
-#include "libdev/components/HitBoxs.hpp"
-#include "libdev/components/Motions.hpp"
-#include "libdev/components/Transforms.hpp"
+#include "GEngine/libdev/components/HitBoxs.hpp"
+#include "GEngine/libdev/components/Motions.hpp"
+#include "GEngine/libdev/components/Transforms.hpp"
 
-#include "libdev/components/driver/output/Animation.hpp"
+#include "GEngine/libdev/components/driver/output/Animation.hpp"
 // #include "libdev/components/driver/output/Color.hpp"
-#include "libdev/components/driver/output/Shape.hpp"
-#include "libdev/components/driver/output/Sprite.hpp"
+#include "GEngine/libdev/components/driver/output/Shape.hpp"
+#include "GEngine/libdev/components/driver/output/Sprite.hpp"
 
 #include <random>
 

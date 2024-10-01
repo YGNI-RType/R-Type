@@ -5,50 +5,46 @@
 ** main.cpp
 */
 
-#include "driver/Engine.hpp"
-#include "game/Engine.hpp"
-#include "interface/Internal.hpp"
+#include "GEngine/driver/Engine.hpp"
+#include "GEngine/game/Engine.hpp"
+#include "GEngine/interface/Internal.hpp"
 
-#include "libdev/components/HitBoxs.hpp"
-#include "libdev/components/Motions.hpp"
-// #include "libdev/components/Positions.hpp"
+#include "GEngine/libdev/components/HitBoxs.hpp"
+#include "GEngine/libdev/components/Motions.hpp"
 
-#include "libdev/systems/Collisions.hpp"
-#include "libdev/systems/MainLoop.hpp"
+#include "GEngine/libdev/systems/Collisions.hpp"
+#include "GEngine/libdev/systems/MainLoop.hpp"
 
-#include "libdev/systems/Collisions.hpp"
-#include "libdev/systems/Logger.hpp"
-#include "libdev/components/Motions.hpp"
-// #include "libdev/components/Positions.hpp"
+#include "GEngine/libdev/components/Motions.hpp"
+#include "GEngine/libdev/systems/Collisions.hpp"
+#include "GEngine/libdev/systems/Logger.hpp"
 
-#include "libdev/systems/Collisions.hpp"
-#include "libdev/systems/MainLoop.hpp"
-#include "libdev/systems/Logger.hpp"
-#include "libdev/systems/MainLoop.hpp"
-#include "libdev/systems/Motions.hpp"
+#include "GEngine/libdev/systems/Collisions.hpp"
+#include "GEngine/libdev/systems/Logger.hpp"
+#include "GEngine/libdev/systems/MainLoop.hpp"
+#include "GEngine/libdev/systems/Motions.hpp"
 
-#include "libdev/systems/Motions.hpp"
+#include "GEngine/libdev/systems/Motions.hpp"
 
-#include "libdev/systems/Collisions.hpp"
-#include "libdev/systems/Logger.hpp"
-#include "libdev/systems/MainLoop.hpp"
-#include "libdev/systems/Motions.hpp"
+#include "GEngine/libdev/systems/Collisions.hpp"
+#include "GEngine/libdev/systems/Logger.hpp"
+#include "GEngine/libdev/systems/MainLoop.hpp"
+#include "GEngine/libdev/systems/Motions.hpp"
 
-#include "libdev/systems/events/Log.hpp"
+#include "GEngine/libdev/systems/events/Log.hpp"
 
 #include "systems/AutoMotion.hpp"
 #include "systems/Start.hpp"
-#include "systems/Start.hpp"
 
-#include "libdev/systems/driver/input/KeyboardCatcher.hpp"
-#include "libdev/systems/driver/input/MouseCatcher.hpp"
-#include "libdev/systems/driver/output/Animate.hpp"
-#include "libdev/systems/driver/output/Draw.hpp"
-#include "libdev/systems/driver/output/RenderWindow.hpp"
-#include "libdev/systems/driver/output/TextureManager.hpp"
+#include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
+#include "GEngine/libdev/systems/driver/input/MouseCatcher.hpp"
+#include "GEngine/libdev/systems/driver/output/Animate.hpp"
+#include "GEngine/libdev/systems/driver/output/Draw.hpp"
+#include "GEngine/libdev/systems/driver/output/RenderWindow.hpp"
+#include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 
-#include "libdev/components/driver/output/Animation.hpp"
-#include "libdev/components/driver/output/Shape.hpp"
+#include "GEngine/libdev/components/driver/output/Animation.hpp"
+#include "GEngine/libdev/components/driver/output/Shape.hpp"
 
 #include <random>
 
@@ -75,7 +71,8 @@ public:
     }
     void onCollision(gengine::system::event::Collsion &e) {
         // auto &colors = getComponent<gengine::component::driver::output::Color>();
-        // std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" + std::to_string(e.entity2) + ").";
+        // std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" +
+        // std::to_string(e.entity2) + ").";
 
         // publishEvent(gengine::system::event::Log(logMessage));
         // if (e.entity1 && e.entity2)
