@@ -6,6 +6,7 @@
 */
 
 #include "GEngine/net/net_channel.hpp"
+#include "GEngine/cvar/net.hpp"
 #include "GEngine/time/time.hpp"
 
 namespace Network {
@@ -24,7 +25,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
         return false;
     }
 
-    msg.writeHeader({.challenge = m_challenge, .sequence = m_udpOutSequence});
+    msg.writeHeader({.sequence = NETCHAN_GENCHECKSUM(m_challenge, m_udpOutSequence)});
 
     size_t sent = socket.send(msg, addr);
     if (sent < 0) // guess it's send, but not quite, TODO : check any weird case (place breakpoint)
@@ -38,9 +39,34 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
     return true;
 }
 
-bool readDatagram(const UDPMessage &msg, const Address &addr)
-{
-    
+bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
+    UDPG_NetChannelHeader header;
+    msg.readHeader(header);
+
+    if (!NETCHAN_GENCHECKSUM(m_challenge, header.sequence))
+        return false; /* invalid query */
+
+    if (header.sequence <= m_udpInSequence) {
+        /*out of order packet, delete it */
+        return false;
+    }
+    m_droppedPackets = header.sequence - m_udpInSequence + 1;
+
+    /****** At this point, the packet is valid *******/
+
+    m_udplastrecv = Time::Clock::milliseconds();
+
+    if (msg.isFragmented()) {
+        /* todo : add to pool of receiving packet */
+        return true;
+    }
+
+    m_udpInSequence = header.sequence;
+    return true;
+}
+
+bool NetChannel::isTimeout() const {
+    return Time::Clock::milliseconds() - m_udplastrecv > CVar::net_kick_timeout.getIntValue();
 }
 
 } // namespace Network

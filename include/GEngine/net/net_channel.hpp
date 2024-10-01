@@ -97,6 +97,8 @@ public:
     bool sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address &addr);
     bool sendStream(const TCPMessage &msg);
 
+    bool isTimeout(void) const;
+
 private:
     const std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
 
@@ -116,7 +118,9 @@ private:
 
     uint64_t m_udpInSequence = 0;
     uint64_t m_udpOutSequence = 1;
+
     uint64_t m_udplastsent = 0;
+    uint64_t m_udplastrecv = 0;
     size_t m_udplastsentsize = 0;
 
 

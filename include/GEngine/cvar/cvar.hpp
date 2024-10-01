@@ -23,8 +23,8 @@ public:
         ROM = 0x04,    // nobody can change the value
         SETUP = 0x08,  // Commands that are in setup, use callbacks
         SYSTEM = 0x10, // System commands
-        SERVER = 0x20, // Server commands
-        CLIENT = 0x40  // Client commands
+        TRANSMIT = 0x20, // Server commands, needs to trasmit to the server
+        SELF = 0x40  // Client commands, based on self process
     };
 
 public:

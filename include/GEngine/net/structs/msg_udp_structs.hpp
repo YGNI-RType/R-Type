@@ -25,7 +25,6 @@ struct UDPSV_PingResponse {
 };
 
 struct UDPG_NetChannelHeader {
-    int challenge;
     uint64_t sequence;
 };
 

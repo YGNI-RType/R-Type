@@ -9,7 +9,7 @@
 
 namespace CVar {
 
-ConVar sv_cheats("sv_cheats", "0", ConVar::CHEAT | ConVar::SERVER);
+ConVar sv_cheats("sv_cheats", "0", ConVar::CHEAT | ConVar::TRANSMIT);
 
 ////////////////////////////////////////
 
@@ -30,7 +30,7 @@ void ConVar::setValue(const std::string &value, bool isUserInput) {
 #ifndef SERVER
         if (m_flags & CHEAT && !sv_cheats.getIntValue())
             return;
-        if (m_flags & SERVER)
+        if (m_flags & TRANSMIT)
             return; // TODO: notifies the server that the client want the value changed !!
 #endif
     }
