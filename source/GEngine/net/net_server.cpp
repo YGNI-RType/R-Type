@@ -94,6 +94,8 @@ bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const A
     case CL_BROADCAST_PING:
         respondPingServers(msg, socket, addr);
         return true;
+    case CL_SENDCMD:
+        return true;
     default: // handleUdpMessage(msg, addr);
         return false;
     }

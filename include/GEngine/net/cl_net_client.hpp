@@ -19,7 +19,7 @@ public:
     void init(void);
     void stop(void);
 
-    void connectToServer(const Address &serverAddress);
+    void connectToServer(std::unique_ptr<Address> serverAddress);
     void disconnectFromServer(void);
 
     bool handleTCPEvents(fd_set &readSet);

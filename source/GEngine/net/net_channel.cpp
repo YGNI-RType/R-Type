@@ -11,8 +11,15 @@
 
 namespace Network {
 
-NetChannel::NetChannel(std::unique_ptr<Address> clientAddress, SocketTCP &socket)
-    : m_toAddress(std::move(clientAddress)), m_tcpSocket(std::move(socket)) {}
+NetChannel::NetChannel(bool isServer, std::unique_ptr<Address> clientAddress, SocketTCP &socket)
+    : m_toAddress(std::move(clientAddress)), m_tcpSocket(std::move(socket)) {
+    if (!isServer)
+        return;
+
+    /* each has challenge, avoid packet hi-jacking (todo (?) challenge are used for ddos, but is that the system
+     * preventing it instead of us ?) */
+    m_challenge = (((unsigned int)rand() << 16) ^ (unsigned int)rand()) ^ Time::Clock::milliseconds();
+}
 
 bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     size_t msgLen = msg.getSize();
@@ -44,7 +51,7 @@ bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
     msg.readHeader(header);
 
     if (!NETCHAN_GENCHECKSUM(m_challenge, header.sequence))
-        return false; /* invalid query */
+        return false; /* what is going on sir ???? */
 
     if (header.sequence <= m_udpInSequence) {
         /*out of order packet, delete it */

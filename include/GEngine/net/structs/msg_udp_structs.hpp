@@ -13,7 +13,9 @@ namespace Network {
 
 enum {
     CL_BROADCAST_PING,
-    SV_BROADCAST_PING
+    SV_BROADCAST_PING,
+    CL_SENDCMD,
+    SV_SNAPSHOT
 };
 
 struct UDPSV_PingResponse {

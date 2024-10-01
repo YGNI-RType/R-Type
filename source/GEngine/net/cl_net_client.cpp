@@ -9,11 +9,12 @@
 
 namespace Network {
 
-void CLNetClient::connectToServer(const Address &serverAddress) {
+void CLNetClient::connectToServer(std::unique_ptr<Address> serverAddress) {
 
     /* Connects to something */
     try {
-        m_netChannel.setTcpSocket(SocketTCP(serverAddress));
+        auto sock = SocketTCP(*serverAddress);
+        m_netChannel = std::move(NetChannel(false, std::move(serverAddress), sock));
     } catch (const std::exception &e) {
         /* todo : some error handling just in case ? */
         throw e;
@@ -49,8 +50,9 @@ bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, cons
     case SV_BROADCAST_PING:
         getPingResponse(msg, addr);
         return true;
-        // handlePingResponse(msg, addr);
-    default: // handleUdpMessage(msg, addr);
+    case SV_SNAPSHOT:
+        return true;
+    default:
         return false;
     }
 }
@@ -80,7 +82,7 @@ void CLNetClient::pingLanServers(SocketUDP &socketUDP, AddressType type) {
 
         if (type == AT_IPV4)
             socketUDP.send(message, AddressV4(AT_BROADCAST, port));
-        else
+        else if (type == AT_IPV6)
             socketUDP.send(message, AddressV6(AT_MULTICAST, port));
     }
 }

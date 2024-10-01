@@ -85,7 +85,11 @@ private:
 class NetChannel {
 public:
     NetChannel() = default;
-    NetChannel(std::unique_ptr<Address> addr, SocketTCP &socket);
+    NetChannel(bool isServer, std::unique_ptr<Address> addr, SocketTCP &socket);
+    NetChannel(const NetChannel &other) = delete;
+    NetChannel &operator=(const NetChannel &other) = delete;
+    NetChannel(NetChannel &&other) = default;
+    NetChannel &operator=(NetChannel &&other) = default;
     ~NetChannel() = default;
 
     const SocketTCP &getTcpSocket(void) const { return m_tcpSocket; }
@@ -100,7 +104,7 @@ public:
     bool isTimeout(void) const;
 
 private:
-    const std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
+    std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
 
 
     /* UDP */
