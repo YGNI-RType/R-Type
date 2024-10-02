@@ -3,4 +3,7 @@ RemoveBracesLLVM: true
 IndentWidth: 4
 AccessModifierOffset: -4
 ColumnLimit: 120
-# AlwaysBreakTemplateDeclarations: true
+AlwaysBreakTemplateDeclarations: true
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+AllowShortFunctionsOnASingleLine: false
