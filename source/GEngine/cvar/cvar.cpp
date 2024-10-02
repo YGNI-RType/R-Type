@@ -14,7 +14,10 @@ ConVar sv_cheats("sv_cheats", "0", ConVar::CHEAT | ConVar::TRANSMIT);
 ////////////////////////////////////////
 
 ConVar::ConVar(const std::string &name, const std::string &value, short flags, const std::string &description)
-    : m_value(value), m_intValue(std::stoi(value)), m_description(description), m_flags(flags) {
+    : m_value(value)
+    , m_intValue(std::stoi(value))
+    , m_description(description)
+    , m_flags(flags) {
     getAllCommands()[name] = this;
 
     if (flags & ROM || flags & CMD)

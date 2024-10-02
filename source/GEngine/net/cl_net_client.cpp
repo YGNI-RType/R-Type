@@ -48,9 +48,13 @@ void CLNetClient::createSets(fd_set &readSet) {
     FD_SET(m_netChannel.getTcpSocket().getSocket(), &readSet);
 }
 
-void CLNetClient::init(void) { m_enabled = true; }
+void CLNetClient::init(void) {
+    m_enabled = true;
+}
 
-void CLNetClient::stop(void) { m_enabled = false; }
+void CLNetClient::stop(void) {
+    m_enabled = false;
+}
 
 bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
     if (!m_enabled)
@@ -90,16 +94,16 @@ bool CLNetClient::handleTCPEvents(fd_set &readSet) {
 
 bool CLNetClient::handleServerTCP(const TCPMessage &msg) {
     switch (msg.getType()) {
-        case SV_INIT_CONNECTON:
-            TCPSV_ClientInit data;
-            msg.readData<TCPSV_ClientInit>(data);
+    case SV_INIT_CONNECTON:
+        TCPSV_ClientInit data;
+        msg.readData<TCPSV_ClientInit>(data);
 
-            m_netChannel.setChallenge(data.challenge);
-            std::cout << "CL: Client challange: " << data.challenge << std::endl;
-            m_connectionState = CON_AUTHORIZING;
-            return true;
-        default:
-            return false;
+        m_netChannel.setChallenge(data.challenge);
+        std::cout << "CL: Client challange: " << data.challenge << std::endl;
+        m_connectionState = CON_AUTHORIZING;
+        return true;
+    default:
+        return false;
     }
     return true;
 }

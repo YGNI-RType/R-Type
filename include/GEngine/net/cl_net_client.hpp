@@ -10,8 +10,8 @@
 #include "net_channel.hpp"
 #include "net_common.hpp"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace Network {
 
@@ -42,13 +42,20 @@ public:
     bool handleServerUDP(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
     bool handleServerTCP(const TCPMessage &msg);
 
-    void setChallenge(int challenge) { m_challenge = challenge; }
-    int getChallenge(void) const { return m_challenge; }
+    void setChallenge(int challenge) {
+        m_challenge = challenge;
+    }
+    int getChallenge(void) const {
+        return m_challenge;
+    }
 
-    auto &getPingResponses(void) const { return m_pingedServers; }
+    auto &getPingResponses(void) const {
+        return m_pingedServers;
+    }
 
-    bool isConnected(void) const { return m_connectionState >= CON_AUTHORIZING; }
-
+    bool isConnected(void) const {
+        return m_connectionState >= CON_AUTHORIZING;
+    }
 
 public:
     void pingLanServers(SocketUDP &socketUDP, AddressType type);

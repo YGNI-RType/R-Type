@@ -103,10 +103,8 @@ int main(void) {
     while (1) {
         if (Network::NET::sleep(4000))
             continue;
-        if (!client.isConnected()) {
+        if (!client.isConnected())
             client.connectToServer(0);
-        }
-            
     }
 
     Network::NET::stop();

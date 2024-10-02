@@ -67,7 +67,9 @@ private:
 public:
     static void pingServers(void);
 
-    static CLNetClient &getClient(void) { return mg_client; }
+    static CLNetClient &getClient(void) {
+        return mg_client;
+    }
 
 private:
 };

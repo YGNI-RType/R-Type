@@ -9,8 +9,8 @@
 #include "GEngine/net/socket.hpp"
 
 namespace Network {
-UDPMessage::UDPMessage(bool hasHeader, uint8_t type) : AMessage(0, type)
-{
+UDPMessage::UDPMessage(bool hasHeader, uint8_t type)
+    : AMessage(0, type) {
     m_curSize = hasHeader ? sizeof(UDPG_NetChannelHeader) : 0;
 }
 
@@ -53,52 +53,41 @@ std::vector<UDPSerializedMessage> UDPMessage::getSerializeFragmented(void) const
     return fragments;
 }
 
-void UDPMessage::writeHeader(const UDPG_NetChannelHeader &header)
-{
+void UDPMessage::writeHeader(const UDPG_NetChannelHeader &header) {
     /* bypasses the m_cursize, since normally, it should contain this exact amount of data inside */
     std::memcpy(m_data, &header, sizeof(UDPG_NetChannelHeader));
 }
 
-void UDPMessage::readHeader(UDPG_NetChannelHeader &header) const
-{
+void UDPMessage::readHeader(UDPG_NetChannelHeader &header) const {
     std::memcpy(&header, m_data, sizeof(UDPG_NetChannelHeader));
 }
 
-void UDPMessage::setCompressed(bool compressed)
-{
-    if (compressed) {
+void UDPMessage::setCompressed(bool compressed) {
+    if (compressed)
         m_flags |= COMPRESSED;
-    } else {
+    else
         m_flags &= ~COMPRESSED;
-    }
 }
 
-void UDPMessage::setHeader(bool header)
-{
-    if (header) {
+void UDPMessage::setHeader(bool header) {
+    if (header)
         m_flags |= HEADER;
-    } else {
+    else
         m_flags &= ~HEADER;
-    }
 }
 
-void UDPMessage::setFragmented(bool fragmented)
-{
-    if (fragmented) {
+void UDPMessage::setFragmented(bool fragmented) {
+    if (fragmented)
         m_flags |= FRAGMENTED;
-    } else {
+    else
         m_flags &= ~FRAGMENTED;
-    }
 }
 
-void UDPMessage::setEncrypted(bool encrypted)
-{
-    if (encrypted) {
+void UDPMessage::setEncrypted(bool encrypted) {
+    if (encrypted)
         m_flags |= ENCRYPTED;
-    } else {
+    else
         m_flags &= ~ENCRYPTED;
-    }
 }
-
 
 } // namespace Network

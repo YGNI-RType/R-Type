@@ -40,7 +40,9 @@ WSADATA ASocket::winsockdata;
 SOCKET ASocket::m_highFd = -1;
 fd_set ASocket::m_fdSet;
 
-ASocket::~ASocket() { socketClose(); }
+ASocket::~ASocket() {
+    socketClose();
+}
 
 ASocket::ASocket(ASocket &&other) {
     m_sock = other.m_sock;
@@ -182,14 +184,18 @@ SocketTCPMaster::SocketTCPMaster(uint16_t port, bool ipv6) {
     addSocketPool(m_sock);
 }
 
-SocketTCPMaster::SocketTCPMaster(SocketTCPMaster &&other) : ASocket(std::move(other)) {}
+SocketTCPMaster::SocketTCPMaster(SocketTCPMaster &&other)
+    : ASocket(std::move(other)) {
+}
 SocketTCPMaster &SocketTCPMaster::operator=(SocketTCPMaster &&other) {
     if (this != &other)
         ASocket::operator=(std::move(other));
     return *this;
 }
 
-SocketTCP SocketTCPMaster::accept(UnknownAddress &unkwAddr) const { return std::move(SocketTCP(*this, unkwAddr)); }
+SocketTCP SocketTCPMaster::accept(UnknownAddress &unkwAddr) const {
+    return std::move(SocketTCP(*this, unkwAddr));
+}
 
 /***********************************************/
 
@@ -249,7 +255,9 @@ SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort) {
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(SocketTCP &&other) : ASocket(std::move(other)) {}
+SocketTCP::SocketTCP(SocketTCP &&other)
+    : ASocket(std::move(other)) {
+}
 SocketTCP &SocketTCP::operator=(SocketTCP &&other) {
     if (this != &other)
         ASocket::operator=(std::move(other));
@@ -356,7 +364,9 @@ SocketUDP::SocketUDP(uint16_t port, bool ipv6) {
     addSocketPool(m_sock);
 }
 
-SocketUDP::SocketUDP(SocketUDP &&other) : ASocket(std::move(other)) {}
+SocketUDP::SocketUDP(SocketUDP &&other)
+    : ASocket(std::move(other)) {
+}
 SocketUDP &SocketUDP::operator=(SocketUDP &&other) {
     if (this != &other)
         ASocket::operator=(std::move(other));

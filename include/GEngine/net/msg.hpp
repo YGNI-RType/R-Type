@@ -52,20 +52,28 @@ public:
     // virtual void writeHeader(); // override final;
     // virtual void readHeader(); // override final;
 
-    std::size_t getSize() const { return m_curSize; }
-    uint8_t getType() const { return m_type; }
-    std::size_t getMaxSize() const { return m_maxSize; }
+    std::size_t getSize() const {
+        return m_curSize;
+    }
+    uint8_t getType() const {
+        return m_type;
+    }
+    std::size_t getMaxSize() const {
+        return m_maxSize;
+    }
 
     virtual const byte_t *getData() const = 0;
 
-    template <typename T> void writeData(const T &data) {
+    template <typename T>
+    void writeData(const T &data) {
         byte_t *myData = getDataMember();
 
         std::memcpy(myData + m_curSize, &data, sizeof(T));
         m_curSize += sizeof(T);
     }
 
-    template <typename T> size_t readData(T &data) const {
+    template <typename T>
+    size_t readData(T &data) const {
         if (sizeof(T) > m_curSize)
             throw std::runtime_error("Message is too small to read data");
 
@@ -95,13 +103,17 @@ public:
 
     TCPMessage &operator=(const TCPMessage &other);
 
-    const byte_t *getData() const override final { return m_data; }
+    const byte_t *getData() const override final {
+        return m_data;
+    }
 
     void getSerialize(TCPSerializedMessage &msg) const;
     void setSerialize(TCPSerializedMessage &msg);
 
 private:
-    byte_t *getDataMember() override final { return m_data; };
+    byte_t *getDataMember() override final {
+        return m_data;
+    };
 
     bool m_isFinished = true;
 
@@ -125,12 +137,22 @@ public:
 
     UDPMessage &operator=(const UDPMessage &other);
 
-    const byte_t *getData() const override final { return m_data; }
+    const byte_t *getData() const override final {
+        return m_data;
+    }
 
-    bool isCompressed() const { return m_flags & COMPRESSED; }
-    bool hasHeader() const { return m_flags & HEADER; }
-    bool isFragmented() const { return m_flags & FRAGMENTED; }
-    bool isEncrypted() const { return m_flags & ENCRYPTED; }
+    bool isCompressed() const {
+        return m_flags & COMPRESSED;
+    }
+    bool hasHeader() const {
+        return m_flags & HEADER;
+    }
+    bool isFragmented() const {
+        return m_flags & FRAGMENTED;
+    }
+    bool isEncrypted() const {
+        return m_flags & ENCRYPTED;
+    }
     void setCompressed(bool compressed);
     void setHeader(bool header);
     void setFragmented(bool fragmented);
@@ -144,7 +166,9 @@ public:
     void setSerialize(UDPSerializedMessage &msg);
 
 private:
-    byte_t *getDataMember() override final { return m_data; };
+    byte_t *getDataMember() override final {
+        return m_data;
+    };
 
     uint8_t m_flags = 0;
 

@@ -9,11 +9,10 @@
 
 #include <cstdint>
 
-namespace Time
-{
-    class Clock {
-        public:
-            static uint64_t milliseconds(void);
-            static uint64_t seconds(void);
-    };
+namespace Time {
+class Clock {
+public:
+    static uint64_t milliseconds(void);
+    static uint64_t seconds(void);
+};
 } // namespace Time

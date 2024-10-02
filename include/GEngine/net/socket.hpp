@@ -40,9 +40,13 @@ public:
     static WSADATA winsockdata;
 #endif
 
-    static SOCKET getHighestSocket(void) { return m_highFd; }
+    static SOCKET getHighestSocket(void) {
+        return m_highFd;
+    }
 
-    SOCKET getSocket(void) const { return m_sock; }
+    SOCKET getSocket(void) const {
+        return m_sock;
+    }
 
 public:
     static void initLibs(void);
@@ -70,9 +74,15 @@ public:
 
     int socketClose(void);
 
-    uint16_t getPort(void) const { return m_port; }
-    bool isFdSet(fd_set &set) const { return FD_ISSET(m_sock, &m_fdSet); }
-    void setFdSet(fd_set &set) const { FD_SET(m_sock, &set); }
+    uint16_t getPort(void) const {
+        return m_port;
+    }
+    bool isFdSet(fd_set &set) const {
+        return FD_ISSET(m_sock, &m_fdSet);
+    }
+    void setFdSet(fd_set &set) const {
+        FD_SET(m_sock, &set);
+    }
 
 protected:
     SOCKET m_sock = -1;
@@ -146,7 +156,9 @@ public:
     bool send(const TCPMessage &msg) const;
     void receive(TCPMessage &msg) const;
 
-    const EventType getEventType(void) const { return m_eventType; }
+    const EventType getEventType(void) const {
+        return m_eventType;
+    }
 
 private:
     std::size_t receiveReliant(TCPSerializedMessage *buffer, std::size_t size) const;
@@ -159,6 +171,5 @@ SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);
 SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort);
 SocketTCPMaster openSocketTcp(uint16_t wantedPort, bool ipv6);
 SocketUDP openSocketUdp(uint16_t wantedPort, bool ipv6);
-
 
 } // namespace Network

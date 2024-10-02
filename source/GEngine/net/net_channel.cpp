@@ -12,7 +12,9 @@
 namespace Network {
 
 NetChannel::NetChannel(bool isServer, std::unique_ptr<Address> clientAddress, SocketTCP &socket)
-    : m_enabled(true), m_toAddress(std::move(clientAddress)), m_tcpSocket(std::move(socket)) {
+    : m_enabled(true)
+    , m_toAddress(std::move(clientAddress))
+    , m_tcpSocket(std::move(socket)) {
     if (!isServer)
         return;
 

@@ -9,7 +9,9 @@
 
 namespace Network {
 
-TCPMessage::TCPMessage(std::size_t maxSize, uint8_t type) : AMessage(maxSize, type) {}
+TCPMessage::TCPMessage(std::size_t maxSize, uint8_t type)
+    : AMessage(maxSize, type) {
+}
 
 TCPMessage &TCPMessage::operator=(const TCPMessage &other) {
     m_isFinished = other.m_isFinished;

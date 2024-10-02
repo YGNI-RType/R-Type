@@ -10,11 +10,10 @@
 
 #include <cstddef>
 
-namespace Network
-{
-    /* each NetChannel has one */
-    struct iomsg {
-        size_t pos_start;
-        size_t pos_end;
-    };
+namespace Network {
+/* each NetChannel has one */
+struct iomsg {
+    size_t pos_start;
+    size_t pos_end;
+};
 } // namespace Network

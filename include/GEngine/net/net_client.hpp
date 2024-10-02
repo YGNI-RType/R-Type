@@ -33,8 +33,8 @@ public:
 private:
     char m_name[MAX_SZ_NAME];
 
-    uint16_t rate; /* rate of requests, if lan don't care */
-    uint16_t snapshotRate; /* rate of sending snapshots (msec) */
+    uint16_t rate;             /* rate of requests, if lan don't care */
+    uint16_t snapshotRate;     /* rate of sending snapshots (msec) */
     bool transmitHighFreqData; /* voip, webcam feed etc...*/
 };
 
@@ -55,7 +55,9 @@ public:
     NetClient(std::unique_ptr<Address> addr, SocketTCP &socket);
     ~NetClient() = default;
 
-    NetChannel &getChannel(void) { return m_channel; }
+    NetChannel &getChannel(void) {
+        return m_channel;
+    }
 
 private:
     NetChannel m_channel;

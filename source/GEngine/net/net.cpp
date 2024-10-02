@@ -24,8 +24,8 @@
 
 #include "GEngine/cvar/net.hpp"
 
-#include <cstring>
 #include <algorithm>
+#include <cstring>
 
 #ifdef _WIN32
 // TODO : remove unused
@@ -167,7 +167,6 @@ void NET::getLocalAddress(void) {
     if (res)
         freeaddrinfo(res);
 #endif
-
 }
 
 void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockaddr *netmask, bool isLoopback) {

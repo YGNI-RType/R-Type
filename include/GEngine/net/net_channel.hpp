@@ -92,15 +92,29 @@ public:
     NetChannel &operator=(NetChannel &&other) = default;
     ~NetChannel() = default;
 
-    const Address &getAddress(void) const { return *m_toAddress; }
-    bool isEnabled(void) const { return m_enabled; }
+    const Address &getAddress(void) const {
+        return *m_toAddress;
+    }
+    bool isEnabled(void) const {
+        return m_enabled;
+    }
 
-    const SocketTCP &getTcpSocket(void) const { return m_tcpSocket; }
-    void setTcpSocket(SocketTCP &&socket) { m_tcpSocket = std::move(socket); }
+    const SocketTCP &getTcpSocket(void) const {
+        return m_tcpSocket;
+    }
+    void setTcpSocket(SocketTCP &&socket) {
+        m_tcpSocket = std::move(socket);
+    }
 
-    int getChallenge(void) const { return m_challenge; }
-    void setChallenge(int challenge) { m_challenge = challenge; }
-    bool canCommunicate(void) { return m_enabled && m_tcpSocket.getSocket() != -1 && m_challenge != -1; }
+    int getChallenge(void) const {
+        return m_challenge;
+    }
+    void setChallenge(int challenge) {
+        m_challenge = challenge;
+    }
+    bool canCommunicate(void) {
+        return m_enabled && m_tcpSocket.getSocket() != -1 && m_challenge != -1;
+    }
 
     bool readDatagram(const UDPMessage &msg, const Address &addr);
     /* steam if proper to socket, taht's why msg in not const */
@@ -115,14 +129,12 @@ private:
     bool m_enabled = false;
     std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
 
-
     /* UDP */
 
     /* TODO : add delay (?) */
     // PacketPoolUdp m_udpPoolUnsent;
 
     int m_challenge = -1;
-
 
     /* most likely fragments, since the packets may be too big (mostly (always) for client from server) */
     PacketPoolUdp m_udpPoolSend;
@@ -135,7 +147,6 @@ private:
     uint64_t m_udplastsent = 0;
     uint64_t m_udplastrecv = 0;
     size_t m_udplastsentsize = 0;
-
 
     /*******/
 
