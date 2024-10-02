@@ -58,7 +58,7 @@ public:
 
 protected:
     AMessage(std::size_t maxSize, uint8_t type);
-    ~AMessage() = default;
+    virtual ~AMessage() = default;
 
     const std::size_t m_maxSize;
     std::size_t m_curSize = 0;
@@ -68,6 +68,7 @@ protected:
 class TCPMessage : public AMessage {
 public:
     TCPMessage(std::size_t maxSize, uint8_t type);
+    ~TCPMessage() = default;
 
     TCPMessage &operator=(const TCPMessage &other);
 
@@ -95,6 +96,7 @@ public:
 public:
     /* hasHeader = tell if it will be transmitted into the channel, with the necessity to have additional headers */
     UDPMessage(bool hasHeader, uint8_t type);
+    ~UDPMessage() = default;
 
     UDPMessage &operator=(const UDPMessage &other);
 
@@ -132,7 +134,7 @@ public:
     void readData(void *data, std::size_t size) const;
 
 private:
-    uint8_t m_flags;
+    uint8_t m_flags = 0;
 
     /* always set field to last, this is not a header !!!*/
     byte_t m_data[MAX_UDP_MSGLEN];

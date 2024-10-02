@@ -145,6 +145,26 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     addSocketPool(m_sock);
 }
 
+SocketTCPMaster::SocketTCPMaster(uint16_t port) {
+    m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (m_sock == -1)
+        throw std::runtime_error("(TCP) Failed to create socket");
+
+    m_port = port;
+    struct sockaddr_in address = {0};
+
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
+    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+
+    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
+        throw SocketException("(TCP) Failed to bind socket");
+
+    if (listen(m_sock, MAX_LISTEN) < 0)
+        throw SocketException("(TCP) Failed to listen on socket");
+
+    addSocketPool(m_sock);
+}
+
 SocketTCPMaster::SocketTCPMaster(SocketTCPMaster &&other) : ASocket(std::move(other)) {}
 SocketTCPMaster &SocketTCPMaster::operator=(SocketTCPMaster &&other) {
     if (this != &other)
@@ -165,14 +185,16 @@ SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAd
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(const Address &addr) {
+SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
-    m_port = addr.getPort();
+    m_port = tcpPort;
     struct sockaddr_in address;
-    std::memcpy(&address, &addr, sizeof(struct sockaddr_in));
+
+    addr.toSockAddr(reinterpret_cast<struct sockaddr *>(&address));
+    std::memcpy(&address, (struct sockaddr *)&address, sizeof(address));
 
     address.sin_port = m_port == PORT_ANY ? 0 : htons(m_port);
 
@@ -180,7 +202,30 @@ SocketTCP::SocketTCP(const Address &addr) {
         if (errno == EINPROGRESS)
             return;
         socketClose();
-        throw SocketException("(TCP) Failed to connect to server");
+        throw SocketException(strerror(errno));
+    }
+
+    addSocketPool(m_sock);
+}
+
+SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort) {
+    m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (m_sock == -1)
+        throw std::runtime_error("(TCP) Failed to create socket");
+
+    m_port = tcpPort;
+    struct sockaddr_in6 address;
+
+    addr.toSockAddr(reinterpret_cast<struct sockaddr *>(&address));
+    std::memcpy(&address, (struct sockaddr *)&address, sizeof(address));
+
+    address.sin6_port = m_port == PORT_ANY ? 0 : htons(m_port);
+
+    if (connect(m_sock, (sockaddr *)&address, sizeof(address)) < 0) {
+        if (errno == EINPROGRESS)
+            return;
+        socketClose();
+        throw SocketException(strerror(errno));
     }
 
     addSocketPool(m_sock);
@@ -262,6 +307,26 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
 
+    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+
+    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
+        throw SocketException("(UDP) Failed to bind socket");
+
+    addSocketPool(m_sock);
+}
+
+SocketUDP::SocketUDP(uint16_t port) {
+
+    m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (m_sock == -1)
+        throw std::runtime_error("(UDP) Failed to create socket");
+
+    m_port = port;
+    unsigned int opt = 1;
+    if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
+        throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
+
+    struct sockaddr_in address = {0};
     address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_port = port == PORT_ANY ? 0 : htons(port);
 
@@ -367,6 +432,32 @@ SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort) {
     for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
         try {
             return std::move(SocketUDP(ip, wantedPort + i));
+        } catch (SocketException &e) {
+            if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
+                throw e;
+            continue;
+        }
+    }
+    throw SocketException("Failed to open UDP socket");
+}
+
+SocketTCPMaster openSocketTcp(uint16_t wantedPort) {
+    for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
+        try {
+            return std::move(SocketTCPMaster(wantedPort + i));
+        } catch (SocketException &e) {
+            if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
+                throw e;
+            continue;
+        }
+    }
+    throw SocketException("Failed to open TCP socket");
+}
+
+SocketUDP openSocketUdp(uint16_t wantedPort) {
+    for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
+        try {
+            return std::move(SocketUDP(wantedPort + i));
         } catch (SocketException &e) {
             if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
                 throw e;

@@ -39,6 +39,9 @@ public:
     void handleNewClient(SocketTCPMaster &socket);
 
     void respondPingServers(const UDPMessage &msg, SocketUDP &udpsocket, const Address &addr);
+    bool handleUdpMessageClients(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
+
+    void handleClientCMD_UDP(SocketUDP &socket, NetClient &client, const UDPMessage &msg);
 
 private:
     bool m_isRunning = false;

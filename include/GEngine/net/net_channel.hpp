@@ -92,6 +92,9 @@ public:
     NetChannel &operator=(NetChannel &&other) = default;
     ~NetChannel() = default;
 
+    const Address &getAddress(void) const { return *m_toAddress; }
+    bool isEnabled(void) const { return m_enabled; }
+
     const SocketTCP &getTcpSocket(void) const { return m_tcpSocket; }
     void setTcpSocket(SocketTCP &&socket) { m_tcpSocket = std::move(socket); }
 
@@ -104,6 +107,7 @@ public:
     bool isTimeout(void) const;
 
 private:
+    bool m_enabled = false;
     std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
 
 

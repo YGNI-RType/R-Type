@@ -85,7 +85,8 @@ void NET::init(void) {
     for (const IP &ip : g_localIPs) { // todo : force an ip, find the best ip
                                       // (privileging pubilc interface)
         if (ip.type == AT_IPV4) {
-            mg_socketUdp = openSocketUdp(ip, currentUnusedPort);
+            /* todo : this is stupid */
+            mg_socketUdp = openSocketUdp(currentUnusedPort);
             currentUnusedPort++;
         }
         if (ip.type == AT_IPV6 && CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
@@ -128,7 +129,7 @@ void NET::getLocalAddress(void) {
 
     for (ifaddrs *search = ifap; search; search = search->ifa_next)
         if (ifap->ifa_flags & IFF_UP)
-            addLocalAddress(search->ifa_name, search->ifa_addr, search->ifa_netmask);
+            addLocalAddress(search->ifa_name, search->ifa_addr, search->ifa_netmask, search->ifa_flags & IFF_LOOPBACK);
 
     freeifaddrs(ifap);
 
@@ -157,17 +158,18 @@ void NET::getLocalAddress(void) {
         // add all IPs from returned list.
         for (struct addrinfo *search = res; search; search = search->ai_next)
             if (search->ai_family == AF_INET)
-                addLocalAddress((char *)"", search->ai_addr, (struct sockaddr *)&mask4);
+                addLocalAddress((char *)"", search->ai_addr, (struct sockaddr *)&mask4, search->ai_flags & AI_PASSIVE);
             else if (CVar::net_ipv6.getIntValue() && search->ai_family == AF_INET6)
-                addLocalAddress((char *)"", search->ai_addr, (struct sockaddr *)&mask6);
+                addLocalAddress((char *)"", search->ai_addr, (struct sockaddr *)&mask6, search->ai_flags & AI_PASSIVE);
     }
 
     if (res)
         freeaddrinfo(res);
 #endif
+
 }
 
-void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockaddr *netmask) {
+void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockaddr *netmask, bool isLoopback) {
     // only add addresses that have all required info.
     if (!sockaddr || !netmask || !ifname)
         return;
@@ -203,6 +205,22 @@ void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockad
     std::memcpy(&ip.netmask, netmask, addrlen);
 
     return g_localIPs.push_back(ip);
+}
+
+void NET::sortLocalAddresses(void) {
+    std::sort(g_localIPs.begin(), g_localIPs.end(), [](const IP &a, const IP &b) {
+        if (a.type == AT_LOOPBACK)
+            return true;
+        if (b.type == AT_LOOPBACK)
+            return false;
+
+        if (a.type == AT_IPV4 && b.type == AT_IPV6)
+            return true;
+        if (a.type == AT_IPV6 && b.type == AT_IPV4)
+            return false;
+
+        return false;
+    });
 }
 
 bool NET::isLanAddress(const Address &addr) {

@@ -35,9 +35,9 @@ void UDPMessage::readData(void *data, std::size_t size) const {
 
 void UDPMessage::setSerialize(UDPSerializedMessage &msg) {
     m_type = msg.type;
-    m_curSize += msg.curSize;
     m_flags = msg.flag;
-    std::memcpy(m_data + m_curSize, &msg.data, m_curSize);
+    std::memcpy(m_data + m_curSize, &msg.data, msg.curSize);
+    m_curSize += msg.curSize;
 }
 
 void UDPMessage::getSerialize(UDPSerializedMessage &msg) const {

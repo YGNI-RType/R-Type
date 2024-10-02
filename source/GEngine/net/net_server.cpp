@@ -8,6 +8,8 @@
 #include "GEngine/net/net_server.hpp"
 #include "GEngine/cvar/net.hpp"
 
+#include <iostream>
+
 namespace Network {
 
 uint16_t NetServer::start(size_t maxClients, const std::vector<IP> &g_localIPs, uint16_t currentUnusedPort) {
@@ -18,7 +20,7 @@ uint16_t NetServer::start(size_t maxClients, const std::vector<IP> &g_localIPs, 
     for (const IP &ip : g_localIPs) { // todo : force an ip, find the best ip
                                       // (privileging pubilc interface)
         if (ip.type == AT_IPV4) {
-            m_socketv4 = openSocketTcp(ip, currentUnusedPort);
+            m_socketv4 = openSocketTcp(currentUnusedPort);
             currentUnusedPort++;
         }
         if (ip.type == AT_IPV6 && CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
@@ -56,9 +58,6 @@ void NetServer::createSets(fd_set &readSet) {
 }
 
 void NetServer::respondPingServers(const UDPMessage &msg, SocketUDP &udpsocket, const Address &addr) {
-    if (!isRunning())
-        return;
-
     auto pingReponseMsg = UDPMessage(0, SV_BROADCAST_PING);
     UDPSV_PingResponse data = {.tcpv4Port = m_socketv4.getPort(),
                                .tcpv6Port = CVar::net_ipv6.getIntValue() ? m_socketv6.getPort() : (uint16_t)(-1),
@@ -94,11 +93,26 @@ bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const A
     case CL_BROADCAST_PING:
         respondPingServers(msg, socket, addr);
         return true;
-    case CL_SENDCMD:
-        return true;
-    default: // handleUdpMessage(msg, addr);
-        return false;
+    default:
+        return handleUdpMessageClients(socket, msg, addr);;
     }
+}
+
+bool NetServer::handleUdpMessageClients(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+    for (const auto &client : m_clients) {
+        auto &channel = client->getChannel();
+        if (channel.getAddress() != addr)
+            continue;
+
+        if (channel.readDatagram(msg, addr))
+            handleClientCMD_UDP(socket, *client, msg);
+        return true;
+    }
+    return false;
+}
+
+void NetServer::handleClientCMD_UDP(SocketUDP &socket, NetClient &client, const UDPMessage &msg) {
+    std::cout << "SV: received command !!" << std::endl;
 }
 
 bool NetServer::handleTCPEvent(fd_set &readSet) {

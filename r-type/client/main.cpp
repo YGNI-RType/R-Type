@@ -21,11 +21,18 @@ int main(void) {
     Network::NET::init();
 
     Network::NET::initClient();
-
     Network::NET::pingServers();
 
-    while (1)
-        Network::NET::sleep(4000);
+    Network::CLNetClient &client = Network::NET::getClient();
+
+    while (1) {
+        if (Network::NET::sleep(4000))
+            continue;
+        if (!client.isConnected()) {
+            client.connectToServer(0);
+        }
+            
+    }
 
     Network::NET::stop();
     gengine::game::Engine gameEngine;

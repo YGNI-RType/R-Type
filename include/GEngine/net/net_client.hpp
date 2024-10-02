@@ -55,7 +55,7 @@ public:
     NetClient(std::unique_ptr<Address> addr, SocketTCP &socket);
     ~NetClient() = default;
 
-    const NetChannel &getChannel(void) const { return m_channel; }
+    NetChannel &getChannel(void) { return m_channel; }
 
 private:
     NetChannel m_channel;

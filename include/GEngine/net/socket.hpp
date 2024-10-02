@@ -82,6 +82,7 @@ class SocketUDP : public ASocket {
 public:
     SocketUDP() = default;
     SocketUDP(const IP &ip, uint16_t port);
+    SocketUDP(uint16_t port);
     SocketUDP(const SocketUDP &other) = delete;
     SocketUDP &operator=(const SocketUDP &) = delete;
     SocketUDP(SocketUDP &&other);
@@ -107,6 +108,7 @@ class SocketTCPMaster : public ASocket {
 public:
     SocketTCPMaster() = default;
     SocketTCPMaster(const IP &ip, uint16_t port);
+    SocketTCPMaster(uint16_t port);
 
     // don't share anything, all the fields are static
     SocketTCPMaster(const SocketTCPMaster &other) = delete;
@@ -130,7 +132,8 @@ public:
 public:
     SocketTCP() = default;
     SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr); // accepts it from the socket master
-    SocketTCP(const Address &addr); // connect to the address (only for client)
+    SocketTCP(const AddressV4 &addr, uint16_t tcpPort); // connect to the address (only for client)
+    SocketTCP(const AddressV6 &addr, uint16_t tcpPort); // connect to the address (only for client)
     SocketTCP(const SocketTCP &other) = delete;
     SocketTCP &operator=(const SocketTCP &) = delete;
     SocketTCP(SocketTCP &&other);
@@ -151,5 +154,8 @@ private:
 
 SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);
 SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort);
+SocketTCPMaster openSocketTcp(uint16_t wantedPort);
+SocketUDP openSocketUdp(uint16_t wantedPort);
+
 
 } // namespace Network

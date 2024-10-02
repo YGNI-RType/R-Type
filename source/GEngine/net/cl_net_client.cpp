@@ -7,18 +7,23 @@
 
 #include "GEngine/net/cl_net_client.hpp"
 
+#include <iostream> // todo : remove
+
 namespace Network {
 
-void CLNetClient::connectToServer(std::unique_ptr<Address> serverAddress) {
+void CLNetClient::connectToServer(size_t index) {
 
     /* Connects to something */
-    try {
-        auto sock = SocketTCP(*serverAddress);
-        m_netChannel = std::move(NetChannel(false, std::move(serverAddress), sock));
-    } catch (const std::exception &e) {
-        /* todo : some error handling just in case ? */
-        throw e;
-    }
+    // try {
+    auto &[response, addr] = m_pingedServers.at(index);
+    auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), response.tcpv4Port)
+                                           : SocketTCP(static_cast<AddressV6 &>(*addr), response.tcpv6Port);
+
+    m_netChannel = std::move(NetChannel(false, std::move(addr), sock));
+    // } catch (const std::exception &e) {
+    //     /* todo : some error handling just in case ? */
+    //     throw e;
+    // }
 
     m_state = CS_CONNECTED;
     m_connectionState = CON_CONNECTING;
@@ -31,16 +36,9 @@ void CLNetClient::disconnectFromServer(void) {
     m_connectionState = CON_DISCONNECTED;
 }
 
-void CLNetClient::init(void)
-{
-    m_enabled = true;
-}
+void CLNetClient::init(void) { m_enabled = true; }
 
-void CLNetClient::stop(void)
-{
-    m_enabled = false;
-}
-
+void CLNetClient::stop(void) { m_enabled = false; }
 
 bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
     if (!m_enabled)
@@ -50,11 +48,18 @@ bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, cons
     case SV_BROADCAST_PING:
         getPingResponse(msg, addr);
         return true;
-    case SV_SNAPSHOT:
-        return true;
     default:
-        return false;
+        return handleServerUDP(socket, msg, addr);
     }
+}
+
+bool CLNetClient::handleServerUDP(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+    if (!m_netChannel.isEnabled() ||
+        addr != m_netChannel.getAddress()) // why sending udp packets to the client ? who are you ?
+        return false;
+
+    std::cout << "CL: received command !!" << std::endl;
+    return true;
 }
 
 bool CLNetClient::handleTCPEvents(fd_set &readSet) {
@@ -72,7 +77,13 @@ void CLNetClient::getPingResponse(const UDPMessage &msg, const Address &addr) {
     UDPSV_PingResponse data;
     msg.readData<UDPSV_PingResponse>(data);
 
-    m_pingedServers.push_back(data);
+    std::unique_ptr<Address> addrPtr;
+    if (addr.getType() == AT_IPV4)
+        addrPtr = std::make_unique<AddressV4>(static_cast<const AddressV4 &>(addr));
+    else if (addr.getType() == AT_IPV6)
+        addrPtr = std::make_unique<AddressV6>(static_cast<const AddressV6 &>(addr));
+
+    m_pingedServers.push_back({data, std::move(addrPtr)});
 }
 
 void CLNetClient::pingLanServers(SocketUDP &socketUDP, AddressType type) {

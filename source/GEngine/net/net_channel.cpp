@@ -12,7 +12,7 @@
 namespace Network {
 
 NetChannel::NetChannel(bool isServer, std::unique_ptr<Address> clientAddress, SocketTCP &socket)
-    : m_toAddress(std::move(clientAddress)), m_tcpSocket(std::move(socket)) {
+    : m_enabled(true), m_toAddress(std::move(clientAddress)), m_tcpSocket(std::move(socket)) {
     if (!isServer)
         return;
 
@@ -65,7 +65,9 @@ bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
 
     if (msg.isFragmented()) {
         /* todo : add to pool of receiving packet */
-        return true;
+
+        /* if it's the end of the fragmented data, return true */
+        return false;
     }
 
     m_udpInSequence = header.sequence;

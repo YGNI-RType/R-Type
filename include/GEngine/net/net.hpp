@@ -47,7 +47,8 @@ public:
 
 private:
     static void getLocalAddress(void);
-    static void addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockaddr *netmask);
+    static void addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockaddr *netmask, bool isLoopback);
+    static void sortLocalAddresses(void);
     static bool isLanAddress(const Address &addr);
     /*********************/
 
@@ -65,6 +66,8 @@ private:
     /* Ping servers */
 public:
     static void pingServers(void);
+
+    static CLNetClient &getClient(void) { return mg_client; }
 
 private:
 };
