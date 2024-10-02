@@ -8,8 +8,8 @@
 #include "systems/Start.hpp"
 
 #include "libdev/components/HitBoxs.hpp"
-#include "libdev/components/Velocities.hpp"
 #include "libdev/components/Transforms.hpp"
+#include "libdev/components/Velocities.hpp"
 
 #include "libdev/components/driver/output/Animation.hpp"
 // #include "libdev/components/driver/output/Color.hpp"
@@ -42,7 +42,7 @@ void Start::onStartEngine(gengine::system::event::StartEngine &e) {
                 // gengine::component::driver::output::Animation(5, 0, 0.1f)
     );
 
-    for (std::size_t i = 0; i < 500; i++) {
+    for (std::size_t i = 0; i < 5; i++) {
         int side = side_fork(gen);
         float x = Transformx_fork(gen);
         float y = Transformy_fork(gen);
@@ -55,7 +55,7 @@ void Start::onStartEngine(gengine::system::event::StartEngine &e) {
                     gengine::component::driver::output::Animation(12, rand() % 12, 0.1f),
                     gengine::component::driver::output::Drawable(10));
         spawnEntity(gengine::component::Transform2D({x, y}, {5, 5}, 0),
-                    gengine::component::Velocity2D(motion_fork(gen), motion_fork(gen)),
+                    // gengine::component::Velocity2D(motion_fork(gen), motion_fork(gen)),
                     // gengine::component::HitBoxSquare2D(side, side),
                     // // gengine::component::driver::output::Color(RED),
                     // // gengine::component::driver::output::Rectangle(side, side, RED)

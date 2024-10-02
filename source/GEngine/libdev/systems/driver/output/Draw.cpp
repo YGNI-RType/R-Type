@@ -23,7 +23,7 @@ void Draw2D::init(void) {
 
 void Draw2D::onRenderLoop(gengine::system::event::RenderLoop &e) {
     publishEvent(gengine::system::event::BeginDraw(WHITE));
-    auto &drawables = getComponent<component::driver::output::Drawable>();
+    auto &drawables = getComponents<component::driver::output::Drawable>();
 
     std::multiset<std::pair<Entity, int>, zIndexComparator> toDraw;
     for (auto &[entity, drawable] : drawables)
@@ -46,8 +46,8 @@ void Draw2D::onEndDraw(gengine::system::event::EndDraw &e) {
 void DrawSprite::init(void) { subscribeToEvent<gengine::system::event::Draw>(&DrawSprite::onDraw); }
 
 void DrawSprite::onDraw(gengine::system::event::Draw &e) {
-    auto &sprites = getComponent<component::driver::output::Sprite>();
-    auto &transforms = getComponent<gengine::component::Transform2D>();
+    auto &sprites = getComponents<component::driver::output::Sprite>();
+    auto &transforms = getComponents<gengine::component::Transform2D>();
 
     auto &txtMan = getSystem<TextureManager>();
     if (sprites.contains(e.entity) && transforms.contains(e.entity)) {
@@ -61,8 +61,8 @@ void DrawSprite::onDraw(gengine::system::event::Draw &e) {
 void DrawText::init(void) { subscribeToEvent<gengine::system::event::Draw>(&DrawText::onDraw); }
 
 void DrawText::onDraw(gengine::system::event::Draw &e) {
-    auto &texts = getComponent<component::driver::output::Text>();
-    auto &transforms = getComponent<gengine::component::Transform2D>();
+    auto &texts = getComponents<component::driver::output::Text>();
+    auto &transforms = getComponents<gengine::component::Transform2D>();
 
     auto &fontMan = getSystem<FontManager>();
     if (texts.contains(e.entity) && transforms.contains(e.entity)) {
@@ -76,8 +76,8 @@ void DrawText::onDraw(gengine::system::event::Draw &e) {
 void DrawRectangle::init(void) { subscribeToEvent<gengine::system::event::Draw>(&DrawRectangle::onDraw); }
 
 void DrawRectangle::onDraw(gengine::system::event::Draw &e) {
-    auto &rectangles = getComponent<component::driver::output::Rectangle>();
-    auto &transforms = getComponent<gengine::component::Transform2D>();
+    auto &rectangles = getComponents<component::driver::output::Rectangle>();
+    auto &transforms = getComponents<gengine::component::Transform2D>();
 
     if (rectangles.contains(e.entity) && transforms.contains(e.entity)) {
         auto &[width, height, color] = rectangles.get(e.entity);
@@ -90,8 +90,8 @@ void DrawRectangle::onDraw(gengine::system::event::Draw &e) {
 void DrawCircle::init(void) { subscribeToEvent<gengine::system::event::Draw>(&DrawCircle::onDraw); }
 
 void DrawCircle::onDraw(gengine::system::event::Draw &e) {
-    auto &circles = getComponent<component::driver::output::Circle>();
-    auto &transforms = getComponent<gengine::component::Transform2D>();
+    auto &circles = getComponents<component::driver::output::Circle>();
+    auto &transforms = getComponents<gengine::component::Transform2D>();
 
     if (circles.contains(e.entity) && transforms.contains(e.entity)) {
         auto &[r, color] = circles.get(e.entity);

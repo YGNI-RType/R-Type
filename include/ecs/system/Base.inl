@@ -24,7 +24,7 @@ template <class Derived, class... DependTypes> template <typename T> T &Base<Der
 
 template <class Derived, class... DependTypes>
 template <typename T>
-component::SparseArray<T> &Base<Derived, DependTypes...>::getComponent(void) {
+component::SparseArray<T> &Base<Derived, DependTypes...>::getComponents(void) {
     static_assert(is_one_of<T, DependTypes...>::value, "ComponentType is not in the list of allowed types");
     return m_ecs->get().template getComponents<T>();
 }
