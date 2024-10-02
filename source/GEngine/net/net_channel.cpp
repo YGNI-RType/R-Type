@@ -34,7 +34,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
         return false;
     }
 
-    msg.writeHeader({.sequence = NETCHAN_GENCHECKSUM(m_challenge, m_udpOutSequence)});
+    msg.writeHeader({.sequence = NETCHAN_GENCHECKSUM(m_challenge, m_udpOutSequence), .ack = m_udpInSequence});
 
     size_t sent = socket.send(msg, addr);
     if (sent < 0) // guess it's send, but not quite, TODO : check any weird case (place breakpoint)

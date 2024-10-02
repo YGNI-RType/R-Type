@@ -23,6 +23,7 @@ struct UDPSV_PingResponse {
 
 struct UDPG_NetChannelHeader {
     uint64_t sequence;
+    uint64_t ack; /* m_udpInSequence */
 };
 
 } // namespace Network
