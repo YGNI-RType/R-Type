@@ -100,7 +100,8 @@ public:
     UnknownAddress() = default;
     ~UnknownAddress() = default;
 
-    AddressType getType() const { return m_type; };
+    AddressType getType(void) const { return m_type; };
+    void updateType(void);
     AddressV6 getV6() const;
     AddressV4 getV4() const;
 
@@ -108,9 +109,9 @@ public:
     socklen_t &getLen(void) { return m_len; };
 
 private:
-    AddressType m_type;
-    sockaddr_storage m_addr;
-    socklen_t m_len;
+    AddressType m_type = AT_NONE;
+    sockaddr_storage m_addr = {0};
+    socklen_t m_len = sizeof(m_addr);
 };
 
 } // namespace Network

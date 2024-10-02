@@ -181,6 +181,7 @@ SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAd
     if (m_sock < 0)
         throw std::runtime_error("Failed to accept connection");
 
+    unkwAddr.updateType();
     m_port = socketMaster.getPort();
     addSocketPool(m_sock);
 }

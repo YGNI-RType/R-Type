@@ -144,4 +144,10 @@ AddressV6 UnknownAddress::getV6() const {
     return AddressV6(m_type, ntohs(m_addr->sin6_port), m_addr->sin6_addr, m_addr->sin6_scope_id);
 }
 
+void UnknownAddress::updateType(void) {
+    if (m_addr.ss_family == AF_INET)
+        m_type = AT_IPV4;
+    else if (m_addr.ss_family == AF_INET6)
+        m_type = AT_IPV6;
+}
 } // namespace Network

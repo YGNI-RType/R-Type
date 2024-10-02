@@ -30,6 +30,7 @@ uint16_t NetServer::start(size_t maxClients, const std::vector<IP> &g_localIPs, 
         break;
     }
 
+    m_maxClients = maxClients;
     m_isRunning = true;
     return currentUnusedPort;
 }
