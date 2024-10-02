@@ -18,6 +18,8 @@ bool CLNetClient::connectToServer(size_t index) {
     if (index >= m_pingedServers.size())
         return false;
 
+    std::cout << "CL: connecting to server" << std::endl;
+
     auto &[response, addr] = m_pingedServers.at(index);
     auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), response.tcpv4Port)
                                            : SocketTCP(static_cast<AddressV6 &>(*addr), response.tcpv6Port);
@@ -45,7 +47,7 @@ void CLNetClient::createSets(fd_set &readSet) {
     if (!m_enabled || !m_netChannel.isEnabled())
         return;
 
-    FD_SET(m_netChannel.getTcpSocket().getSocket(), &readSet);
+    m_netChannel.getTcpSocket().setFdSet(readSet);
 }
 
 void CLNetClient::init(void) {
@@ -63,6 +65,7 @@ bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, cons
     switch (msg.getType()) {
     case SV_BROADCAST_PING:
         getPingResponse(msg, addr);
+        std::cout << "CL: got ping response !!" << std::endl;
         return true;
     default:
         return handleServerUDP(socket, msg, addr);
@@ -82,7 +85,7 @@ bool CLNetClient::handleTCPEvents(fd_set &readSet) {
     if (!m_enabled || !m_netChannel.isEnabled())
         return false;
 
-    if (FD_ISSET(m_netChannel.getTcpSocket().getSocket(), &readSet)) {
+    if (m_netChannel.getTcpSocket().isFdSet(readSet)) {
         TCPMessage msg(0, 0);
         if (!m_netChannel.readStream(msg))
             return false;

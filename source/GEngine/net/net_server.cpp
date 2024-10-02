@@ -47,15 +47,14 @@ void NetServer::createSets(fd_set &readSet) {
     for (const auto &client : m_clients) {
         auto &socket = client->getChannel().getTcpSocket();
         auto eventType = socket.getEventType();
-        auto socketId = socket.getSocket();
 
         if (eventType == SocketTCP::EventType::READ)
-            FD_SET(socketId, &readSet);
+            socket.setFdSet(readSet);
     }
 
-    FD_SET(m_socketv4.getSocket(), &readSet);
+    m_socketv4.setFdSet(readSet);
     if (CVar::net_ipv6.getIntValue())
-        FD_SET(m_socketv6.getSocket(), &readSet);
+        m_socketv6.setFdSet(readSet);
 }
 
 void NetServer::respondPingServers(const UDPMessage &msg, SocketUDP &udpsocket, const Address &addr) {
@@ -72,6 +71,8 @@ void NetServer::respondPingServers(const UDPMessage &msg, SocketUDP &udpsocket, 
 void NetServer::handleNewClient(SocketTCPMaster &socket) {
     UnknownAddress unkwAddr;
     SocketTCP newSocket = socket.accept(unkwAddr);
+
+    std::cout << "SV: new client" << std::endl;
 
     if (getNumClients() >= getMaxClients()) {
         newSocket.socketClose();
@@ -133,12 +134,12 @@ bool NetServer::handleTCPEvent(fd_set &readSet) {
     if (!isRunning())
         return false;
 
-    if (FD_ISSET(m_socketv4.getSocket(), &readSet)) {
+    if (m_socketv4.isFdSet(readSet)) {
         handleNewClient(m_socketv4);
         return true;
     }
 
-    if (CVar::net_ipv6.getIntValue() && FD_ISSET(m_socketv6.getSocket(), &readSet)) {
+    if (CVar::net_ipv6.getIntValue() && m_socketv6.isFdSet(readSet)) {
         handleNewClient(m_socketv6);
         return true;
     }
@@ -146,9 +147,8 @@ bool NetServer::handleTCPEvent(fd_set &readSet) {
     for (const auto &client : m_clients) {
         auto &socket = client->getChannel().getTcpSocket();
         auto eventType = socket.getEventType();
-        auto socketId = socket.getSocket();
 
-        if (eventType == SocketTCP::EventType::READ && FD_ISSET(socketId, &readSet))
+        if (eventType == SocketTCP::EventType::READ && socket.isFdSet(readSet))
             //     socket.handleEvent();
             return true;
     }

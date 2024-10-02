@@ -78,7 +78,7 @@ public:
         return m_port;
     }
     bool isFdSet(fd_set &set) const {
-        return FD_ISSET(m_sock, &m_fdSet);
+        return FD_ISSET(m_sock, &set);
     }
     void setFdSet(fd_set &set) const {
         FD_SET(m_sock, &set);

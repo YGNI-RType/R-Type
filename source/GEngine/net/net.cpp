@@ -258,9 +258,9 @@ void NET::createSets(fd_set &readSet) {
     mg_server.createSets(readSet);
     mg_client.createSets(readSet);
 
-    FD_SET(mg_socketUdp.getSocket(), &readSet);
+    mg_socketUdp.setFdSet(readSet);
     if (CVar::net_ipv6.getIntValue())
-        FD_SET(mg_socketUdpV6.getSocket(), &readSet);
+        mg_socketUdpV6.setFdSet(readSet);
 }
 
 void NET::handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
@@ -271,12 +271,12 @@ void NET::handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address
 }
 
 void NET::handleEvents(fd_set &readSet) {
-    if (FD_ISSET(mg_socketUdp.getSocket(), &readSet)) {
+    if (mg_socketUdp.isFdSet(readSet)) {
         UDPMessage msg(0, 0);
         auto addr = mg_socketUdp.receiveV4(msg);
         return handleUdpEvent(mg_socketUdp, msg, addr);
     }
-    if (CVar::net_ipv6.getIntValue() && FD_ISSET(mg_socketUdpV6.getSocket(), &readSet)) {
+    if (CVar::net_ipv6.getIntValue() && mg_socketUdpV6.isFdSet(readSet)) {
         UDPMessage msg(0, 0);
         auto addr = mg_socketUdpV6.receiveV6(msg);
         return handleUdpEvent(mg_socketUdpV6, msg, addr);
