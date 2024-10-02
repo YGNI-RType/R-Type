@@ -95,6 +95,7 @@ bool CLNetClient::handleServerTCP(const TCPMessage &msg) {
             msg.readData<TCPSV_ClientInit>(data);
 
             m_netChannel.setChallenge(data.challenge);
+            std::cout << "CL: Client challange: " << data.challenge << std::endl;
             m_connectionState = CON_AUTHORIZING;
             return true;
         default:

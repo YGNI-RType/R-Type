@@ -20,7 +20,7 @@ uint16_t NetServer::start(size_t maxClients, const std::vector<IP> &g_localIPs, 
     for (const IP &ip : g_localIPs) { // todo : force an ip, find the best ip
                                       // (privileging pubilc interface)
         if (ip.type == AT_IPV4) {
-            m_socketv4 = openSocketTcp(currentUnusedPort);
+            m_socketv4 = openSocketTcp(currentUnusedPort, false);
             currentUnusedPort++;
         }
         if (ip.type == AT_IPV6 && CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported
@@ -86,13 +86,15 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
     else
         return; /* impossible */
 
-    std::cout << "New client connected" << std::endl;
+    std::cout << "SV: New client connected" << std::endl;
     NetClient *clPtr = cl.get();
     m_clients.push_back(std::move(cl));
 
     auto msg = TCPMessage(0, SV_INIT_CONNECTON);
     auto &channel = clPtr->getChannel();
     msg.writeData<TCPSV_ClientInit>({.challenge = channel.getChallenge()});
+
+    std::cout << "SV: Client challange: " << channel.getChallenge() << std::endl;
 
     channel.sendStream(msg);
 }

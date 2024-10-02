@@ -54,7 +54,10 @@ public:
 
 protected:
     ASocket() = default;
+
     static void addSocketPool(SOCKET socket);
+    static void translateAutomaticAddressing(struct sockaddr_storage &addr, uint16_t port, bool ipv6);
+
     virtual ~ASocket();
 
 private:
@@ -82,7 +85,7 @@ class SocketUDP : public ASocket {
 public:
     SocketUDP() = default;
     SocketUDP(const IP &ip, uint16_t port);
-    SocketUDP(uint16_t port);
+    SocketUDP(uint16_t port, bool ipv6);
     SocketUDP(const SocketUDP &other) = delete;
     SocketUDP &operator=(const SocketUDP &) = delete;
     SocketUDP(SocketUDP &&other);
@@ -108,7 +111,7 @@ class SocketTCPMaster : public ASocket {
 public:
     SocketTCPMaster() = default;
     SocketTCPMaster(const IP &ip, uint16_t port);
-    SocketTCPMaster(uint16_t port);
+    SocketTCPMaster(uint16_t port, bool ipv6);
 
     // don't share anything, all the fields are static
     SocketTCPMaster(const SocketTCPMaster &other) = delete;
@@ -154,8 +157,8 @@ private:
 
 SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);
 SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort);
-SocketTCPMaster openSocketTcp(uint16_t wantedPort);
-SocketUDP openSocketUdp(uint16_t wantedPort);
+SocketTCPMaster openSocketTcp(uint16_t wantedPort, bool ipv6);
+SocketUDP openSocketUdp(uint16_t wantedPort, bool ipv6);
 
 
 } // namespace Network

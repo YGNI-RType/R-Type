@@ -25,6 +25,7 @@
 #include "GEngine/cvar/net.hpp"
 
 #include <cstring>
+#include <algorithm>
 
 #ifdef _WIN32
 // TODO : remove unused
@@ -86,7 +87,7 @@ void NET::init(void) {
                                       // (privileging pubilc interface)
         if (ip.type == AT_IPV4) {
             /* todo : this is stupid */
-            mg_socketUdp = openSocketUdp(currentUnusedPort);
+            mg_socketUdp = openSocketUdp(currentUnusedPort, false);
             currentUnusedPort++;
         }
         if (ip.type == AT_IPV6 && CVar::net_ipv6.getIntValue()) { // check if ipv6 is supported

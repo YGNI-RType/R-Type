@@ -15,6 +15,9 @@
 #include <stdexcept>
 #include <string>
 
+// temp
+#include <iostream>
+
 #ifdef _WIN32
 #include <WS2tcpip.h>
 #include <winsock2.h>
@@ -123,6 +126,23 @@ bool ASocket::isBlocking(void) const {
 #endif
 }
 
+void ASocket::translateAutomaticAddressing(struct sockaddr_storage &addr_storage, uint16_t port, bool ipv6)
+{
+    if (!ipv6) {
+        struct sockaddr_in *addr = reinterpret_cast<struct sockaddr_in *>(&addr_storage);
+
+        addr->sin_addr.s_addr = htonl(INADDR_ANY);
+        addr->sin_family = AF_INET;
+        addr->sin_port = htons(port);
+    } else {
+        struct sockaddr_in6 *addr = reinterpret_cast<struct sockaddr_in6 *>(&addr_storage);
+
+        addr->sin6_addr = IN6ADDR_ANY_INIT;
+        addr->sin6_family = AF_INET6;
+        addr->sin6_port = htons(port);
+    }
+}
+
 /***********************************************/
 
 SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
@@ -134,7 +154,7 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(struct sockaddr_in));
 
-    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+    address.sin_port = htons(port);
 
     if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
         throw SocketException("(TCP) Failed to bind socket");
@@ -145,16 +165,14 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     addSocketPool(m_sock);
 }
 
-SocketTCPMaster::SocketTCPMaster(uint16_t port) {
+SocketTCPMaster::SocketTCPMaster(uint16_t port, bool ipv6) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
     m_port = port;
-    struct sockaddr_in address = {0};
-
-    address.sin_addr.s_addr = htonl(INADDR_ANY);
-    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+    struct sockaddr_storage address = {0};
+    translateAutomaticAddressing(address, port, ipv6);
 
     if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
         throw SocketException("(TCP) Failed to bind socket");
@@ -197,7 +215,7 @@ SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort) {
     addr.toSockAddr(reinterpret_cast<struct sockaddr *>(&address));
     std::memcpy(&address, (struct sockaddr *)&address, sizeof(address));
 
-    address.sin_port = m_port == PORT_ANY ? 0 : htons(m_port);
+    address.sin_port = htons(m_port);
 
     if (connect(m_sock, (sockaddr *)&address, sizeof(address)) < 0) {
         if (errno == EINPROGRESS)
@@ -220,7 +238,7 @@ SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort) {
     addr.toSockAddr(reinterpret_cast<struct sockaddr *>(&address));
     std::memcpy(&address, (struct sockaddr *)&address, sizeof(address));
 
-    address.sin6_port = m_port == PORT_ANY ? 0 : htons(m_port);
+    address.sin6_port = htons(m_port);
 
     if (connect(m_sock, (sockaddr *)&address, sizeof(address)) < 0) {
         if (errno == EINPROGRESS)
@@ -309,7 +327,7 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
 
-    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+    address.sin_port = htons(port);
 
     if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
         throw SocketException("(UDP) Failed to bind socket");
@@ -317,7 +335,7 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
     addSocketPool(m_sock);
 }
 
-SocketUDP::SocketUDP(uint16_t port) {
+SocketUDP::SocketUDP(uint16_t port, bool ipv6) {
 
     m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (m_sock == -1)
@@ -328,12 +346,13 @@ SocketUDP::SocketUDP(uint16_t port) {
     if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
         throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
 
-    struct sockaddr_in address = {0};
-    address.sin_addr.s_addr = htonl(INADDR_ANY);
-    address.sin_port = port == PORT_ANY ? 0 : htons(port);
+    struct sockaddr_storage address = {0};
+    translateAutomaticAddressing(address, port, ipv6);
 
-    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
+    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0) {
+        std::cerr << "Socket creation failed: " << WSAGetLastError() << std::endl;
         throw SocketException("(UDP) Failed to bind socket");
+    }
 
     addSocketPool(m_sock);
 }
@@ -443,10 +462,10 @@ SocketUDP openSocketUdp(const IP &ip, uint16_t wantedPort) {
     throw SocketException("Failed to open UDP socket");
 }
 
-SocketTCPMaster openSocketTcp(uint16_t wantedPort) {
+SocketTCPMaster openSocketTcp(uint16_t wantedPort, bool ipv6) {
     for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
         try {
-            return std::move(SocketTCPMaster(wantedPort + i));
+            return std::move(SocketTCPMaster(wantedPort + i, ipv6));
         } catch (SocketException &e) {
             if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
                 throw e;
@@ -456,10 +475,10 @@ SocketTCPMaster openSocketTcp(uint16_t wantedPort) {
     throw SocketException("Failed to open TCP socket");
 }
 
-SocketUDP openSocketUdp(uint16_t wantedPort) {
+SocketUDP openSocketUdp(uint16_t wantedPort, bool ipv6) {
     for (uint16_t i = 0; i < MAX_TRY_PORTS; i++) {
         try {
-            return std::move(SocketUDP(wantedPort + i));
+            return std::move(SocketUDP(wantedPort + i, ipv6));
         } catch (SocketException &e) {
             if (!e.shouldRetry() || i == MAX_TRY_PORTS - 1)
                 throw e;
