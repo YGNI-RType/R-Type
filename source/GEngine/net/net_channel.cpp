@@ -74,6 +74,21 @@ bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
     return true;
 }
 
+bool NetChannel::sendStream(const TCPMessage &msg) {
+    size_t sent = m_tcpSocket.send(msg);
+    if (sent < 0)
+        return false;
+
+    return true;
+}
+
+bool NetChannel::readStream(TCPMessage &msg) {
+    /* todo : add header check etc */
+
+    m_tcpSocket.receive(msg);
+    return true;
+}
+
 bool NetChannel::isTimeout() const {
     return Time::Clock::milliseconds() - m_udplastrecv > CVar::net_kick_timeout.getIntValue();
 }

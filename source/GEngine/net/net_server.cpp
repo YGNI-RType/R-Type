@@ -78,12 +78,23 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
         return;
     }
 
+    std::unique_ptr<NetClient> cl;
     if (unkwAddr.getType() == AT_IPV4)
-        m_clients.push_back(
-            std::make_unique<NetClient>(std::make_unique<AddressV4>(unkwAddr.getV4()), newSocket));
+        cl = std::make_unique<NetClient>(std::make_unique<AddressV4>(unkwAddr.getV4()), newSocket);
     else if (unkwAddr.getType() == AT_IPV6)
-        m_clients.push_back(
-            std::make_unique<NetClient>(std::make_unique<AddressV6>(unkwAddr.getV6()), newSocket));
+        cl = std::make_unique<NetClient>(std::make_unique<AddressV6>(unkwAddr.getV6()), newSocket);
+    else
+        return; /* impossible */
+
+    std::cout << "New client connected" << std::endl;
+    NetClient *clPtr = cl.get();
+    m_clients.push_back(std::move(cl));
+
+    auto msg = TCPMessage(0, SV_INIT_CONNECTON);
+    auto &channel = clPtr->getChannel();
+    msg.writeData<TCPSV_ClientInit>({.challenge = channel.getChallenge()});
+
+    channel.sendStream(msg);
 }
 
 bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
@@ -95,7 +106,7 @@ bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const A
         respondPingServers(msg, socket, addr);
         return true;
     default:
-        return handleUdpMessageClients(socket, msg, addr);;
+        return handleUdpMessageClients(socket, msg, addr);
     }
 }
 

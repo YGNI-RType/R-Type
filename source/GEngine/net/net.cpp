@@ -256,6 +256,7 @@ void NET::createSets(fd_set &readSet) {
     FD_ZERO(&readSet);
 
     mg_server.createSets(readSet);
+    mg_client.createSets(readSet);
 
     FD_SET(mg_socketUdp.getSocket(), &readSet);
     if (CVar::net_ipv6.getIntValue())

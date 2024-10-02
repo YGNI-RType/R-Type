@@ -251,10 +251,11 @@ bool SocketTCP::send(const TCPMessage &msg) const {
 
 void SocketTCP::receive(TCPMessage &msg) const {
     TCPSerializedMessage sMsg;
+    auto ptrMsg = reinterpret_cast<char*>(&sMsg);
 
-    size_t recvSz = receiveReliant(&sMsg, sizeof(HeaderSerializedMessage));
-    /* WIN : need to use these parenthesis, to skip windows.h macro */
-    recvSz = receiveReliant(&sMsg + recvSz, (std::min)(sMsg.curSize, sizeof(TCPSerializedMessage) - recvSz));
+    size_t recvSz = receiveReliant(reinterpret_cast<TCPSerializedMessage *>(ptrMsg), sizeof(HeaderSerializedMessage));
+    /* WIN : need to use these parenthesis, to skip windows.h macro (todo : find why +1, another problem with packed structs ?)*/
+    recvSz = receiveReliant(reinterpret_cast<TCPSerializedMessage *>(ptrMsg + recvSz), (std::min)(sMsg.curSize + 1, sizeof(TCPSerializedMessage) - recvSz));
 
     msg.setSerialize(sMsg);
 }
@@ -265,9 +266,9 @@ size_t SocketTCP::receiveReliant(TCPSerializedMessage *buffer, size_t size) cons
     while (receivedTotal < size) {
         auto received = ::recv(m_sock, reinterpret_cast<char *>(buffer + receivedTotal), size - receivedTotal, 0);
         if (received < 0)
-            throw SocketException("Failed to receive message");
+            throw SocketException(strerror(errno));
         if (received == 0)
-            throw SocketClientDisconnected();
+            throw SocketDisconnected();
         receivedTotal += received;
     }
     return receivedTotal;
@@ -276,17 +277,17 @@ size_t SocketTCP::receiveReliant(TCPSerializedMessage *buffer, size_t size) cons
 /* THIS IS THE ALL MESSAGE, NOT THE JUST DATA */
 size_t SocketTCP::sendReliant(const TCPSerializedMessage *msg, size_t msgDataSize) const {
     size_t sentTotal = 0;
-    msgDataSize += sizeof(TCPMessage) - MAX_TCP_MSGLEN;
+    msgDataSize += sizeof(TCPSerializedMessage) - MAX_TCP_MSGLEN;
 
     while (sentTotal < msgDataSize) {
         auto sent = ::send(m_sock, reinterpret_cast<const char *>(msg + sentTotal), msgDataSize - sentTotal, 0);
         if (sent < 0) {
             if (errno == EWOULDBLOCK || errno == EAGAIN)
-                return 0;
+                return sentTotal;
             throw SocketException("Failed to send message");
         }
         if (sent == 0)
-            throw SocketClientDisconnected();
+            throw SocketDisconnected();
         sentTotal += sent;
     }
     return sentTotal;

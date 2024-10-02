@@ -24,8 +24,8 @@ private:
     bool m_shouldRetry;
 };
 
-class SocketClientDisconnected : public SocketException {
+class SocketDisconnected : public SocketException {
 public:
-    SocketClientDisconnected() : SocketException("Client disconnected") {}
+    SocketDisconnected() : SocketException("Incomming Socket disconnected") {}
 };
 } // namespace Network

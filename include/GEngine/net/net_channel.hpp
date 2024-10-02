@@ -98,8 +98,13 @@ public:
     const SocketTCP &getTcpSocket(void) const { return m_tcpSocket; }
     void setTcpSocket(SocketTCP &&socket) { m_tcpSocket = std::move(socket); }
 
+    int getChallenge(void) const { return m_challenge; }
+    void setChallenge(int challenge) { m_challenge = challenge; }
+    bool canCommunicate(void) { return m_enabled && m_tcpSocket.getSocket() != -1 && m_challenge != -1; }
+
     bool readDatagram(const UDPMessage &msg, const Address &addr);
-    bool readStream(const TCPMessage &msg);
+    /* steam if proper to socket, taht's why msg in not const */
+    bool readStream(TCPMessage &msg);
 
     bool sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address &addr);
     bool sendStream(const TCPMessage &msg);

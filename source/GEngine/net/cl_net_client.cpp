@@ -11,14 +11,18 @@
 
 namespace Network {
 
-void CLNetClient::connectToServer(size_t index) {
+bool CLNetClient::connectToServer(size_t index) {
 
     /* Connects to something */
     // try {
+    if (index >= m_pingedServers.size())
+        return false;
+
     auto &[response, addr] = m_pingedServers.at(index);
     auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), response.tcpv4Port)
                                            : SocketTCP(static_cast<AddressV6 &>(*addr), response.tcpv6Port);
 
+    sock.setBlocking(false);
     m_netChannel = std::move(NetChannel(false, std::move(addr), sock));
     // } catch (const std::exception &e) {
     //     /* todo : some error handling just in case ? */
@@ -27,6 +31,7 @@ void CLNetClient::connectToServer(size_t index) {
 
     m_state = CS_CONNECTED;
     m_connectionState = CON_CONNECTING;
+    return true;
 }
 
 void CLNetClient::disconnectFromServer(void) {
@@ -34,6 +39,13 @@ void CLNetClient::disconnectFromServer(void) {
 
     m_state = CS_FREE;
     m_connectionState = CON_DISCONNECTED;
+}
+
+void CLNetClient::createSets(fd_set &readSet) {
+    if (!m_enabled || !m_netChannel.isEnabled())
+        return;
+
+    FD_SET(m_netChannel.getTcpSocket().getSocket(), &readSet);
 }
 
 void CLNetClient::init(void) { m_enabled = true; }
@@ -63,14 +75,32 @@ bool CLNetClient::handleServerUDP(SocketUDP &socket, const UDPMessage &msg, cons
 }
 
 bool CLNetClient::handleTCPEvents(fd_set &readSet) {
-    if (!m_enabled)
+    if (!m_enabled || !m_netChannel.isEnabled())
         return false;
 
     if (FD_ISSET(m_netChannel.getTcpSocket().getSocket(), &readSet)) {
-        // handleEvent();
-        return true;
+        TCPMessage msg(0, 0);
+        if (!m_netChannel.readStream(msg))
+            return false;
+
+        return handleServerTCP(msg);
     }
     return false;
+}
+
+bool CLNetClient::handleServerTCP(const TCPMessage &msg) {
+    switch (msg.getType()) {
+        case SV_INIT_CONNECTON:
+            TCPSV_ClientInit data;
+            msg.readData<TCPSV_ClientInit>(data);
+
+            m_netChannel.setChallenge(data.challenge);
+            m_connectionState = CON_AUTHORIZING;
+            return true;
+        default:
+            return false;
+    }
+    return true;
 }
 
 void CLNetClient::getPingResponse(const UDPMessage &msg, const Address &addr) {

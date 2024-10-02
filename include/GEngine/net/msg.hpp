@@ -56,9 +56,32 @@ public:
     uint8_t getType() const { return m_type; }
     std::size_t getMaxSize() const { return m_maxSize; }
 
+    virtual const byte_t *getData() const = 0;
+
+    template <typename T> void writeData(const T &data) {
+        byte_t *myData = getDataMember();
+
+        std::memcpy(myData + m_curSize, &data, sizeof(T));
+        m_curSize += sizeof(T);
+    }
+
+    template <typename T> size_t readData(T &data) const {
+        if (sizeof(T) > m_curSize)
+            throw std::runtime_error("Message is too small to read data");
+
+        const byte_t *myData = getData();
+        std::memcpy(&data, myData, sizeof(T));
+        return sizeof(T);
+    }
+
+    void writeData(const void *data, std::size_t size);
+    void readData(void *data, std::size_t size) const;
+
 protected:
     AMessage(std::size_t maxSize, uint8_t type);
     virtual ~AMessage() = default;
+
+    virtual byte_t *getDataMember() = 0;
 
     const std::size_t m_maxSize;
     std::size_t m_curSize = 0;
@@ -72,12 +95,14 @@ public:
 
     TCPMessage &operator=(const TCPMessage &other);
 
-    const byte_t *getData() const { return m_data; }
+    const byte_t *getData() const override final { return m_data; }
 
     void getSerialize(TCPSerializedMessage &msg) const;
     void setSerialize(TCPSerializedMessage &msg);
 
 private:
+    byte_t *getDataMember() override final { return m_data; };
+
     bool m_isFinished = true;
 
     /* always set field to last, this is not a header !!!*/
@@ -100,7 +125,7 @@ public:
 
     UDPMessage &operator=(const UDPMessage &other);
 
-    const byte_t *getData() const { return m_data; }
+    const byte_t *getData() const override final { return m_data; }
 
     bool isCompressed() const { return m_flags & COMPRESSED; }
     bool hasHeader() const { return m_flags & HEADER; }
@@ -118,22 +143,9 @@ public:
     std::vector<UDPSerializedMessage> getSerializeFragmented(void) const;
     void setSerialize(UDPSerializedMessage &msg);
 
-    template <typename T> void writeData(const T &data) {
-        std::memcpy(m_data + m_curSize, &data, sizeof(T));
-        m_curSize += sizeof(T);
-    }
-
-    template <typename T> size_t readData(T &data) const {
-        if (sizeof(T) > m_curSize)
-            throw std::runtime_error("Message is too small to read data");
-        std::memcpy(&data, m_data, sizeof(T));
-        return sizeof(T);
-    }
-
-    void writeData(const void *data, std::size_t size);
-    void readData(void *data, std::size_t size) const;
-
 private:
+    byte_t *getDataMember() override final { return m_data; };
+
     uint8_t m_flags = 0;
 
     /* always set field to last, this is not a header !!!*/

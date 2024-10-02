@@ -22,17 +22,6 @@ UDPMessage &UDPMessage::operator=(const UDPMessage &other) {
     return *this;
 }
 
-void UDPMessage::writeData(const void *data, std::size_t size) {
-    std::memcpy(m_data + m_curSize, data, size);
-    m_curSize += size;
-}
-
-void UDPMessage::readData(void *data, std::size_t size) const {
-    if (size > m_curSize)
-        throw std::runtime_error("Not enough data to read");
-    std::memcpy(data, m_data + m_curSize, size);
-}
-
 void UDPMessage::setSerialize(UDPSerializedMessage &msg) {
     m_type = msg.type;
     m_flags = msg.flag;

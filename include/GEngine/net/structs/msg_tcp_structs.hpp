@@ -9,6 +9,7 @@
 
 namespace Network {
 enum {
+    SV_INIT_CONNECTON,
     SV_DOWNLOAD,
     SV_UPLOAD, // TODO : add resriction on files (size, type, etc)
 };

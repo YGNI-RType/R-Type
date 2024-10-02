@@ -30,14 +30,17 @@ public:
     void stop(void);
 
     /* index of the pinged servers */
-    void connectToServer(size_t index);
-    void connectToServer(const std::string &ip, uint16_t port);
+    bool connectToServer(size_t index);
+    bool connectToServer(const std::string &ip, uint16_t port);
     void disconnectFromServer(void);
+
+    void createSets(fd_set &readSet);
 
     bool handleTCPEvents(fd_set &readSet);
     bool handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
 
     bool handleServerUDP(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
+    bool handleServerTCP(const TCPMessage &msg);
 
     void setChallenge(int challenge) { m_challenge = challenge; }
     int getChallenge(void) const { return m_challenge; }
