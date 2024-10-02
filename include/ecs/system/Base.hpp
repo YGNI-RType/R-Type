@@ -36,7 +36,7 @@ public:
 
     template <typename T> T &getSystem(void);
 
-    template <typename T> component::SparseArray<T> &getComponent(void);
+    template <typename T> component::SparseArray<T> &getComponents(void);
 
     template <class T, class... Params> void registerSystem(Params &&...p);
 

@@ -57,8 +57,8 @@ public:
     }
 
     void onClickLeft(gengine::system::driver::input::MouseLeftEvent &e) {
-        auto &transforms = getComponent<gengine::component::Transform2D>();
-        auto &hitboxes = getComponent<gengine::component::HitBoxSquare2D>();
+        auto &transforms = getComponents<gengine::component::Transform2D>();
+        auto &hitboxes = getComponents<gengine::component::HitBoxSquare2D>();
         for (auto &[entity, transf] : transforms) {
             if (hitboxes.contains(entity)) {
                 auto &hitbox = hitboxes.get(entity);
@@ -71,7 +71,7 @@ public:
         }
     }
     void onCollision(gengine::system::event::Collsion &e) {
-        // auto &colors = getComponent<gengine::component::driver::output::Color>();
+        // auto &colors = getComponents<gengine::component::driver::output::Color>();
         // std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" +
         // std::to_string(e.entity2) + ").";
 

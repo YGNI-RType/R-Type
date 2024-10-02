@@ -13,6 +13,5 @@
 namespace gengine {
 using Component = ecs::component::IsComponent;
 
-template <class ...Element>
-using Zip = ecs::component::Zipper<Element...>;
-}
+template <class... Element> using Zip = ecs::component::Zipper<Element...>;
+} // namespace gengine

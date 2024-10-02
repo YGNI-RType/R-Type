@@ -36,10 +36,10 @@ bool checkSquareCircleCollision(const component::HitBoxSquare2D &square, const c
 }
 
 void Collision2D::onMainLoop(event::MainLoop &e [[maybe_unused]]) {
-    auto &positions = getComponent<component::Position2D>();
-    auto &origins = getComponent<component::Origin2D>();
-    auto &hitboxSquares = getComponent<component::HitBoxSquare2D>();
-    auto &hitboxCircles = getComponent<component::HitBoxCircle2D>();
+    auto &positions = getComponents<component::Position2D>();
+    auto &origins = getComponents<component::Origin2D>();
+    auto &hitboxSquares = getComponents<component::HitBoxSquare2D>();
+    auto &hitboxCircles = getComponents<component::HitBoxCircle2D>();
 
     for (auto [entity1, pos1] : positions) {
         for (auto [entity2, pos2] : positions) {
@@ -115,10 +115,10 @@ bool checkCubeSphereCollision(const component::HitBoxSquare3D &cube, const compo
 }
 
 void Collision3D::onMainLoop(event::MainLoop &e [[maybe_unused]]) {
-    auto &positions = getComponent<component::Position3D>();
-    auto &origins = getComponent<component::Origin3D>();
-    auto &hitboxCubes = getComponent<component::HitBoxSquare3D>();
-    auto &hitboxSpheres = getComponent<component::HitBoxCircle3D>();
+    auto &positions = getComponents<component::Position3D>();
+    auto &origins = getComponents<component::Origin3D>();
+    auto &hitboxCubes = getComponents<component::HitBoxSquare3D>();
+    auto &hitboxSpheres = getComponents<component::HitBoxCircle3D>();
 
     for (auto [entity1, pos1] : positions) {
         for (auto [entity2, pos2] : positions) {

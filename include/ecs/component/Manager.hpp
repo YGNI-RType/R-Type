@@ -27,16 +27,13 @@ public:
 
     template <class Component> SparseArray<Component> &registerComponent();
 
-    template <class Component> void setComponent(entity::Entity entity, const Component &component);
+    template <class Component> void setComponent(entity::Entity from, const Component &component);
+    template <typename Component, class... Params> void setComponent(entity::Entity from, Params &&...p);
 
-    void destroyComponents(entity::Entity entity);
-
-    template <class Component> void destroyComponent(entity::Entity entity);
-
-    template <typename Component, class... Params> void setComponent(entity::Entity entity, Params &&...p);
+    template <class Component> void destroyComponent(entity::Entity from);
+    void destroyComponents(entity::Entity from);
 
     template <class Component> SparseArray<Component> &getComponents();
-
     template <class Component> const SparseArray<Component> &getComponents() const;
 
 private:
