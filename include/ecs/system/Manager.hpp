@@ -16,6 +16,9 @@
 
 #include "ecs/system/IsSystem.hpp"
 #include "ecs/system/event/Bus.hpp"
+#include "exceptions/Base.hpp"
+
+#include "IsSystem.hpp"
 
 namespace ecs {
 class ECS;
@@ -38,7 +41,7 @@ public:
     bool hasEvent(void);
 
 private:
-    std::unordered_map<std::type_index, std::any> m_systemTable;
+    std::unordered_map<std::type_index, std::unique_ptr<IsSystem>> m_systemTable;
     event::Bus m_eventBus;
     ECS &m_ecs;
 };

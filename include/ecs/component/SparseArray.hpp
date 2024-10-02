@@ -14,7 +14,8 @@
 
 namespace ecs::component {
 
-template <class Component> class SparseArray {
+template <class Component>
+class SparseArray { // TODO std::optional getComponents(entity &from) if more efficient + get const entity
 public:
     SparseArray() = default;
     ~SparseArray() = default;

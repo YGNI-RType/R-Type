@@ -10,7 +10,11 @@
 #include "GEngine/libdev/System.hpp"
 
 namespace gengine::system::event {
-class MainLoop : public Event {};
+struct MainLoop : public Event {
+    float deltaTime;
+    MainLoop(float &deltaTime) : deltaTime(deltaTime) {}
+    MainLoop(float &&deltaTime) : deltaTime(deltaTime) {}
+};
 
-class StopMainLoop : public Event {};
+struct StopMainLoop : public Event {};
 } // namespace gengine::system::event
