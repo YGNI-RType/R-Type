@@ -175,7 +175,7 @@ SocketTCPMaster::SocketTCPMaster(uint16_t port, bool ipv6) {
     struct sockaddr_storage address = {0};
     translateAutomaticAddressing(address, port, ipv6);
 
-    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
+    if (bind(m_sock, (sockaddr *)&address, ipv6 ? sizeof(sockaddr_in6) : sizeof(sockaddr_in)) < 0)
         throw SocketException("(TCP) Failed to bind socket");
 
     if (listen(m_sock, MAX_LISTEN) < 0)
@@ -358,7 +358,7 @@ SocketUDP::SocketUDP(uint16_t port, bool ipv6) {
     struct sockaddr_storage address = {0};
     translateAutomaticAddressing(address, port, ipv6);
 
-    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
+    if (bind(m_sock, (sockaddr *)&address, ipv6 ? sizeof(sockaddr_in6) : sizeof(sockaddr_in)) < 0)
         throw SocketException(strerror(errno));
 
     addSocketPool(m_sock);
