@@ -6,8 +6,8 @@
 */
 
 #include "GEngine/net/socket.hpp"
-#include "GEngine/net/socketError.hpp"
 #include "GEngine/cvar/net.hpp"
+#include "GEngine/net/socketError.hpp"
 
 #include <algorithm>
 #include <cerrno>
@@ -126,8 +126,7 @@ bool ASocket::isBlocking(void) const {
 #endif
 }
 
-void ASocket::translateAutomaticAddressing(struct sockaddr_storage &addr_storage, uint16_t port, bool ipv6)
-{
+void ASocket::translateAutomaticAddressing(struct sockaddr_storage &addr_storage, uint16_t port, bool ipv6) {
     if (!ipv6) {
         struct sockaddr_in *addr = reinterpret_cast<struct sockaddr_in *>(&addr_storage);
 
@@ -269,11 +268,13 @@ bool SocketTCP::send(const TCPMessage &msg) const {
 
 void SocketTCP::receive(TCPMessage &msg) const {
     TCPSerializedMessage sMsg;
-    auto ptrMsg = reinterpret_cast<char*>(&sMsg);
+    auto ptrMsg = reinterpret_cast<char *>(&sMsg);
 
     size_t recvSz = receiveReliant(reinterpret_cast<TCPSerializedMessage *>(ptrMsg), sizeof(HeaderSerializedMessage));
-    /* WIN : need to use these parenthesis, to skip windows.h macro (todo : find why +1, another problem with packed structs ?)*/
-    recvSz = receiveReliant(reinterpret_cast<TCPSerializedMessage *>(ptrMsg + recvSz), (std::min)(sMsg.curSize + 1, sizeof(TCPSerializedMessage) - recvSz));
+    /* WIN : need to use these parenthesis, to skip windows.h macro (todo : find why +1, another problem with packed
+     * structs ?)*/
+    recvSz = receiveReliant(reinterpret_cast<TCPSerializedMessage *>(ptrMsg + recvSz),
+                            (std::min)(sMsg.curSize + 1, sizeof(TCPSerializedMessage) - recvSz));
 
     msg.setSerialize(sMsg);
 }
@@ -349,10 +350,8 @@ SocketUDP::SocketUDP(uint16_t port, bool ipv6) {
     struct sockaddr_storage address = {0};
     translateAutomaticAddressing(address, port, ipv6);
 
-    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0) {
-        std::cerr << "Socket creation failed: " << WSAGetLastError() << std::endl;
+    if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
         throw SocketException("(UDP) Failed to bind socket");
-    }
 
     addSocketPool(m_sock);
 }
