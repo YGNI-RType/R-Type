@@ -2,9 +2,15 @@ cmake_minimum_required(VERSION 3.10)
 
 project(GEngine)
 
+find_package(raylib REQUIRED)
+
 file(GLOB_RECURSE SOURCES source/*.cpp)
 
+list(FILTER SOURCES EXCLUDE REGEX ".*/deprecated/.*")
+
 file(GLOB_RECURSE HEADERS include/*.h)
+
+list(FILTER HEADERS EXCLUDE REGEX ".*/deprecated/.*")
 
 include_directories(include)
 
@@ -35,8 +41,11 @@ set_target_properties(GEngine_static PROPERTIES
     OUTPUT_NAME "GEngine-s"
 )
 
+target_link_libraries(GEngine raylib)
+target_link_libraries(GEngine_static raylib)
+
 install(TARGETS GEngine GEngine_static
-    LIBRARY DESTINATION lib
+LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin # Windows
 )
