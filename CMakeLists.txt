@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(GEngine)
 
-find_package(raylib REQUIRED)
+# find_package(raylib REQUIRED)
 
 file(GLOB_RECURSE SOURCES source/*.cpp)
 
