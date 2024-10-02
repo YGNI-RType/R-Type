@@ -14,7 +14,7 @@ namespace Network
 {
     /* each NetChannel has one */
     struct iomsg {
-        std::size_t pos_start;
-        std::size_t pos_end;
+        size_t pos_start;
+        size_t pos_end;
     };
 } // namespace Network
