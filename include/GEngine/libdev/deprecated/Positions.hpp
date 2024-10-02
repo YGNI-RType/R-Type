@@ -14,7 +14,8 @@ struct Position2D : public Component {
     float x, y;
     Position2D(float x, float y)
         : x(x)
-        , y(y) {};
+        , y(y) {
+    }
 };
 
 struct Position3D : public Component {
@@ -22,20 +23,23 @@ struct Position3D : public Component {
     Position3D(float x, float y, float z)
         : x(x)
         , y(y)
-        , z(z) {};
+        , z(z) {
+    }
 };
 
 struct Origin2D : public Component {
     float x, y;
     Origin2D(float x, float y)
         : x(x)
-        , y(y) {};
+        , y(y) {
+    }
 };
 
 struct Origin3D : public Component {
     float x, y, f;
     Origin3D(float x, float y)
         : x(x)
-        , y(y) {};
+        , y(y) {
+    }
 };
 } // namespace gengine::component
