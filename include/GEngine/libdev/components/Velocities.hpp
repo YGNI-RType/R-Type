@@ -14,7 +14,8 @@ struct Velocity2D : public Component {
     float x, y;
     Velocity2D(float x, float y)
         : x(x)
-        , y(y) {};
+        , y(y) {
+    }
 };
 
 struct Velocity3D : public Component {
@@ -22,6 +23,7 @@ struct Velocity3D : public Component {
     Velocity3D(float x, float y, float z)
         : x(x)
         , y(y)
-        , z(z) {};
+        , z(z) {
+    }
 };
 } // namespace gengine::component

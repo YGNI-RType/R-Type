@@ -18,7 +18,8 @@ struct Transform2D : public Component {
     Transform2D(const Vect2 &pos, const Vect2 &scale = {1, 1}, float rotation = 0.f)
         : pos(pos)
         , scale(scale)
-        , rotation(rotation) {};
+        , rotation(rotation) {
+    }
 };
 
 struct Transform3D : public Component {
@@ -28,6 +29,7 @@ struct Transform3D : public Component {
     Transform3D(const Vect3 &pos, const Vect3 &scale = {1, 1}, float rotation = 0.f)
         : pos(pos)
         , scale(scale)
-        , rotation(rotation) {};
+        , rotation(rotation) {
+    }
 };
 } // namespace gengine::component

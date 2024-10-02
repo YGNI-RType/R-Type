@@ -20,10 +20,12 @@ struct Window : public gengine::Component {
     Window(int width = 1080, int height = 720, const std::string &title = "window")
         : width(width)
         , height(height)
-        , title(title) {};
+        , title(title) {
+    }
     Window(int width = 1080, int height = 720, const std::string &&title = "window")
         : width(width)
         , height(height)
-        , title(title) {};
+        , title(title) {
+    }
 };
 } // namespace gengine::component::driver::output

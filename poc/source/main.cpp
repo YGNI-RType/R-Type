@@ -64,9 +64,8 @@ public:
                 auto &hitbox = hitboxes.get(entity);
                 if (e.cursorPos.x >= transf.pos.x && e.cursorPos.y >= transf.pos.y &&
                     e.cursorPos.x <= transf.pos.x + hitbox.width * transf.scale.x &&
-                    e.cursorPos.y <= transf.pos.y + hitbox.height * transf.scale.y) {
+                    e.cursorPos.y <= transf.pos.y + hitbox.height * transf.scale.y)
                     killEntity(entity);
-                }
             }
         }
     }
