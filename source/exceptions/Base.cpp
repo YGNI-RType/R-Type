@@ -10,7 +10,10 @@
 namespace gengine {
 
 Exception::Exception(const std::string &message, const char *file, int line, const char *color)
-    : m_message(message), m_file(file), m_line(line), m_color(color) {
+    : m_message(message)
+    , m_file(file)
+    , m_line(line)
+    , m_color(color) {
     auto now = std::chrono::system_clock::now();
     auto time_t_now = std::chrono::system_clock::to_time_t(now);
     m_timestamp = std::ctime(&time_t_now);

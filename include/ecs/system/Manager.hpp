@@ -26,7 +26,9 @@ class ECS;
 namespace ecs::system {
 class Manager {
 public:
-    Manager(ECS &ecs) : m_ecs(ecs), m_eventBus() {
+    Manager(ECS &ecs)
+        : m_ecs(ecs)
+        , m_eventBus() {
     }
 
     template <class T, class... Params>

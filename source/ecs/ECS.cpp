@@ -9,7 +9,8 @@
 
 using namespace ecs;
 
-ECS::ECS() : system::Manager(*this) {
+ECS::ECS()
+    : system::Manager(*this) {
 }
 
 void ECS::killEntity(entity::Entity entity) {

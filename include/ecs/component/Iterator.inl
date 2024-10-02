@@ -12,11 +12,13 @@
 
 namespace ecs::component {
 template <class... Element>
-Zipper<Element...>::Iterator::Iterator(std::tuple<SparseArray<Element> &...> &tuple) : m_arrays(tuple) {
+Zipper<Element...>::Iterator::Iterator(std::tuple<SparseArray<Element> &...> &tuple)
+    : m_arrays(tuple) {
     setSmallest(std::index_sequence_for<Element...>());
 };
 template <class... Element>
-Zipper<Element...>::Iterator::Iterator(std::tuple<SparseArray<Element> &...> &tuple, bool end) : m_arrays(tuple) {
+Zipper<Element...>::Iterator::Iterator(std::tuple<SparseArray<Element> &...> &tuple, bool end)
+    : m_arrays(tuple) {
     setSmallest(std::index_sequence_for<Element...>(), true);
 };
 
@@ -94,7 +96,8 @@ void Zipper<Element...>::Iterator::setSmallest(std::index_sequence<F, I...>, boo
 }
 
 template <class... Element>
-Zipper<Element...>::Zipper(SparseArray<Element> &...elem) : m_elements(elem...) {
+Zipper<Element...>::Zipper(SparseArray<Element> &...elem)
+    : m_elements(elem...) {
 }
 
 template <class... Element>

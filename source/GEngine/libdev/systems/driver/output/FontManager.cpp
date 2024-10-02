@@ -8,7 +8,8 @@
 #include "GEngine/libdev/systems/driver/output/FontManager.hpp"
 
 namespace gengine::system::driver::output {
-FontManager::FontManager(const std::string &folder) : m_folder(folder) {
+FontManager::FontManager(const std::string &folder)
+    : m_folder(folder) {
 }
 
 void FontManager::init(void) {

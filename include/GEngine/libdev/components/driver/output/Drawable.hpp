@@ -14,7 +14,8 @@
 namespace gengine::component::driver::output {
 struct Drawable : public gengine::Component {
     std::size_t zIndex;
-    Drawable(std::size_t zIndex) : zIndex(zIndex) {
+    Drawable(std::size_t zIndex)
+        : zIndex(zIndex) {
     }
 };
 } // namespace gengine::component::driver::output

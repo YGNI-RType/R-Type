@@ -12,9 +12,11 @@
 namespace gengine::system::event {
 struct MainLoop : public Event {
     float deltaTime;
-    MainLoop(float &deltaTime) : deltaTime(deltaTime) {
+    MainLoop(float &deltaTime)
+        : deltaTime(deltaTime) {
     }
-    MainLoop(float &&deltaTime) : deltaTime(deltaTime) {
+    MainLoop(float &&deltaTime)
+        : deltaTime(deltaTime) {
     }
 };
 

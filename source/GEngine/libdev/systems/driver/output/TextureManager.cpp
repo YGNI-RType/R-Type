@@ -8,7 +8,8 @@
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 
 namespace gengine::system::driver::output {
-TextureManager::TextureManager(const std::string &folder) : m_folder(folder) {
+TextureManager::TextureManager(const std::string &folder)
+    : m_folder(folder) {
 }
 
 void TextureManager::init(void) {

@@ -10,7 +10,9 @@
 
 namespace gengine::system::driver::output {
 RenderWindow::RenderWindow(int width, int height, const std::string &title)
-    : m_width(width), m_height(height), m_title(title) {
+    : m_width(width)
+    , m_height(height)
+    , m_title(title) {
 }
 
 void RenderWindow::init(void) {

@@ -15,7 +15,8 @@
 namespace gengine::system {
 class Logger : public gengine::System<Logger> {
 public:
-    Logger(const std::string &filename) : m_logFile(filename, std::ios::app){};
+    Logger(const std::string &filename)
+        : m_logFile(filename, std::ios::app) {};
 
     void init(void) override {
         subscribeToEvent<event::Log>(&Logger::onLog);
