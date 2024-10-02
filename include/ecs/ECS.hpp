@@ -20,7 +20,8 @@ class ECS : private entity::Manager, public component::Manager, public system::M
 public:
     ECS();
 
-    template <typename... Components> entity::Entity spawnEntity(Components &&...components);
+    template <typename... Components>
+    entity::Entity spawnEntity(Components &&...components);
 
     void killEntity(entity::Entity entity);
 

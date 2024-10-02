@@ -23,7 +23,9 @@ public:
         std::cout << "Engine starting..., it say: \"" << message << "\"" << std::endl;
     }; // TODO args mut be const.
 
-    void init(void) override { subscribeToEvent<ecs::system::event::StartEngine>(&StartSystem::onStart); }
+    void init(void) override {
+        subscribeToEvent<ecs::system::event::StartEngine>(&StartSystem::onStart);
+    }
 
     void onStart(ecs::system::event::StartEngine &event) {
         spawnEntity(Position{1.0f, 1.0f, 1.0f}, Motion{2.f, 0.4f, 1.5f});
@@ -32,7 +34,9 @@ public:
 
 class MotionSystem : public ecs::system::Base<MotionSystem, Position, Motion> {
 public:
-    void init(void) override { subscribeToEvent<ecs::system::event::MainLoop>(&MotionSystem::mainLoop); }
+    void init(void) override {
+        subscribeToEvent<ecs::system::event::MainLoop>(&MotionSystem::mainLoop);
+    }
 
     void mainLoop(ecs::system::event::MainLoop &event) {
         auto &positions = getComponent<Position>();

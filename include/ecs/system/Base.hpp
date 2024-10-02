@@ -14,16 +14,19 @@
 #include "ecs/system/event/Bus.hpp"
 
 namespace ecs::system {
-template <typename T, typename... Types> struct is_one_of;
+template <typename T, typename... Types>
+struct is_one_of;
 
 template <typename T, typename First, typename... Rest>
 struct is_one_of<T, First, Rest...>
     : std::conditional_t<std::is_same_v<T, First>, std::true_type, is_one_of<T, Rest...>> {};
 
-template <typename T> struct is_one_of<T> : std::false_type {};
+template <typename T>
+struct is_one_of<T> : std::false_type {};
 
 class Manager;
-template <class Derived, class... DependTypes> class Base {
+template <class Derived, class... DependTypes>
+class Base {
 public:
     Base() = default;
 
@@ -31,13 +34,17 @@ public:
 
     virtual void init(void) = 0;
 
-    template <typename EventType> void subscribeToEvent(void (Derived::*callbackMethod)(EventType &));
+    template <typename EventType>
+    void subscribeToEvent(void (Derived::*callbackMethod)(EventType &));
 
-    template <typename T> T &getSystem(void);
+    template <typename T>
+    T &getSystem(void);
 
-    template <typename T> component::SparseArray<T> &getComponent(void);
+    template <typename T>
+    component::SparseArray<T> &getComponent(void);
 
-    template <typename... Components> void spawnEntity(Components &&...components);
+    template <typename... Components>
+    void spawnEntity(Components &&...components);
 
 private:
     friend class system::Manager;

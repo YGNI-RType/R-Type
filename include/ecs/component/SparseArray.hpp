@@ -14,7 +14,8 @@
 
 namespace ecs::component {
 
-template <class Component> class SparseArray {
+template <class Component>
+class SparseArray {
 public:
     SparseArray() = default;
     ~SparseArray() = default;
@@ -23,7 +24,8 @@ public:
 
     void insert(entity::Entity entity, const Component &component);
 
-    template <typename... Params> void emplace(entity::Entity entity, Params &&...p);
+    template <typename... Params>
+    void emplace(entity::Entity entity, Params &&...p);
 
     void erase(entity::Entity entity);
 

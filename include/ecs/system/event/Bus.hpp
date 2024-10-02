@@ -35,7 +35,8 @@ public:
      * @tparam Type The type of the event to publish.
      * @param event The event to publish.
      */
-    template <typename Type> void publish(const Type &event);
+    template <typename Type>
+    void publish(const Type &event);
 
     /**
      * @brief Subscribes a member function callback to a specific event type.
@@ -48,7 +49,8 @@ public:
      * @param instance The instance of the class containing the member function.
      * @param callbackMethod Pointer to the member function to be called.
      */
-    template <typename T, typename Type> void subscribe(T &instance, void (T::*callbackMethod)(Type &));
+    template <typename T, typename Type>
+    void subscribe(T &instance, void (T::*callbackMethod)(Type &));
 
     /**
      * @brief Subscribes a lambda function callback to a specific event type.
@@ -59,7 +61,8 @@ public:
      * @tparam Type The type of the event to subscribe to.
      * @param callback The lambda function to be called.
      */
-    template <typename Type> void subscribe(std::function<void(Type &)> callback);
+    template <typename Type>
+    void subscribe(std::function<void(Type &)> callback);
 
 private:
     std::unordered_map<std::type_index, std::vector<std::unique_ptr<Callback>>>
