@@ -27,9 +27,10 @@ struct Sprite : public gengine::Component {
     Color tint;
 
     Sprite(const std::string &txtPath, const ::Rectangle &src, const Color &tint = RAYWHITE)
-        : txtPath(txtPath), src(src), tint(tint) {};
+        : txtPath(txtPath), src(src), tint(tint){};
     Sprite(const std::string &txtPath, const Color &tint = RAYWHITE)
-        : txtPath(txtPath), src({0.f, 0.f, std::numeric_limits<float>().max(), std::numeric_limits<float>().max()}),
-          tint(tint) {};
+        : txtPath(txtPath)
+        , src({0.f, 0.f, std::numeric_limits<float>().max(), std::numeric_limits<float>().max()})
+        , tint(tint){};
 };
 } // namespace gengine::component::driver::output

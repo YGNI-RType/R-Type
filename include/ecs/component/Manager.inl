@@ -8,7 +8,8 @@
 #pragma once
 
 namespace ecs::component {
-template <class T> SparseArray<T> &Manager::registerComponent() {
+template <class T>
+SparseArray<T> &Manager::registerComponent() {
     static_assert(std::is_base_of<ecs::component::IsComponent, T>::value, "T must inherit from component::Base");
     auto res = m_componentArrays.emplace(
         std::type_index(typeid(T)),
@@ -16,24 +17,31 @@ template <class T> SparseArray<T> &Manager::registerComponent() {
     return std::any_cast<SparseArray<T> &>(res.first->second.first);
 }
 
-template <class T> void Manager::setComponent(entity::Entity entity, const T &component) {
+template <class T>
+void Manager::setComponent(entity::Entity entity, const T &component) {
     getComponents<T>().insert(entity, component);
 }
 
-template <class T> void Manager::destroyComponent(entity::Entity entity) { getComponents<T>().erase(entity); }
+template <class T>
+void Manager::destroyComponent(entity::Entity entity) {
+    getComponents<T>().erase(entity);
+}
 
-template <typename T, class... Params> void Manager::setComponent(entity::Entity entity, Params &&...p) {
+template <typename T, class... Params>
+void Manager::setComponent(entity::Entity entity, Params &&...p) {
     getComponents<T>().emplace(entity, T(std::forward<Params>(p)...));
 }
 
-template <class T> SparseArray<T> &Manager::getComponents(void) {
+template <class T>
+SparseArray<T> &Manager::getComponents(void) {
     auto it = m_componentArrays.find(std::type_index(typeid(T)));
     if (it == m_componentArrays.end())
         THROW_ERROR("The component " + std::string(READABLE_TYPE_NAME(T)) + " does not exist in the Manager");
     return std::any_cast<SparseArray<T> &>(it->second.first);
 }
 
-template <class T> const SparseArray<T> &Manager::getComponents(void) const {
+template <class T>
+const SparseArray<T> &Manager::getComponents(void) const {
     auto it = m_componentArrays.find(std::type_index(typeid(T)));
     if (it == m_componentArrays.end())
         THROW_ERROR("The component " + std::string(READABLE_TYPE_NAME(T)) + " does not exist in the Manager");

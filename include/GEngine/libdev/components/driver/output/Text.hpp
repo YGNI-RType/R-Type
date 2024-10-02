@@ -21,6 +21,7 @@ struct Text : public gengine::Component {
     Color tint;
 
     Text(const std::string &fontPath, const std::string &str, const Color &tint = BLACK, float spacing = 0)
-        : fontPath(fontPath), str(str), fontSize(10), spacing(spacing), tint(tint) {}
+        : fontPath(fontPath), str(str), fontSize(10), spacing(spacing), tint(tint) {
+    }
 };
 } // namespace gengine::component::driver::output

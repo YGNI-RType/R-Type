@@ -12,8 +12,10 @@
 namespace gengine::system::event {
 struct RenderLoop : public Event {
     float deltaTime;
-    RenderLoop(float &deltaTime) : deltaTime(deltaTime) {}
-    RenderLoop(float &&deltaTime) : deltaTime(deltaTime) {}
+    RenderLoop(float &deltaTime) : deltaTime(deltaTime) {
+    }
+    RenderLoop(float &&deltaTime) : deltaTime(deltaTime) {
+    }
 };
 
 struct StopRenderLoop : public Event {};

@@ -17,7 +17,7 @@ struct Rectangle : public gengine::Component {
     int height;
     Color color;
 
-    Rectangle(int width, int height, const Color &&color) : width(width), height(height), color(color) {};
+    Rectangle(int width, int height, const Color &&color) : width(width), height(height), color(color){};
     // Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
 };
 
@@ -25,7 +25,7 @@ struct Circle : public gengine::Component {
     int r;
     Color color;
 
-    Circle(int r, const Color &&color) : r(r), color(color) {};
+    Circle(int r, const Color &&color) : r(r), color(color){};
     // Circle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
 };
 } // namespace gengine::component::driver::output

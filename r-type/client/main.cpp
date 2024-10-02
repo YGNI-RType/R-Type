@@ -15,7 +15,9 @@
 
 class Start : public gengine::System<Start> {
 public:
-    void init(void) override { subscribeToEvent<gengine::system::event::StartEngine>(&Start::onStartEngine); }
+    void init(void) override {
+        subscribeToEvent<gengine::system::event::StartEngine>(&Start::onStartEngine);
+    }
 
     void onStartEngine(gengine::system::event::StartEngine &e) {
         // spawnEntity(gengine::component::driver::output::Window(1080, 720, "window"),
@@ -29,7 +31,9 @@ public:
 
 class Logger : public gengine::System<Logger> {
 public:
-    void init(void) override { subscribeToEvent<gengine::system::driver::input::KeyAEvent>(&Logger::onKeyA); }
+    void init(void) override {
+        subscribeToEvent<gengine::system::driver::input::KeyAEvent>(&Logger::onKeyA);
+    }
 
     void onKeyA(gengine::system::driver::input::KeyAEvent &e) {
         switch (e.state) {

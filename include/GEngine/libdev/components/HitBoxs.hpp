@@ -12,17 +12,20 @@
 namespace gengine::component {
 struct HitBoxSquare2D : public Component {
     int width, height;
-    HitBoxSquare2D(int width, int height) : width(width), height(height) {}
+    HitBoxSquare2D(int width, int height) : width(width), height(height) {
+    }
 };
 
 struct HitBoxSquare3D : public Component {
     int width, height, depth;
-    HitBoxSquare3D(int width, int height) : width(width), height(height) {}
+    HitBoxSquare3D(int width, int height) : width(width), height(height) {
+    }
 };
 
 struct HitBoxCircle2D : public Component {
     int radius;
-    HitBoxCircle2D(int radius) : radius(radius) {}
+    HitBoxCircle2D(int radius) : radius(radius) {
+    }
 };
 
 using HitBoxCircle3D = HitBoxCircle2D;

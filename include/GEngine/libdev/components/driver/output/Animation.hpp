@@ -27,7 +27,11 @@ struct Animation : public gengine::Component {
     bool looping;        // Should the animation loop?
 
     Animation(int nbFrames, int currentFrame, float frameDuration, bool looping = true)
-        : nbFrames(nbFrames), currentFrame(0), frameDuration(frameDuration), currentTime(currentFrame * frameDuration),
-          looping(looping) {}
+        : nbFrames(nbFrames)
+        , currentFrame(0)
+        , frameDuration(frameDuration)
+        , currentTime(currentFrame * frameDuration)
+        , looping(looping) {
+    }
 };
 } // namespace gengine::component::driver::output

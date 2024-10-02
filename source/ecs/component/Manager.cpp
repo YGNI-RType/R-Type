@@ -9,7 +9,8 @@
 
 using namespace ecs;
 
-component::Manager::Manager() {}
+component::Manager::Manager() {
+}
 
 void component::Manager::destroyComponents(entity::Entity entity) {
     for (auto &[_, pair] : m_componentArrays)

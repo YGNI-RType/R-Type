@@ -21,7 +21,9 @@
 #include <random>
 
 namespace hagarioop::systems {
-void Start::init(void) { subscribeToEvent<gengine::system::event::StartEngine>(&Start::onStartEngine); }
+void Start::init(void) {
+    subscribeToEvent<gengine::system::event::StartEngine>(&Start::onStartEngine);
+}
 
 void Start::onStartEngine(gengine::system::event::StartEngine &e) {
     std::random_device rd;

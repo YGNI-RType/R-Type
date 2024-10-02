@@ -43,7 +43,9 @@ void Draw2D::onEndDraw(gengine::system::event::EndDraw &e) {
     EndDrawing();
 }
 
-void DrawSprite::init(void) { subscribeToEvent<gengine::system::event::Draw>(&DrawSprite::onDraw); }
+void DrawSprite::init(void) {
+    subscribeToEvent<gengine::system::event::Draw>(&DrawSprite::onDraw);
+}
 
 void DrawSprite::onDraw(gengine::system::event::Draw &e) {
     auto &sprites = getComponents<component::driver::output::Sprite>();
@@ -58,7 +60,9 @@ void DrawSprite::onDraw(gengine::system::event::Draw &e) {
     }
 }
 
-void DrawText::init(void) { subscribeToEvent<gengine::system::event::Draw>(&DrawText::onDraw); }
+void DrawText::init(void) {
+    subscribeToEvent<gengine::system::event::Draw>(&DrawText::onDraw);
+}
 
 void DrawText::onDraw(gengine::system::event::Draw &e) {
     auto &texts = getComponents<component::driver::output::Text>();
@@ -73,7 +77,9 @@ void DrawText::onDraw(gengine::system::event::Draw &e) {
     }
 }
 
-void DrawRectangle::init(void) { subscribeToEvent<gengine::system::event::Draw>(&DrawRectangle::onDraw); }
+void DrawRectangle::init(void) {
+    subscribeToEvent<gengine::system::event::Draw>(&DrawRectangle::onDraw);
+}
 
 void DrawRectangle::onDraw(gengine::system::event::Draw &e) {
     auto &rectangles = getComponents<component::driver::output::Rectangle>();
@@ -87,7 +93,9 @@ void DrawRectangle::onDraw(gengine::system::event::Draw &e) {
     }
 }
 
-void DrawCircle::init(void) { subscribeToEvent<gengine::system::event::Draw>(&DrawCircle::onDraw); }
+void DrawCircle::init(void) {
+    subscribeToEvent<gengine::system::event::Draw>(&DrawCircle::onDraw);
+}
 
 void DrawCircle::onDraw(gengine::system::event::Draw &e) {
     auto &circles = getComponents<component::driver::output::Circle>();

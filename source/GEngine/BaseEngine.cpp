@@ -23,5 +23,7 @@ void BaseEngine::compute(void) {
     };
 }
 
-void BaseEngine::start(void) { m_ecs.publishEvent(system::event::StartEngine()); }
+void BaseEngine::start(void) {
+    m_ecs.publishEvent(system::event::StartEngine());
+}
 } // namespace gengine

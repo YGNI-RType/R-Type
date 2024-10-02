@@ -20,7 +20,8 @@ Zipper<Element...>::Iterator::Iterator(std::tuple<SparseArray<Element> &...> &tu
     setSmallest(std::index_sequence_for<Element...>(), true);
 };
 
-template <class... Element> Zipper<Element...>::Iterator Zipper<Element...>::Iterator::operator++(void) {
+template <class... Element>
+Zipper<Element...>::Iterator Zipper<Element...>::Iterator::operator++(void) {
     return std::visit(
         [this](auto &&it) -> Iterator {
             do { // TODO might segv but Undefined behavior like vector
@@ -92,12 +93,16 @@ void Zipper<Element...>::Iterator::setSmallest(std::index_sequence<F, I...>, boo
         m_smallestIt);
 }
 
-template <class... Element> Zipper<Element...>::Zipper(SparseArray<Element> &...elem) : m_elements(elem...) {}
+template <class... Element>
+Zipper<Element...>::Zipper(SparseArray<Element> &...elem) : m_elements(elem...) {
+}
 
-template <class... Element> Zipper<Element...>::Iterator Zipper<Element...>::begin(void) {
+template <class... Element>
+Zipper<Element...>::Iterator Zipper<Element...>::begin(void) {
     return Iterator(m_elements);
 };
-template <class... Element> Zipper<Element...>::Iterator Zipper<Element...>::end(void) {
+template <class... Element>
+Zipper<Element...>::Iterator Zipper<Element...>::end(void) {
     return Iterator(m_elements, true);
 }
 } // namespace ecs::component

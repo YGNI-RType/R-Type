@@ -8,7 +8,9 @@
 #include "GEngine/libdev/systems/driver/output/Animate.hpp"
 
 namespace gengine::system::driver::output {
-void Animate::init(void) { subscribeToEvent<gengine::system::event::MainLoop>(&Animate::onMainLoop); }
+void Animate::init(void) {
+    subscribeToEvent<gengine::system::event::MainLoop>(&Animate::onMainLoop);
+}
 
 void Animate::onMainLoop(gengine::system::event::MainLoop &e) {
     auto &animations = getComponents<component::driver::output::Animation>();

@@ -12,11 +12,11 @@
 namespace gengine::component {
 struct Velocity2D : public Component {
     float x, y;
-    Velocity2D(float x, float y) : x(x), y(y) {};
+    Velocity2D(float x, float y) : x(x), y(y){};
 };
 
 struct Velocity3D : public Component {
     float x, y, z;
-    Velocity3D(float x, float y, float z) : x(x), y(y), z(z) {};
+    Velocity3D(float x, float y, float z) : x(x), y(y), z(z){};
 };
 } // namespace gengine::component

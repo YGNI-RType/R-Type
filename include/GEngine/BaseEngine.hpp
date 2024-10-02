@@ -16,9 +16,11 @@ namespace gengine {
 class BaseEngine {
 public:
     // TODO add constructor whit Interface Type template
-    template <typename T, typename... Params> inline void registerSystem(Params &&...p);
+    template <typename T, typename... Params>
+    inline void registerSystem(Params &&...p);
 
-    template <typename T> inline void registerComponent(void);
+    template <typename T>
+    inline void registerComponent(void);
 
     void compute(void);
 

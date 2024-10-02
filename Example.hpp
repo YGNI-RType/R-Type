@@ -1,7 +1,8 @@
-template <typename T> struct Life : public gengine::Component {
+template <typename T>
+struct Life : public gengine::Component {
     T life;
-    Life(T &life_unit) : life(life_unit) {};
-    Life(T &&life_unit) : life(life_unit) {};
+    Life(T &life_unit) : life(life_unit){};
+    Life(T &&life_unit) : life(life_unit){};
 
     Life<T> &operator++(void) {
         life++;
@@ -10,7 +11,9 @@ template <typename T> struct Life : public gengine::Component {
 };
 
 struct StartSystem : public gengine::System<StartSystem> {
-    void init(void) override { subscribeToEvent<gengine::system::event::StartEngine>(&StartSystem::onStart); }
+    void init(void) override {
+        subscribeToEvent<gengine::system::event::StartEngine>(&StartSystem::onStart);
+    }
 
     void onStart(gengine::system::event::StartEngine &e) {
         spawnEntity(Life<int>(1));
@@ -19,7 +22,9 @@ struct StartSystem : public gengine::System<StartSystem> {
 };
 
 struct AddSystem : public gengine::System<AddSystem, Life<int>> {
-    void init(void) override { subscribeToEvent<gengine::system::event::MainLoop>(&AddSystem::onMainLoop); }
+    void init(void) override {
+        subscribeToEvent<gengine::system::event::MainLoop>(&AddSystem::onMainLoop);
+    }
 
     void onMainLoop(gengine::system::event::MainLoop &event) {
         auto &lifes = getComponent<Life<int>>();

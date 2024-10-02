@@ -32,23 +32,35 @@ const char *Exception::what() const noexcept {
 }
 
 FatalException::FatalException(const std::string &message, const char *file, int line)
-    : Exception(message, file, line, colors::E_RED) {}
+    : Exception(message, file, line, colors::E_RED) {
+}
 
-const char *FatalException::getType() const noexcept { return "Fatal Error"; }
+const char *FatalException::getType() const noexcept {
+    return "Fatal Error";
+}
 
 ErrorException::ErrorException(const std::string &message, const char *file, int line)
-    : Exception(message, file, line, colors::E_RED) {}
+    : Exception(message, file, line, colors::E_RED) {
+}
 
-const char *ErrorException::getType() const noexcept { return "Error"; }
+const char *ErrorException::getType() const noexcept {
+    return "Error";
+}
 
 WarningException::WarningException(const std::string &message, const char *file, int line)
-    : Exception(message, file, line, colors::E_YELLOW) {}
+    : Exception(message, file, line, colors::E_YELLOW) {
+}
 
-const char *WarningException::getType() const noexcept { return "Warning"; }
+const char *WarningException::getType() const noexcept {
+    return "Warning";
+}
 
 InfoException::InfoException(const std::string &message, const char *file, int line)
-    : Exception(message, file, line, colors::E_BLUE) {}
+    : Exception(message, file, line, colors::E_BLUE) {
+}
 
-const char *InfoException::getType() const noexcept { return "Info"; }
+const char *InfoException::getType() const noexcept {
+    return "Info";
+}
 
 } // namespace gengine

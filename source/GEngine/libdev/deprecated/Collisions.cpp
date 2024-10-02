@@ -10,7 +10,9 @@
 
 namespace gengine::system {
 
-void Collision2D::init(void) { subscribeToEvent<event::MainLoop>(&Collision2D::onMainLoop); }
+void Collision2D::init(void) {
+    subscribeToEvent<event::MainLoop>(&Collision2D::onMainLoop);
+}
 
 bool checkSquareCollision(const component::HitBoxSquare2D &square1, const component::Position2D &pos1,
                           const component::HitBoxSquare2D &square2, const component::Position2D &pos2) {
@@ -86,7 +88,9 @@ void Collision2D::onMainLoop(event::MainLoop &e [[maybe_unused]]) {
     }
 }
 
-void Collision3D::init(void) { subscribeToEvent<event::MainLoop>(&Collision3D::onMainLoop); }
+void Collision3D::init(void) {
+    subscribeToEvent<event::MainLoop>(&Collision3D::onMainLoop);
+}
 
 bool checkCubeCollision(const component::HitBoxSquare3D &cube1, const component::Position3D &pos1,
                         const component::HitBoxSquare3D &cube2, const component::Position3D &pos2) {
