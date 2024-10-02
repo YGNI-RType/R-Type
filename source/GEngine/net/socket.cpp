@@ -359,7 +359,7 @@ SocketUDP::SocketUDP(uint16_t port, bool ipv6) {
     translateAutomaticAddressing(address, port, ipv6);
 
     if (bind(m_sock, (sockaddr *)&address, sizeof(address)) < 0)
-        throw SocketException("(UDP) Failed to bind socket");
+        throw SocketException(strerror(errno));
 
     addSocketPool(m_sock);
 }
