@@ -9,7 +9,6 @@
 
 #include <chrono>
 #include <ctime>
-#include <cxxabi.h>
 #include <exception>
 #include <iostream>
 #include <sstream>
@@ -28,15 +27,6 @@ static const char *const E_UNDERLINE = "\033[4m";
 #define THROW_FATAL(msg) throw gengine::FatalException(msg, __FILE__, __LINE__)
 #define THROW_WARNING(msg) throw gengine::WarningException(msg, __FILE__, __LINE__)
 #define THROW_INFO(msg) throw gengine::InfoException(msg, __FILE__, __LINE__)
-
-#define READABLE_TYPE_NAME(type)                                                                                       \
-    ([]() -> std::string {                                                                                             \
-        int status = 0;                                                                                                \
-        char *demangled = abi::__cxa_demangle(typeid(type).name(), nullptr, nullptr, &status);                         \
-        std::string result(demangled);                                                                                 \
-        free(demangled);                                                                                               \
-        return result;                                                                                                 \
-    }())
 
 namespace gengine {
 
@@ -144,3 +134,22 @@ protected:
 };
 
 } // namespace gengine
+
+#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+#include <cxxabi.h>
+// UNIX-like system (Linux/macOS) implementation using abi::__cxa_demangle
+#define READABLE_TYPE_NAME(type)                                                                                       \
+    ([]() -> std::string {                                                                                             \
+        int status = 0;                                                                                                \
+        char *demangled = abi::__cxa_demangle(typeid(type).name(), nullptr, nullptr, &status);                         \
+        std::string result(demangled ? demangled : typeid(type).name());                                               \
+        free(demangled);                                                                                               \
+        return result;                                                                                                 \
+    }())
+
+#elif defined(_WIN32)
+
+// Windows implementation (without demangling)
+#define READABLE_TYPE_NAME(type) ([]() -> std::string { return typeid(type).name(); }())
+
+#endif
