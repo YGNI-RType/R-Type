@@ -31,7 +31,7 @@ public:
 
     /* index of the pinged servers */
     bool connectToServer(size_t index);
-    bool connectToServer(const std::string &ip, uint16_t port);
+    bool connectToServer(const std::string &ip, uint16_t port, bool block = false);
     void disconnectFromServer(void);
 
     void createSets(fd_set &readSet);

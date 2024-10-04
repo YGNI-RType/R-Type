@@ -159,12 +159,16 @@ public:
     const EventType getEventType(void) const {
         return m_eventType;
     }
+    const bool isNotReady(void) const {
+        return m_notReady;
+    }
 
 private:
     std::size_t receiveReliant(TCPSerializedMessage *buffer, std::size_t size) const;
     std::size_t sendReliant(const TCPSerializedMessage *msg, std::size_t msgDataSize) const;
 
     EventType m_eventType = READ;
+    bool m_notReady = true;
 };
 
 SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);

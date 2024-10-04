@@ -61,7 +61,9 @@ AddressV4::AddressV4(AddressType type, const std::string &ip, uint16_t port)
     if (addr == INADDR_NONE)
         throw std::runtime_error("Invalid IP address"); // todo : custom exception
 
-    m_address = *(ipv4_t *)&addr;
+    auto convAddr = ntohl(addr);
+
+    m_address = *(ipv4_t *)&convAddr;
 }
 
 void AddressV4::toSockAddr(sockaddr *addr) const {

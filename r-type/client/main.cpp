@@ -96,11 +96,11 @@ int main(void) {
     Network::NET::init();
 
     Network::NET::initClient();
-    Network::NET::pingServers();
+    // Network::NET::pingServers();
 
     Network::CLNetClient &client = Network::NET::getClient();
 
-    client.connectToServer("192.168.1.78", 4243);
+    client.connectToServer("127.0.0.1", 4243, true);
 
     while (1) {
         if (Network::NET::sleep(4000))

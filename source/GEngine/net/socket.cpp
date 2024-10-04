@@ -207,6 +207,7 @@ SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAd
 
     unkwAddr.updateType();
     m_port = socketMaster.getPort();
+    m_notReady = false;
     addSocketPool(m_sock);
 }
 
@@ -231,6 +232,7 @@ SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort, bool block) {
         throw SocketException(strerror(errno));
     }
 
+    m_notReady = false;
     addSocketPool(m_sock);
 }
 
@@ -255,6 +257,7 @@ SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort, bool block) {
         throw SocketException(strerror(errno));
     }
 
+    m_notReady = false;
     addSocketPool(m_sock);
 }
 

@@ -33,7 +33,7 @@ bool CLNetClient::connectToServer(size_t index) {
     return true;
 }
 
-bool CLNetClient::connectToServer(const std::string &ip, uint16_t port) {
+bool CLNetClient::connectToServer(const std::string &ip, uint16_t port, bool block) {
     std::unique_ptr<Address> addr;
 
     try {
@@ -47,9 +47,10 @@ bool CLNetClient::connectToServer(const std::string &ip, uint16_t port) {
     }
 
     /* fix : when the addres is bad, it holds since it blocks, make it unblock by default ? */
-    auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), port)
-                                           : SocketTCP(static_cast<AddressV6 &>(*addr), port);
+    auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), port, block)
+                                           : SocketTCP(static_cast<AddressV6 &>(*addr), port, block);
 
+    std::cout << "connecting is not ready ?: " << sock.isNotReady() << std::endl;
     m_netChannel = std::move(NetChannel(false, std::move(addr), sock));
     //     /* todo : some error handling just in case ? */
 

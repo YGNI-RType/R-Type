@@ -248,7 +248,7 @@ bool NET::sleep(uint32_t ms) {
     else if (res == 0)
         return false;
 
-    handleEvents(readSet);
+    while(handleEvents(readSet));
     return true;
 }
 
@@ -263,14 +263,14 @@ void NET::createSets(fd_set &readSet) {
         mg_socketUdpV6.setFdSet(readSet);
 }
 
-void NET::handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool NET::handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
     if (mg_server.handleUDPEvent(socket, msg, addr))
-        return;
+        return true;
 
-    mg_client.handleUDPEvents(socket, msg, addr);
+    return mg_client.handleUDPEvents(socket, msg, addr);
 }
 
-void NET::handleEvents(fd_set &readSet) {
+bool NET::handleEvents(fd_set &readSet) {
     if (mg_socketUdp.isFdSet(readSet)) {
         UDPMessage msg(0, 0);
         auto addr = mg_socketUdp.receiveV4(msg);
@@ -283,9 +283,9 @@ void NET::handleEvents(fd_set &readSet) {
     }
 
     if (mg_server.handleTCPEvent(readSet))
-        return;
+        return true;
 
-    mg_client.handleTCPEvents(readSet);
+    return mg_client.handleTCPEvents(readSet);
 }
 
 /**************************************************************/
