@@ -32,6 +32,12 @@ component::SparseArray<T> &Base<Derived, DependTypes...>::getComponents(void) {
 }
 
 template <class Derived, class... DependTypes>
+void Base<Derived, DependTypes...>::setComponent(entity::Entity entity, const std::type_index &type,
+                                                 const std::any &component) {
+    m_ecs->get().setComponent(entity, type, component);
+}
+
+template <class Derived, class... DependTypes>
 template <class T, class... Params>
 void Base<Derived, DependTypes...>::registerSystem(Params &&...p) {
     m_ecs->get().template registerSystem<T>(std::forward(p)...);

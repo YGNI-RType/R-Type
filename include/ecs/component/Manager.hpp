@@ -32,6 +32,7 @@ public:
     void setComponent(entity::Entity from, const Component &component);
     template <typename Component, class... Params>
     void setComponent(entity::Entity from, Params &&...p);
+    void setComponent(entity::Entity entity, const std::type_index &type, const std::any &component);
 
     template <class Component>
     void destroyComponent(entity::Entity from);
@@ -44,7 +45,10 @@ public:
 
 private:
     typedef std::function<void(entity::Entity)> destroyer_t;
-    std::unordered_map<std::type_index, std::pair<std::any, destroyer_t>> m_componentArrays;
+    typedef std::function<void(entity::Entity, const std::any &)> setter_t;
+    // typedef std::function<void(entity::Entity, std::any)> comparer_t;
+    std::unordered_map<std::type_index, std::any> m_componentArrays;
+    std::unordered_map<std::type_index, std::tuple<destroyer_t, setter_t>> m_tools;
 };
 
 } // namespace ecs::component
