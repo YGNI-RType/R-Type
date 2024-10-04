@@ -35,10 +35,10 @@ public:
         return m_socketv6;
     }
 
-    size_t getNumClients(void) const {
+    uint32_t getNumClients(void) const {
         return m_clients.size();
     }
-    size_t getMaxClients(void) const {
+    uint32_t getMaxClients(void) const {
         return m_maxClients;
     };
 

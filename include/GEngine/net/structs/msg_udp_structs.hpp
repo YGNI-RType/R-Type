@@ -17,8 +17,8 @@ struct UDPSV_PingResponse {
     uint16_t tcpv4Port;
     uint16_t tcpv6Port;
 
-    std::size_t maxPlayers;
-    std::size_t currentPlayers;
+    std::uint32_t maxPlayers;
+    std::uint32_t currentPlayers;
 };
 
 struct UDPG_NetChannelHeader {
