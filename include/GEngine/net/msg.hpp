@@ -26,12 +26,12 @@ namespace Network {
 
 PACK(struct HeaderSerializedMessage {
     uint8_t type;
-    std::size_t curSize;
+    uint64_t curSize;
 });
 
 PACK(struct UDPSerializedMessage {
     uint8_t type;
-    std::size_t curSize;
+    uint64_t curSize;
     uint8_t flag;
     uint16_t fragments;
     byte_t data[MAX_UDP_MSGLEN];
@@ -39,7 +39,7 @@ PACK(struct UDPSerializedMessage {
 
 PACK(struct TCPSerializedMessage {
     uint8_t type;
-    std::size_t curSize;
+    uint64_t curSize;
     bool isFinished = true;
     byte_t data[MAX_TCP_MSGLEN];
 });
