@@ -108,7 +108,9 @@ bool CLNetClient::handleTCPEvents(fd_set &readSet) {
     if (!m_enabled || !m_netChannel.isEnabled())
         return false;
 
-    if (m_netChannel.getTcpSocket().isFdSet(readSet)) {
+    auto &sock = m_netChannel.getTcpSocket();
+    if (sock.isFdSet(readSet)) {
+        sock.removeFdSet(readSet);
         TCPMessage msg(0, 0);
         if (!m_netChannel.readStream(msg))
             return false;

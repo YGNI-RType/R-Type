@@ -83,6 +83,9 @@ public:
     void setFdSet(fd_set &set) const {
         FD_SET(m_sock, &set);
     }
+    void removeFdSet(fd_set &set) const {
+        FD_CLR(m_sock, &set);
+    }
 
 protected:
     SOCKET m_sock = -1;

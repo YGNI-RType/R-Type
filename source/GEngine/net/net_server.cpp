@@ -135,11 +135,13 @@ bool NetServer::handleTCPEvent(fd_set &readSet) {
         return false;
 
     if (m_socketv4.isFdSet(readSet)) {
+        m_socketv4.removeFdSet(readSet);
         handleNewClient(m_socketv4);
         return true;
     }
 
     if (CVar::net_ipv6.getIntValue() && m_socketv6.isFdSet(readSet)) {
+        m_socketv6.removeFdSet(readSet);
         handleNewClient(m_socketv6);
         return true;
     }
@@ -148,9 +150,11 @@ bool NetServer::handleTCPEvent(fd_set &readSet) {
         auto &socket = client->getChannel().getTcpSocket();
         auto eventType = socket.getEventType();
 
-        if (eventType == SocketTCP::EventType::READ && socket.isFdSet(readSet))
+        if (eventType == SocketTCP::EventType::READ && socket.isFdSet(readSet)) {
+            socket.removeFdSet(readSet);
             //     socket.handleEvent();
             return true;
+        }
     }
 
     return false;
