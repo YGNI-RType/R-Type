@@ -36,7 +36,7 @@
         "inherits": "release",
         "architecture": {
           "value": "armv8",
-          "strategy": "set"
+          "strategy": "external"
         }
       },
       {
@@ -44,7 +44,7 @@
         "inherits": "debug",
         "architecture": {
           "value": "armv8",
-          "strategy": "set"
+          "strategy": "external"
         }
       }
     ],
