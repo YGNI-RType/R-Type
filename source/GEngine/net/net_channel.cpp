@@ -34,13 +34,19 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
         return false;
     }
 
-    msg.writeHeader({.sequence = NETCHAN_GENCHECKSUM(m_challenge, m_udpOutSequence), .ack = m_udpInSequence});
+    uint64_t &udpOutSequence = msg.shouldAck() ? m_udpACKOutSequence : m_udpOutSequence;
+    uint64_t &udpInSequence = msg.shouldAck() ? m_udpACKInSequence : m_udpInSequence;
+
+    UDPG_NetChannelHeader header = {.sequence = NETCHAN_GENCHECKSUM(m_challenge, udpOutSequence)};
+    if (msg.shouldAck())
+        header.ack = udpInSequence;
+    msg.writeHeader(header);
 
     size_t sent = socket.send(msg, addr);
     if (sent < 0) // guess it's send, but not quite, TODO : check any weird case (place breakpoint)
         return true;
 
-    m_udpOutSequence++;
+    udpOutSequence++;
 
     /* for client/server rates calculation */
     m_udplastsent = Time::Clock::milliseconds();
@@ -55,11 +61,18 @@ bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
     if (!NETCHAN_GENCHECKSUM(m_challenge, header.sequence))
         return false; /* what is going on sir ???? */
 
-    if (header.sequence <= m_udpInSequence) {
+    uint64_t &udpOutSequence = msg.shouldAck() ? m_udpACKOutSequence : m_udpOutSequence;
+    uint64_t &udpInSequence = msg.shouldAck() ? m_udpACKInSequence : m_udpInSequence;
+
+    if (header.sequence <= udpOutSequence) {
         /*out of order packet, delete it */
         return false;
     }
-    m_droppedPackets = header.sequence - m_udpInSequence + 1;
+
+    if (msg.shouldAck()) { /* only care about reliable packets */
+        m_udpACKClientLastACK = header.ack;
+        m_droppedPackets = header.sequence - udpInSequence + 1;
+    }
 
     /****** At this point, the packet is valid *******/
 
@@ -72,7 +85,7 @@ bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
         return false;
     }
 
-    m_udpInSequence = header.sequence;
+    udpInSequence = header.sequence;
     return true;
 }
 

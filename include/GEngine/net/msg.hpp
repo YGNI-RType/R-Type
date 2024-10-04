@@ -148,6 +148,7 @@ public:
         HEADER = 2,
         FRAGMENTED = 4,
         ENCRYPTED = 8,
+        ACK = 16,
     };
 
 public:
@@ -173,10 +174,15 @@ public:
     bool isEncrypted() const {
         return m_flags & ENCRYPTED;
     }
+    bool shouldAck() const {
+        return m_flags & ACK;
+    }
+
     void setCompressed(bool compressed);
     void setHeader(bool header);
     void setFragmented(bool fragmented);
     void setEncrypted(bool encrypted);
+    void setAck(bool ack);
 
     void writeHeader(const UDPG_NetChannelHeader &header);
     void readHeader(UDPG_NetChannelHeader &header) const;

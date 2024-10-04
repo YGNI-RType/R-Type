@@ -141,8 +141,14 @@ private:
 
     uint32_t m_droppedPackets = 0;
 
+    /* don't give a shit if the packet went through : voip / camera */
     uint64_t m_udpInSequence = 0;
     uint64_t m_udpOutSequence = 1;
+
+    /* snapshot, needs client acknowledge to do some things */
+    uint64_t m_udpACKInSequence = 0;
+    uint64_t m_udpACKOutSequence = 1;
+    uint64_t m_udpACKClientLastACK = 0;
 
     uint64_t m_udplastsent = 0;
     uint64_t m_udplastrecv = 0;

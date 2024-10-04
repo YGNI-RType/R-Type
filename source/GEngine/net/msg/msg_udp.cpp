@@ -90,4 +90,11 @@ void UDPMessage::setEncrypted(bool encrypted) {
         m_flags &= ~ENCRYPTED;
 }
 
+void UDPMessage::setAck(bool ack) {
+    if (ack)
+        m_flags |= ACK;
+    else
+        m_flags &= ~ACK;
+}
+
 } // namespace Network
