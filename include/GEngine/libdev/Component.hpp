@@ -10,9 +10,21 @@
 #include "ecs/component/IsComponent.hpp"
 #include "ecs/component/Iterator.hpp"
 
+#include <utility>
+
 namespace gengine {
 using Component = ecs::component::IsComponent;
 
-template <class... Element>
-using Zip = ecs::component::Zipper<Element...>;
+template <typename SparseArrayType>
+struct SparseArrayTraits;
+
+template <typename Element>
+struct SparseArrayTraits<ecs::component::SparseArray<Element>> {
+    using type = Element;
+};
+
+template <class... SparseArrays>
+ecs::component::Zipper<typename SparseArrayTraits<SparseArrays>::type...> Zip(SparseArrays&... s) {
+    return ecs::component::Zipper<typename SparseArrayTraits<SparseArrays>::type...>(s...);
+}
 } // namespace gengine

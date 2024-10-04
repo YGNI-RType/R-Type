@@ -16,7 +16,7 @@ void Motion2D::onMainLoop(event::MainLoop &e) {
     auto &transforms = getComponents<component::Transform2D>();
     auto &velocities = getComponents<component::Velocity2D>();
 
-    for (auto [entity, tr, vel] : Zip<component::Transform2D, component::Velocity2D>(transforms, velocities)) {
+    for (auto [entity, tr, vel] : Zip(transforms, velocities)) {
         tr.pos.x += (vel.x * e.deltaTime);
         tr.pos.y += (vel.y * e.deltaTime);
     }
@@ -29,7 +29,7 @@ void Motion3D::onMainLoop(event::MainLoop &e) {
     auto &transforms = getComponents<component::Transform3D>();
     auto &velocities = getComponents<component::Velocity3D>();
 
-    for (auto [entity, tr, vel] : Zip<component::Transform3D, component::Velocity3D>(transforms, velocities)) {
+    for (auto [entity, tr, vel] : Zip(transforms, velocities)) {
         tr.pos.x += (vel.x * e.deltaTime);
         tr.pos.y += (vel.y * e.deltaTime);
         tr.pos.z += (vel.z * e.deltaTime);
