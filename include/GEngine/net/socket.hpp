@@ -144,9 +144,9 @@ public:
 
 public:
     SocketTCP() = default;
-    SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr); // accepts it from the socket master
-    SocketTCP(const AddressV4 &addr, uint16_t tcpPort); // connect to the address (only for client)
-    SocketTCP(const AddressV6 &addr, uint16_t tcpPort); // connect to the address (only for client)
+    SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr, bool block = false); // accepts it from the socket master
+    SocketTCP(const AddressV4 &addr, uint16_t tcpPort, bool block = false); // connect to the address (only for client)
+    SocketTCP(const AddressV6 &addr, uint16_t tcpPort, bool block = false); // connect to the address (only for client)
     SocketTCP(const SocketTCP &other) = delete;
     SocketTCP &operator=(const SocketTCP &) = delete;
     SocketTCP(SocketTCP &&other);

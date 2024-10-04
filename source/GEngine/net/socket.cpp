@@ -199,8 +199,9 @@ SocketTCP SocketTCPMaster::accept(UnknownAddress &unkwAddr) const {
 
 /***********************************************/
 
-SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr) {
+SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr, bool block) {
     m_sock = accept(socketMaster.getSocket(), unkwAddr.getAddr(), &unkwAddr.getLen());
+    setBlocking(block);
     if (m_sock < 0)
         throw std::runtime_error("Failed to accept connection");
 
@@ -209,8 +210,9 @@ SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAd
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort) {
+SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort, bool block) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    setBlocking(block);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
@@ -232,8 +234,9 @@ SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort) {
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort) {
+SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort, bool block) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    setBlocking(block);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 

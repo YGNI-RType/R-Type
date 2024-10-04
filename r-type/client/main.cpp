@@ -100,7 +100,7 @@ int main(void) {
 
     Network::CLNetClient &client = Network::NET::getClient();
 
-    // client.connectToServer("141.145.211.53", 4243);
+    client.connectToServer("192.168.1.78", 4243);
 
     while (1) {
         if (Network::NET::sleep(4000))
