@@ -46,6 +46,14 @@
           "value": "armv8",
           "strategy": "external"
         }
+      },
+      {
+        "name": "debug_x86",
+        "inherits": "default",
+        "architecture": {
+          "value": "x86",
+          "strategy": "external"
+      }
       }
     ],
     "buildPresets": [
@@ -73,6 +81,11 @@
         "name": "debug_armv8",
         "inherits": "default",
         "configurePreset": "debug_armv8"
+      },
+      {
+        "name": "debug_x86",
+        "inherits": "default",
+        "configurePreset": "debug_x86"
       }
     ]
   }

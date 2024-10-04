@@ -52,20 +52,20 @@ public:
     // virtual void writeHeader(); // override final;
     // virtual void readHeader(); // override final;
 
-    std::uint64_t getSize() const {
+    uint64_t getSize() const {
         return m_curSize;
     }
     uint8_t getType() const {
         return m_type;
     }
-    std::uint64_t getMaxSize() const {
+    std::size_t getMaxSize() const {
         return m_maxSize;
     }
 
     virtual const byte_t *getData() const = 0;
 
     template <typename T>
-    void appendData(const T &data, uint64_t offset = 0) {
+    void appendData(const T &data, size_t offset = 0) {
         byte_t *myData = getDataMember();
 
         std::memcpy(myData + m_curSize + offset, &data, sizeof(T));
@@ -73,7 +73,7 @@ public:
     }
 
     template <typename T>
-    void writeData(const T &data, uint64_t offset = 0, bool updateSize = true) {
+    void writeData(const T &data, size_t offset = 0, bool updateSize = true) {
         byte_t *myData = getDataMember();
 
         std::memcpy(myData, &data, sizeof(T));
@@ -82,7 +82,7 @@ public:
     }
 
     template <typename T>
-    uint64_t readData(T &data) const {
+    size_t readData(T &data) const {
         if (sizeof(T) > m_curSize)
             throw std::runtime_error("Message is too small to read data");
 
@@ -92,7 +92,7 @@ public:
     }
 
     template <typename T>
-    uint64_t readContinuousData(T &data, uint64_t &readOffset) const {
+    size_t readContinuousData(T &data, size_t &readOffset) const {
         if (sizeof(T) + readOffset > m_curSize)
             throw std::runtime_error("Message is too small to read data");
 
@@ -102,23 +102,23 @@ public:
         return sizeof(T);
     }
 
-    void writeData(const void *data, std::uint64_t size);
-    void readData(void *data, std::uint64_t size) const;
+    void writeData(const void *data, std::size_t size);
+    void readData(void *data, std::size_t size) const;
 
 protected:
-    AMessage(std::uint64_t maxSize, uint8_t type);
+    AMessage(std::size_t maxSize, uint8_t type);
     virtual ~AMessage() = default;
 
     virtual byte_t *getDataMember() = 0;
 
-    const std::uint64_t m_maxSize;
+    const std::size_t m_maxSize;
     std::uint64_t m_curSize = 0;
     uint8_t m_type;
 };
 
 class TCPMessage : public AMessage {
 public:
-    TCPMessage(std::uint64_t maxSize, uint8_t type);
+    TCPMessage(std::size_t maxSize, uint8_t type);
     ~TCPMessage() = default;
 
     TCPMessage &operator=(const TCPMessage &other);

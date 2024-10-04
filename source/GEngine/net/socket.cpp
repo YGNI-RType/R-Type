@@ -282,7 +282,7 @@ void SocketTCP::receive(TCPMessage &msg) const {
     /* WIN : need to use these parenthesis, to skip windows.h macro (todo : find why +1, another problem with packed
      * structs ?)*/
     recvSz = receiveReliant(reinterpret_cast<TCPSerializedMessage *>(ptrMsg + recvSz),
-                            (std::min)(sMsg.curSize + 1, sizeof(TCPSerializedMessage) - recvSz));
+                            CF_MIN(sMsg.curSize + 1, sizeof(TCPSerializedMessage) - recvSz));
 
     msg.setSerialize(sMsg);
 }

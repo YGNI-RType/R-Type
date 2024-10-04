@@ -40,6 +40,10 @@ typedef unsigned short sa_family_t;
 #define MAX_UDP_MSGLEN 16384
 #define MAX_TCP_MSGLEN 32768
 
+#define CF_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define CF_MAX(a, b) ((a) > (b) ? (a) : (b))
+#define CF_CLAMP(x, a, b) CF_MIN(CF_MAX(x, a), b)
+
 typedef uint8_t byte_t;
 
 typedef enum { AT_NONE = 0, AT_BOT, AT_LOOPBACK, AT_BROADCAST, AT_MULTICAST, AT_IPV4, AT_IPV6, AT_UNSPEC } AddressType;
