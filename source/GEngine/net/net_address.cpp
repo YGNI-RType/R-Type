@@ -8,6 +8,7 @@
 #include "GEngine/net/net_address.hpp"
 
 #include <cstring>
+#include <stdexcept>
 
 namespace Network {
 
@@ -52,6 +53,15 @@ AddressV4::AddressV4(AddressType type, uint16_t port)
 AddressV4::AddressV4(AddressType type, uint16_t port, in_addr_t ip)
     : Address(type, port) {
     m_address = *(ipv4_t *)&ip;
+}
+AddressV4::AddressV4(AddressType type, const std::string &ip, uint16_t port)
+    : Address(type, port) {
+    in_addr_t addr = inet_addr(ip.c_str());
+
+    if (addr == INADDR_NONE)
+        throw std::runtime_error("Invalid IP address"); // todo : custom exception
+
+    m_address = *(ipv4_t *)&addr;
 }
 
 void AddressV4::toSockAddr(sockaddr *addr) const {
@@ -104,6 +114,15 @@ AddressV6::AddressV6(AddressType type, uint16_t port, in6_addr ip, uint32_t scop
     , m_scopeId(scopeId) {
     m_address = *(ipv6_t *)&ip;
     m_scopeId = scopeId;
+}
+AddressV6::AddressV6(AddressType type, const std::string &ip, uint16_t port)
+    : Address(type, port) {
+    in6_addr addr;
+
+    if (inet_pton(AF_INET6, ip.c_str(), &addr) != 1)
+        throw std::runtime_error("Invalid IP address"); // todo : custom exception
+
+    m_address = *(ipv6_t *)&addr;
 }
 
 void AddressV6::toSockAddr(sockaddr *addr) const {

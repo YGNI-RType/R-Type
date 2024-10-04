@@ -30,6 +30,22 @@
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Debug"
         }
+      },
+      {
+        "name": "release_armv8",
+        "inherits": "release",
+        "architecture": {
+          "value": "armv8",
+          "strategy": "set"
+        }
+      },
+      {
+        "name": "debug_armv8",
+        "inherits": "debug",
+        "architecture": {
+          "value": "armv8",
+          "strategy": "set"
+        }
       }
     ],
     "buildPresets": [
@@ -47,6 +63,16 @@
         "name": "debug",
         "inherits": "default",
         "configurePreset": "debug"
+      },
+      {
+        "name": "release_armv8",
+        "inherits": "default",
+        "configurePreset": "release_armv8"
+      },
+      {
+        "name": "debug_armv8",
+        "inherits": "default",
+        "configurePreset": "debug_armv8"
       }
     ]
   }

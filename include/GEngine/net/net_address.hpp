@@ -71,6 +71,7 @@ public:
     AddressV4(AddressType type, uint16_t port, ipv4_t address);
     AddressV4(AddressType type, uint16_t port);
     AddressV4(AddressType type, uint16_t port, in_addr_t ip);
+    AddressV4(AddressType type, const std::string &ip, uint16_t port);
     ~AddressV4() = default;
 
     const ipv4_t &getAddress() const {
@@ -94,6 +95,7 @@ public:
     AddressV6(AddressType type, uint16_t port, ipv6_t address, uint64_t scopeId);
     AddressV6(AddressType type, uint16_t port);
     AddressV6(AddressType type, uint16_t port, in6_addr ip, uint32_t scopeId);
+    AddressV6(AddressType type, const std::string &ip, uint16_t port);
     ~AddressV6() = default;
 
     const ipv6_t &getAddress() const {

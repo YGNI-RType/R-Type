@@ -65,11 +65,20 @@ public:
     virtual const byte_t *getData() const = 0;
 
     template <typename T>
-    void writeData(const T &data) {
+    void appendData(const T &data, size_t offset = 0) {
         byte_t *myData = getDataMember();
 
-        std::memcpy(myData + m_curSize, &data, sizeof(T));
+        std::memcpy(myData + m_curSize + offset, &data, sizeof(T));
         m_curSize += sizeof(T);
+    }
+
+    template <typename T>
+    void writeData(const T &data, size_t offset = 0, bool updateSize = true) {
+        byte_t *myData = getDataMember();
+
+        std::memcpy(myData, &data, sizeof(T));
+        if (updateSize)
+            m_curSize = sizeof(T);
     }
 
     template <typename T>
@@ -79,6 +88,17 @@ public:
 
         const byte_t *myData = getData();
         std::memcpy(&data, myData, sizeof(T));
+        return sizeof(T);
+    }
+
+    template <typename T>
+    size_t readContinuousData(T &data, size_t &readOffset) const {
+        if (sizeof(T) + readOffset > m_curSize)
+            throw std::runtime_error("Message is too small to read data");
+
+        const byte_t *myData = getData();
+        std::memcpy(&data, myData + readOffset, sizeof(T));
+        readOffset += sizeof(T);
         return sizeof(T);
     }
 

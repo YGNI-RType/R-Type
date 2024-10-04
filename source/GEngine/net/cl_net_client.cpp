@@ -26,10 +26,32 @@ bool CLNetClient::connectToServer(size_t index) {
 
     sock.setBlocking(false);
     m_netChannel = std::move(NetChannel(false, std::move(addr), sock));
-    // } catch (const std::exception &e) {
     //     /* todo : some error handling just in case ? */
-    //     throw e;
-    // }
+
+    m_state = CS_CONNECTED;
+    m_connectionState = CON_CONNECTING;
+    return true;
+}
+
+bool CLNetClient::connectToServer(const std::string &ip, uint16_t port) {
+    std::unique_ptr<Address> addr;
+
+    try {
+        addr = std::make_unique<AddressV4>(AT_IPV4, ip, port);
+    } catch (const std::exception &e) {
+        try {
+            addr = std::make_unique<AddressV6>(AT_IPV6, ip, port);
+        } catch (const std::exception &e) {
+            return false;
+        }
+    }
+
+    /* fix : when the addres is bad, it holds since it blocks, make it unblock by default ? */
+    auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), port)
+                                           : SocketTCP(static_cast<AddressV6 &>(*addr), port);
+
+    m_netChannel = std::move(NetChannel(false, std::move(addr), sock));
+    //     /* todo : some error handling just in case ? */
 
     m_state = CS_CONNECTED;
     m_connectionState = CON_CONNECTING;
