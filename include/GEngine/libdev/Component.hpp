@@ -24,7 +24,7 @@ struct SparseArrayTraits<ecs::component::SparseArray<Element>> {
 };
 
 template <class... SparseArrays>
-ecs::component::Zipper<typename SparseArrayTraits<SparseArrays>::type...> Zip(SparseArrays&... s) {
+ecs::component::Zipper<typename SparseArrayTraits<SparseArrays>::type...> Zip(SparseArrays &...s) {
     return ecs::component::Zipper<typename SparseArrayTraits<SparseArrays>::type...>(s...);
 }
 } // namespace gengine
