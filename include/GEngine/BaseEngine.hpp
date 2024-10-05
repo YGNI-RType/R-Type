@@ -27,7 +27,9 @@ public:
 
     void start(void);
 
-    const world_t &getWorld(void) {return m_ecs.getComponentMap();}
+    const world_t &getWorld(void) {
+        return m_ecs.getComponentMap();
+    }
 
 private:
     ecs::ECS m_ecs;

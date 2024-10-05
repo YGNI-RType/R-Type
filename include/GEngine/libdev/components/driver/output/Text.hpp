@@ -10,8 +10,8 @@
 #include <raylib.h>
 #include <string>
 
-#include "GEngine/libdev/components/driver/output/RaylibTypes.hpp"
 #include "GEngine/libdev/Component.hpp"
+#include "GEngine/libdev/components/driver/output/RaylibTypes.hpp"
 
 namespace gengine::component::driver::output {
 struct Text : public Component<Text> {
@@ -29,6 +29,6 @@ struct Text : public Component<Text> {
         , tint(tint) {
     }
 
-    bool operator==(const Text &) const {return true;};
+    bool operator==(const Text &) const = default;
 };
 } // namespace gengine::component::driver::output

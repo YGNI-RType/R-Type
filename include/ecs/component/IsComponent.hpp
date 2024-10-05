@@ -21,4 +21,4 @@ template <typename Derived>
 struct IsComponent {
     bool operator==(const IsComponent<Derived> &) const = default;
 };
-}
+} // namespace ecs::component

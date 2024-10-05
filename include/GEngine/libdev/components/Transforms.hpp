@@ -22,7 +22,6 @@ struct Transform2D : public Component<Transform2D> {
     }
 
     bool operator==(const Transform2D &) const = default;
-
 };
 
 struct Transform3D : public Component<Transform3D> {

@@ -37,7 +37,7 @@ const component::Manager::component_map_t &component::Manager::getComponentMap(v
 }
 
 std::vector<component::component_info_t> component::deltaDiff(const component::Manager::component_map_t &map1,
-                                                   const component::Manager::component_map_t &map2) {
+                                                              const component::Manager::component_map_t &map2) {
     std::vector<component::component_info_t> diff;
 
     for (auto &[type, pair] : map1) {

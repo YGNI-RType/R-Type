@@ -18,7 +18,6 @@ void Snapshot::onStartEngine(gengine::system::event::StartEngine &e) {
     createSnapshots();
 }
 
-
 void Snapshot::onMainLoop(gengine::system::event::MainLoop &e) {
     m_currentSnapshotId++;
     createSnapshots();
@@ -30,9 +29,8 @@ void Snapshot::registerClient(void) {
 }
 
 void Snapshot::createSnapshots(void) {
-    for (auto &snap : m_clientSnapshots) {
+    for (auto &snap : m_clientSnapshots)
         snap[m_currentSnapshotId % MAX_SNAPSHOT] = m_currentWorld;
-    }
 }
 
 void Snapshot::deltaDiff(void) {
@@ -40,12 +38,11 @@ void Snapshot::deltaDiff(void) {
         auto &current = snapshots[m_currentSnapshotId % MAX_SNAPSHOT];
         auto &last = snapshots[(m_currentSnapshotId - 1) % MAX_SNAPSHOT]; // TODO check which world client is using
         auto v = ecs::component::deltaDiff(current, last);
-        for (auto &[e, t, c] : v) {
+        for (auto &[e, t, c] : v)
             std::cout << e << " -> " << t.name() << std::endl;
-        }
         if (v.size())
             std::cout << std::endl;
         // std::vector<
     }
 }
-}
+} // namespace gengine::interface::network::system

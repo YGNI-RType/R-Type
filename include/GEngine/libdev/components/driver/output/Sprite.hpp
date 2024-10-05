@@ -17,7 +17,7 @@
 namespace gengine::component::driver::output {
 struct Sprite : public Component<Sprite> {
     std::string txtPath; // The texture of the sprite
-    Rect src;     // The portion of the texture to render (for sprite sheets/atlases)
+    Rect src;            // The portion of the texture to render (for sprite sheets/atlases)
     Clr tint;
 
     Sprite(const std::string &txtPath, const Rect &src, const Clr &tint = RAYWHITE)
