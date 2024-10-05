@@ -7,6 +7,18 @@
 
 #pragma once
 
+#include <concepts>
+
 namespace ecs::component {
-struct IsComponent {}; // EMPTY won't use additionnal space with modern compilator (EBO)
-} // namespace ecs::component
+
+// TODO Concept to check if a type has operator==
+// template <typename T>
+// concept EqualityComparable = requires(const T &a, const T &b) {
+//     { a == b } -> std::convertible_to<bool>;
+// };
+
+template <typename Derived>
+struct IsComponent {
+    bool operator==(const IsComponent<Derived> &) const = default;
+};
+}

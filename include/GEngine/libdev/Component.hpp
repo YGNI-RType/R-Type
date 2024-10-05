@@ -11,7 +11,8 @@
 #include "ecs/component/Iterator.hpp"
 
 namespace gengine {
-using Component = ecs::component::IsComponent;
+template <class Derived>
+using Component = ecs::component::IsComponent<Derived>;
 
 template <class... Element>
 using Zip = ecs::component::Zipper<Element...>;
