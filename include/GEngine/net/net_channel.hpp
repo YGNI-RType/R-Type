@@ -54,21 +54,27 @@ typedef enum {
 
 class PacketPoolUdp {
 
-static const size_t CHUNK_SIZE = MAX_UDP_PACKET_LENGTH - sizeof(UDPG_FragmentHeaderTo) - sizeof(UDPG_NetChannelHeader); 
-typedef std::array<byte_t, CHUNK_SIZE> chunk_t;
+    static const size_t CHUNK_SIZE =
+        MAX_UDP_PACKET_LENGTH - sizeof(UDPG_FragmentHeaderTo) - sizeof(UDPG_NetChannelHeader);
+    typedef std::array<byte_t, CHUNK_SIZE> chunk_t;
 
-/* type, numbers of chunk, last chunk size, pool offset */
-using poolSequence_t = std::tuple<uint8_t, uint8_t, uint16_t, size_t>; 
+    /* type, numbers of chunk, last chunk size, pool offset */
+    using poolSequence_t = std::tuple<uint8_t, uint8_t, uint16_t, size_t>;
 
 public:
     PacketPoolUdp() = default;
     ~PacketPoolUdp() = default;
 
     bool addMessage(uint32_t sequence, const UDPMessage &msg);
-    std::vector<const chunk_t*> getMissingFragments(uint32_t sequence, uint16_t mask);
+    std::vector<const chunk_t *> getMissingFragments(uint32_t sequence, uint16_t mask);
+    void constructMessage(UDPMessage &msg, const chunk_t *chunk, size_t chunk_size, const UDPG_FragmentHeaderTo &header);
+
+    poolSequence_t getMsgSequenceInfo(uint32_t sequence) const {
+        return m_poolSequences.at(sequence);
+    }
 
 private:
-    std::unordered_map<uint32_t, poolSequence_t> m_poolSequences; 
+    std::unordered_map<uint32_t, poolSequence_t> m_poolSequences;
     std::vector<chunk_t> m_pool; /* pool of packet, just send it straight away, no modifications (header are btw)*/
 };
 
@@ -150,7 +156,7 @@ private:
 
     uint32_t m_udpMyFragSequence = 0;
     uint32_t m_udpFromFragSequence = 0;
-    uint8_t m_udpCurFragSequence = 0;
+    uint8_t m_udpNbFragSequence = 0; /* number of existing frag sequences */
 
     /*******/
 

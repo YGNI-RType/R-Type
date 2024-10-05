@@ -28,17 +28,35 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
 
     /* check the client rating before or after ? */
 
+    uint64_t &udpOutSequence = msg.shouldAck() ? m_udpACKOutSequence : m_udpOutSequence;
+    uint64_t &udpInSequence = msg.shouldAck() ? m_udpACKInSequence : m_udpInSequence;
+
     // rah shit, fragment too big. put the rest in the pool in case of network rating issue
     if (msgLen > MAX_UDP_PACKET_LENGTH) {
-        msg.setFragmented(true);
+        m_udpPoolSend.addMessage(m_udpMyFragSequence, msg);
 
-        m_udpPoolSend.addMessage(m_udpCurFragSequence, msg);       
+        auto fragments = m_udpPoolSend.getMissingFragments(m_udpMyFragSequence, 0);
+        auto [msgType, maxSize, lastChunkSz, _] = m_udpPoolSend.getMsgSequenceInfo(m_udpMyFragSequence);
+        uint8_t i = 0;
+
+        /* todo : add rate limit and all, only do it once though */
+        for (const auto &chunk : fragments) {
+            UDPMessage newMsg(false, msgType);
+
+            newMsg.setFragmented(true);
+            UDPG_FragmentHeaderTo fragHeader;
+            fragHeader.idSequence = m_udpMyFragSequence;
+            fragHeader.fragId = i;
+            fragHeader.fragIdMax = maxSize;
+
+            m_udpPoolSend.constructMessage(newMsg, chunk, fragments.back() == chunk ? lastChunkSz : chunk->size(),
+                                           fragHeader);
+            sendDatagram(socket, newMsg, addr);
+            i++;
+        }
 
         return false;
     }
-
-    uint64_t &udpOutSequence = msg.shouldAck() ? m_udpACKOutSequence : m_udpOutSequence;
-    uint64_t &udpInSequence = msg.shouldAck() ? m_udpACKInSequence : m_udpInSequence;
 
     UDPG_NetChannelHeader header = {.sequence = NETCHAN_GENCHECKSUM(m_challenge, udpOutSequence),
                                     .ackFragmentSequence = m_udpMyFragSequence};
