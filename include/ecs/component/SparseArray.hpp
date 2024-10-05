@@ -7,13 +7,16 @@
 
 #pragma once
 
+#include <any>
 #include <limits>
+#include <typeindex>
 #include <vector>
 
 #include "ecs/entity/Entity.hpp"
 
 namespace ecs::component {
 
+using component_info_t = std::tuple<entity::Entity, const std::type_index &, const std::any &>;
 template <class Component>
 class SparseArray { // TODO std::optional getComponents(entity &from) if more efficient + get const entity
 public:
@@ -36,6 +39,7 @@ public:
     const Component &get(entity::Entity entity) const;
 
     std::size_t size() const;
+    std::size_t reserved() const;
 
     using dense_iterator = typename std::vector<std::pair<entity::Entity, Component>>::iterator;
     using dense_const_iterator = typename std::vector<std::pair<entity::Entity, Component>>::const_iterator;
