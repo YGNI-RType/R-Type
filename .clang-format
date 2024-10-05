@@ -5,5 +5,5 @@ AccessModifierOffset: -4
 ColumnLimit: 120
 AlwaysBreakTemplateDeclarations: true
 BreakConstructorInitializers: BeforeComma
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
 AllowShortFunctionsOnASingleLine: false

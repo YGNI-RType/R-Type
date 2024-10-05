@@ -22,7 +22,7 @@ public:
     template <typename T>
     inline void registerComponent(void);
 
-    void update(void);
+    void compute(void);
 
     void start(void);
 

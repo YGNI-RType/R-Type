@@ -9,7 +9,8 @@
 
 using namespace ecs;
 
-entity::Manager::Manager() : m_size(0) {
+entity::Manager::Manager()
+    : m_size(0) {
 }
 
 entity::Entity entity::Manager::createEntity() {

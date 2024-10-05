@@ -11,16 +11,18 @@ namespace ecs::system::event {
 
 template <typename Type>
 void Bus::publish(const Type &event) {
-    auto it = m_callbacks.find(typeid(Type));
-    if (it == m_callbacks.end())
-        return;
+    m_toExecute.push([this, event](void) -> void {
+        auto it = m_callbacks.find(typeid(Type));
 
-    for (const auto &callback : it->second)
-        callback->exec(event);
+        if (it == m_callbacks.end())
+            return;
+        for (const auto &callback : it->second)
+            callback->exec(event);
+    });
 }
 
 template <typename T, typename Type>
-void Bus::subscribe(T &instance, void (T::*callbackMethod)(Type &)) {
+void Bus::subscribe(T &instance, void (T::*callbackMethod)(Type &)) { // never use
     auto callback = std::make_unique<MethodCallback<T, Type>>(instance, callbackMethod);
     m_callbacks[typeid(Type)].emplace_back(std::move(callback));
 }

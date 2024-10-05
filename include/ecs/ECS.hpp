@@ -24,10 +24,6 @@ public:
     entity::Entity spawnEntity(Components &&...components);
 
     void killEntity(entity::Entity entity);
-
-    void start(void);
-
-    void update(void);
 };
 } // namespace ecs
 

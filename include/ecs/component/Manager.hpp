@@ -15,7 +15,10 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "ecs/component/IsComponent.hpp"
+#include "ecs/component/Iterator.hpp"
 #include "ecs/component/SparseArray.hpp"
+#include "exceptions/Base.hpp"
 
 namespace ecs::component {
 class Manager {
@@ -26,19 +29,16 @@ public:
     SparseArray<Component> &registerComponent();
 
     template <class Component>
-    void setComponent(entity::Entity entity, const Component &component);
-
-    void destroyComponents(entity::Entity entity);
+    void setComponent(entity::Entity from, const Component &component);
+    template <typename Component, class... Params>
+    void setComponent(entity::Entity from, Params &&...p);
 
     template <class Component>
-    void destroyComponent(entity::Entity entity);
-
-    template <typename Component, class... Params>
-    void setComponent(entity::Entity entity, Params &&...p);
+    void destroyComponent(entity::Entity from);
+    void destroyComponents(entity::Entity from);
 
     template <class Component>
     SparseArray<Component> &getComponents();
-
     template <class Component>
     const SparseArray<Component> &getComponents() const;
 

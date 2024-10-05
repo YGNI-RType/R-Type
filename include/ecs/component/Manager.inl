@@ -8,45 +8,43 @@
 #pragma once
 
 namespace ecs::component {
-template <class Component>
-SparseArray<Component> &Manager::registerComponent() {
-    auto res = m_componentArrays.emplace(std::type_index(typeid(Component)),
-                                         std::make_pair(SparseArray<Component>(), [this](entity::Entity entity) {
-                                             destroyComponent<Component>(entity);
-                                         }));
-    return std::any_cast<SparseArray<Component> &>(res.first->second.first);
+template <class T>
+SparseArray<T> &Manager::registerComponent() {
+    static_assert(std::is_base_of<ecs::component::IsComponent, T>::value, "T must inherit from component::Base");
+    auto res = m_componentArrays.emplace(
+        std::type_index(typeid(T)),
+        std::make_pair(SparseArray<T>(), [this](entity::Entity entity) { destroyComponent<T>(entity); }));
+    return std::any_cast<SparseArray<T> &>(res.first->second.first);
 }
 
-template <class Component>
-void Manager::setComponent(entity::Entity entity, const Component &component) {
-    getComponents<Component>().insert(entity, component);
+template <class T>
+void Manager::setComponent(entity::Entity entity, const T &component) {
+    getComponents<T>().insert(entity, component);
 }
 
-template <class Component>
+template <class T>
 void Manager::destroyComponent(entity::Entity entity) {
-    getComponents<Component>().erase(entity);
+    getComponents<T>().erase(entity);
 }
 
-template <typename Component, class... Params>
+template <typename T, class... Params>
 void Manager::setComponent(entity::Entity entity, Params &&...p) {
-    getComponents<Component>().emplace(entity, Component(std::forward<Params>(p)...));
+    getComponents<T>().emplace(entity, T(std::forward<Params>(p)...));
 }
 
-template <class Component>
-SparseArray<Component> &Manager::getComponents() {
-    auto it = m_componentArrays.find(std::type_index(typeid(Component)));
+template <class T>
+SparseArray<T> &Manager::getComponents(void) {
+    auto it = m_componentArrays.find(std::type_index(typeid(T)));
     if (it == m_componentArrays.end())
-        throw std::runtime_error("The component " + std::string(typeid(Component).name()) +
-                                 " does not exist in the Manager");
-    return std::any_cast<SparseArray<Component> &>(it->second.first);
+        THROW_ERROR("The component " + std::string(READABLE_TYPE_NAME(T)) + " does not exist in the Manager");
+    return std::any_cast<SparseArray<T> &>(it->second.first);
 }
 
-template <class Component>
-const SparseArray<Component> &Manager::getComponents() const {
-    auto it = m_componentArrays.find(std::type_index(typeid(Component)));
+template <class T>
+const SparseArray<T> &Manager::getComponents(void) const {
+    auto it = m_componentArrays.find(std::type_index(typeid(T)));
     if (it == m_componentArrays.end())
-        throw std::runtime_error("The component " + std::string(typeid(Component).name()) +
-                                 " does not exist in the Manager");
-    return std::any_cast<const SparseArray<Component> &>(it->second);
+        THROW_ERROR("The component " + std::string(READABLE_TYPE_NAME(T)) + " does not exist in the Manager");
+    return std::any_cast<const SparseArray<T> &>(it->second);
 }
 } // namespace ecs::component

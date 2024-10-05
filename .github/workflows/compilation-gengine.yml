@@ -68,10 +68,9 @@ jobs:
         run: ctest --build-config ${{ matrix.build_type }}
 
       - name: Upload GEngine artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          # name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }} # For artifact@v4
-          name: gengine-build
+          name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }} # For artifact@v4
           path: ${{ steps.strings.outputs.build-output-dir }}
 
   build_rtype:
@@ -116,10 +115,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Download GEngine artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          # name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }} # For artifact@v4
-          name: gengine-build
+          name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }}
           path: ${{ github.workspace }}/build
 
       - name: Set reusable strings

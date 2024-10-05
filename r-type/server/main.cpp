@@ -6,8 +6,16 @@
 */
 
 #include "GEngine/game/Engine.hpp"
+#include "GEngine/net/net.hpp"
 
 int main(void) {
-    // gengine::game::Engine GameEngine;
-    // GameEngine.run();
+    Network::NET::init();
+
+    Network::NET::initServer();
+
+    while (1)
+        Network::NET::sleep(4000);
+
+    Network::NET::stop();
+    return 0;
 }

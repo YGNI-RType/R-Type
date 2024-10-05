@@ -21,7 +21,9 @@ public:
 
 class MovementSystem : public System {
 public:
-    MovementSystem(Core &core) : transforms(core.getComponents<Transform>()), velocities(core.getComponents<Motion>()) {
+    MovementSystem(Core &core)
+        : transforms(core.getComponents<Transform>())
+        , velocities(core.getComponents<Motion>()) {
     }
 
     void update(float dt) override {
@@ -74,7 +76,9 @@ private:
 
 class KillerSystem : public System {
 public:
-    KillerSystem(Core &core) : transforms(core.getComponents<Transform>()), m_core(core) {
+    KillerSystem(Core &core)
+        : transforms(core.getComponents<Transform>())
+        , m_core(core) {
     }
 
     void update(float dt) override {

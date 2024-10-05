@@ -11,7 +11,8 @@ namespace ecs::system::event {
 
 template <typename T, typename Type>
 MethodCallback<T, Type>::MethodCallback(T &instance, CallbackMethod callbackMethod)
-    : m_instance(instance), m_callbackMethod(callbackMethod) {
+    : m_instance(instance)
+    , m_callbackMethod(callbackMethod) {
 }
 
 template <typename T, typename Type>
@@ -21,7 +22,8 @@ void MethodCallback<T, Type>::exec(const Base &event) const {
 }
 
 template <typename Type>
-LambdaCallback<Type>::LambdaCallback(std::function<void(Type &)> callback) : m_callback(std::move(callback)) {
+LambdaCallback<Type>::LambdaCallback(std::function<void(Type &)> callback)
+    : m_callback(std::move(callback)) {
 }
 
 template <typename Type>

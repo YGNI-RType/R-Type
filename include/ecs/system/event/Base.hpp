@@ -10,8 +10,6 @@
 #include <iostream>
 #include <vector>
 
-#include "ecs/ECS.hpp"
-
 namespace ecs::system::event {
 /**
  * @brief Base class for all events.
@@ -39,8 +37,5 @@ public:
      */
     Base(const Base &) = default;
 };
-
-class MainLoop : public Base {};    // TODO replace
-class StartEngine : public Base {}; // TODO replace
 
 } // namespace ecs::system::event
