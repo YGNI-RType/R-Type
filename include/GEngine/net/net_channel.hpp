@@ -11,6 +11,7 @@
 #include "socket.hpp"
 
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 // UN udp message / tcp message ne doit pas être envoyé brut,
@@ -19,7 +20,10 @@
 // les seuls traces sont des structs, précisant leur segmentation.
 // la taille du buffer est réplique pour MAXCLIENTS, dans un convar CMD cappé à 100 jouers
 
-#define UDP_POOL_SZ MAX_UDP_MSGLEN * 2
+#define MAX_CONCURRENT_FRAGMENTS 3
+#define FRAG_SEQUENCE_TABLE_SZ sizeof(uint16_t) * 8
+
+#define UDP_POOL_SZ MAX_UDP_PACKET_LENGTH *FRAG_SEQUENCE_TABLE_SZ *MAX_CONCURRENT_FRAGMENTS
 #define TCP_POOL_SZ MAX_TCP_MSGLEN
 
 #define NETCHAN_GENCHECKSUM(challenge, sequence) ((challenge) ^ ((sequence) * (challenge)))
@@ -48,34 +52,24 @@ typedef enum {
     CON_CINEMATIC     // playing a cinematic or a static pic, not connected to a server
 } connectionState;
 
-class PacketPool {
-public:
-    PacketPool() = default;
-    ~PacketPool() = default;
+class PacketPoolUdp {
 
-    void addMessage(const AMessage &msg, byte_t *pool);
-    const byte_t *getRawMessage(byte_t *pool) const;
+static const size_t CHUNK_SIZE = MAX_UDP_PACKET_LENGTH - sizeof(UDPG_FragmentHeaderTo) - sizeof(UDPG_NetChannelHeader); 
+typedef std::array<byte_t, CHUNK_SIZE> chunk_t;
 
-protected:
-    std::vector<iomsg> m_iomsgs;
-};
+/* type, numbers of chunk, last chunk size, pool offset */
+using poolSequence_t = std::tuple<uint8_t, uint8_t, uint16_t, size_t>; 
 
-class PacketPoolTcp : public PacketPool {
-public:
-    PacketPoolTcp() = default;
-    ~PacketPoolTcp() = default;
-
-private:
-    byte_t m_pool[TCP_POOL_SZ];
-};
-
-class PacketPoolUdp : public PacketPool {
 public:
     PacketPoolUdp() = default;
     ~PacketPoolUdp() = default;
 
+    bool addMessage(uint32_t sequence, const UDPMessage &msg);
+    std::vector<const chunk_t*> getMissingFragments(uint32_t sequence, uint16_t mask);
+
 private:
-    byte_t m_pool[UDP_POOL_SZ];
+    std::unordered_map<uint32_t, poolSequence_t> m_poolSequences; 
+    std::vector<chunk_t> m_pool; /* pool of packet, just send it straight away, no modifications (header are btw)*/
 };
 
 /*
@@ -154,13 +148,17 @@ private:
     uint64_t m_udplastrecv = 0;
     size_t m_udplastsentsize = 0;
 
+    uint32_t m_udpMyFragSequence = 0;
+    uint32_t m_udpFromFragSequence = 0;
+    uint8_t m_udpCurFragSequence = 0;
+
     /*******/
 
     /* TCP */
 
     SocketTCP m_tcpSocket;
     /* unsent data (mostly rather small data, downloads are another story)*/
-    PacketPoolTcp m_tcpPool;
+    // PacketPoolTcp m_tcpPool;
 
     /*******/
 };

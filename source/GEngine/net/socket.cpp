@@ -328,16 +328,26 @@ size_t SocketTCP::sendReliant(const TCPSerializedMessage *msg, size_t msgDataSiz
 
 /***********************************************/
 
-SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
-
+void SocketUDP::init(void) {
     m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (m_sock == -1)
         throw std::runtime_error("(UDP) Failed to create socket");
 
-    m_port = port;
     unsigned int opt = 1;
     if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
         throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
+#ifdef IP_DONTFRAG
+#ifdef __FreeBSD__
+    if (setsockopt(m_sock, IPPROTO_IP, IP_DONTFRAG, &opt, sizeof(opt)))
+#else
+    if (setsockopt(m_sock, IPPROTO_IP, IP_MTU_DISCOVER, &opt, sizeof(opt)))
+#endif
+        throw std::runtime_error("(UDP) Failed to set socket options (IP_DONTFRAG)");
+#endif
+}
+
+SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
+    init();
 
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
@@ -351,15 +361,7 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
 }
 
 SocketUDP::SocketUDP(uint16_t port, bool ipv6) {
-
-    m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    if (m_sock == -1)
-        throw std::runtime_error("(UDP) Failed to create socket");
-
-    m_port = port;
-    unsigned int opt = 1;
-    if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
-        throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
+    init();
 
     struct sockaddr_storage address = {0};
     translateAutomaticAddressing(address, port, ipv6);

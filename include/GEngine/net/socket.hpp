@@ -27,8 +27,6 @@ typedef int SOCKET;
 
 namespace Network {
 
-#define MAX_PACKETLEN 1400 // max size of a network packet
-
 #define UDP_SO_RCVBUF_SIZE 131072
 
 ////////////////////////////////////////
@@ -99,11 +97,15 @@ public:
     SocketUDP() = default;
     SocketUDP(const IP &ip, uint16_t port);
     SocketUDP(uint16_t port, bool ipv6);
+
     SocketUDP(const SocketUDP &other) = delete;
     SocketUDP &operator=(const SocketUDP &) = delete;
     SocketUDP(SocketUDP &&other);
     SocketUDP &operator=(SocketUDP &&other);
+
     ~SocketUDP() = default;
+
+    void init(void);
 
     /* return the nb bytes sent */
     size_t send(const UDPMessage &msg, const Address &addr) const;

@@ -20,10 +20,6 @@
 
 namespace Network {
 
-#define FRAGMENT_SIZE (MAX_PACKETLEN - 100)
-#define FRAGMENT_BIT (1U << 31)
-#define PACKET_HEADER 10 // two ints and a short
-
 PACK(struct HeaderSerializedMessage {
     uint8_t type;
     uint64_t curSize;
@@ -33,7 +29,6 @@ PACK(struct UDPSerializedMessage {
     uint8_t type;
     uint64_t curSize;
     uint8_t flag;
-    uint16_t fragments;
     byte_t data[MAX_UDP_MSGLEN];
 });
 

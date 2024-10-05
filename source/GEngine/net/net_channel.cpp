@@ -29,15 +29,19 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
     /* check the client rating before or after ? */
 
     // rah shit, fragment too big. put the rest in the pool in case of network rating issue
-    if (msgLen > FRAGMENT_SIZE) {
-        // TODO : fragment the message, put in a sending pool
+    if (msgLen > MAX_UDP_PACKET_LENGTH) {
+        msg.setFragmented(true);
+
+        m_udpPoolSend.addMessage(m_udpCurFragSequence, msg);       
+
         return false;
     }
 
     uint64_t &udpOutSequence = msg.shouldAck() ? m_udpACKOutSequence : m_udpOutSequence;
     uint64_t &udpInSequence = msg.shouldAck() ? m_udpACKInSequence : m_udpInSequence;
 
-    UDPG_NetChannelHeader header = {.sequence = NETCHAN_GENCHECKSUM(m_challenge, udpOutSequence)};
+    UDPG_NetChannelHeader header = {.sequence = NETCHAN_GENCHECKSUM(m_challenge, udpOutSequence),
+                                    .ackFragmentSequence = m_udpMyFragSequence};
     if (msg.shouldAck())
         header.ack = udpInSequence;
     msg.writeHeader(header);
@@ -77,6 +81,7 @@ bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
     /****** At this point, the packet is valid *******/
 
     m_udplastrecv = Time::Clock::milliseconds();
+    m_udpFromFragSequence = header.ackFragmentSequence;
 
     if (msg.isFragmented()) {
         /* todo : add to pool of receiving packet */
