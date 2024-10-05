@@ -8,7 +8,6 @@
 #include "exceptions/Base.hpp"
 
 namespace gengine {
-
 Exception::Exception(const std::string &message, const char *file, int line, const char *color)
     : m_message(message)
     , m_file(file)
@@ -65,5 +64,4 @@ InfoException::InfoException(const std::string &message, const char *file, int l
 const char *InfoException::getType() const noexcept {
     return "Info";
 }
-
 } // namespace gengine

@@ -35,6 +35,7 @@
 //         subscribeToEvent<gengine::system::driver::input::KeyAEvent>(&Logger::onKeyA);
 //     }
 
+
 //     void onKeyA(gengine::system::driver::input::KeyAEvent &e) {
 //         switch (e.state) {
 //         case gengine::system::driver::input::InputState::RELEASE:
