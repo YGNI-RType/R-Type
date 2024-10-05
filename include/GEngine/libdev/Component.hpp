@@ -13,7 +13,8 @@
 #include <utility>
 
 namespace gengine {
-using Component = ecs::component::IsComponent;
+template <class Derived>
+using Component = ecs::component::IsComponent<Derived>;
 
 template <typename SparseArrayType>
 struct SparseArrayTraits;
