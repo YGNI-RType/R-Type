@@ -58,19 +58,30 @@ class PacketPoolUdp {
         MAX_UDP_PACKET_LENGTH - sizeof(UDPG_FragmentHeaderTo) - sizeof(UDPG_NetChannelHeader);
     typedef std::array<byte_t, CHUNK_SIZE> chunk_t;
 
-    /* type, numbers of chunk, last chunk size, pool offset */
+    /* type, numbers of chunk, last chunk size | cur mask , pool offset */
     using poolSequence_t = std::tuple<uint8_t, uint8_t, uint16_t, size_t>;
 
 public:
     PacketPoolUdp() = default;
     ~PacketPoolUdp() = default;
 
+    /* send */
     bool addMessage(uint32_t sequence, const UDPMessage &msg);
     std::vector<const chunk_t *> getMissingFragments(uint32_t sequence, uint16_t mask);
     void constructMessage(UDPMessage &msg, const chunk_t *chunk, size_t chunk_size, const UDPG_FragmentHeaderTo &header);
 
+    /* recv */
+    void recvMessage(uint32_t sequence, const UDPMessage &msg, size_t &readOffset);
+    uint16_t getMask(uint32_t sequence);
+    void reconstructMessage(uint32_t sequence, UDPMessage &msg);
+
+    bool deleteSequence(uint32_t sequence);
+
     poolSequence_t getMsgSequenceInfo(uint32_t sequence) const {
         return m_poolSequences.at(sequence);
+    }
+    bool receivedFullSequence(uint32_t sequence) {
+        return getMask(sequence) == (1 << std::get<1>(m_poolSequences.at(sequence))) - 1;
     }
 
 private:
