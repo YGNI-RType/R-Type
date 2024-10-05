@@ -59,7 +59,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
     }
 
     UDPG_NetChannelHeader header = {.sequence = NETCHAN_GENCHECKSUM(m_challenge, udpOutSequence),
-                                    .ackFragmentSequence = m_udpMyFragSequence};
+                                    .ackFragmentSequence = m_udpFromFragSequence};
     if (msg.shouldAck())
         header.ack = udpInSequence;
     msg.writeHeader(header);
@@ -98,15 +98,24 @@ bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
 
     /****** At this point, the packet is valid *******/
 
-    m_udplastrecv = Time::Clock::milliseconds();
-    m_udpFromFragSequence = header.ackFragmentSequence;
-
     if (msg.isFragmented()) {
-        /* todo : add to pool of receiving packet */
+        size_t readOffset = sizeof(UDPG_NetChannelHeader);
 
-        /* if it's the end of the fragmented data, return true */
-        return false;
+        /* if true, that's a new sequence */
+        if (m_udpPoolRecv.recvMessage(m_udpFromFragSequence, msg, readOffset))
+            m_udpFromFragSequence = header.ackFragmentSequence;
+
+        if (m_udpPoolRecv.receivedFullSequence(m_udpFromFragSequence)) {
+            UDPMessage fullMsg(false, msg.getType());
+
+            m_udpPoolRecv.reconstructMessage(m_udpFromFragSequence, fullMsg);
+            m_udpPoolRecv.deleteSequence(m_udpFromFragSequence);
+            return readDatagram(fullMsg, addr);
+        }
+        return true;
     }
+
+    m_udplastrecv = Time::Clock::milliseconds();
 
     udpInSequence = header.sequence;
     return true;

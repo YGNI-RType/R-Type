@@ -66,12 +66,14 @@ public:
     ~PacketPoolUdp() = default;
 
     /* send */
+
     bool addMessage(uint32_t sequence, const UDPMessage &msg);
     std::vector<const chunk_t *> getMissingFragments(uint32_t sequence, uint16_t mask);
     void constructMessage(UDPMessage &msg, const chunk_t *chunk, size_t chunk_size, const UDPG_FragmentHeaderTo &header);
 
     /* recv */
-    void recvMessage(uint32_t sequence, const UDPMessage &msg, size_t &readOffset);
+
+    bool recvMessage(uint32_t sequence, const UDPMessage &msg, size_t &readOffset);
     uint16_t getMask(uint32_t sequence);
     void reconstructMessage(uint32_t sequence, UDPMessage &msg);
 
@@ -149,6 +151,7 @@ private:
 
     /* most likely fragments, since the packets may be too big (mostly (always) for client from server) */
     PacketPoolUdp m_udpPoolSend;
+    PacketPoolUdp m_udpPoolRecv;
 
     uint32_t m_droppedPackets = 0;
 
