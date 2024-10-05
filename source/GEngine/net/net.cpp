@@ -263,7 +263,7 @@ void NET::createSets(fd_set &readSet) {
         mg_socketUdpV6.setFdSet(readSet);
 }
 
-bool NET::handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool NET::handleUdpEvent(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     if (mg_server.handleUDPEvent(socket, msg, addr))
         return true;
 

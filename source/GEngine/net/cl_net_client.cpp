@@ -81,7 +81,7 @@ void CLNetClient::stop(void) {
     m_enabled = false;
 }
 
-bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool CLNetClient::handleUDPEvents(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     if (!m_enabled)
         return false;
 
@@ -95,7 +95,7 @@ bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, cons
     }
 }
 
-bool CLNetClient::handleServerUDP(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool CLNetClient::handleServerUDP(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     if (!m_netChannel.isEnabled() ||
         addr != m_netChannel.getAddress()) // why sending udp packets to the client ? who are you ?
         return false;

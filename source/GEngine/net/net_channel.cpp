@@ -76,7 +76,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
     return true;
 }
 
-bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
+bool NetChannel::readDatagram(UDPMessage &msg, const Address &addr) {
     UDPG_NetChannelHeader header;
     msg.readHeader(header);
 
@@ -106,13 +106,13 @@ bool NetChannel::readDatagram(const UDPMessage &msg, const Address &addr) {
             m_udpFromFragSequence = header.ackFragmentSequence;
 
         if (m_udpPoolRecv.receivedFullSequence(m_udpFromFragSequence)) {
-            UDPMessage fullMsg(false, msg.getType());
+            msg = UDPMessage(false, msg.getType()); /* recreate */
 
-            m_udpPoolRecv.reconstructMessage(m_udpFromFragSequence, fullMsg);
+            m_udpPoolRecv.reconstructMessage(m_udpFromFragSequence, msg);
             m_udpPoolRecv.deleteSequence(m_udpFromFragSequence);
-            return readDatagram(fullMsg, addr);
+            return readDatagram(msg, addr);
         }
-        return true;
+        return false;
     }
 
     m_udplastrecv = Time::Clock::milliseconds();

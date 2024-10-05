@@ -26,7 +26,7 @@ public:
     void createSets(fd_set &readSet);
 
     bool handleTCPEvent(fd_set &readSet);
-    bool handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
+    bool handleUDPEvent(SocketUDP &socket, UDPMessage &msg, const Address &addr);
 
     const SocketTCPMaster &getSocketV4(void) const {
         return m_socketv4;
@@ -49,7 +49,7 @@ public:
     void handleNewClient(SocketTCPMaster &socket);
 
     void respondPingServers(const UDPMessage &msg, SocketUDP &udpsocket, const Address &addr);
-    bool handleUdpMessageClients(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
+    bool handleUdpMessageClients(SocketUDP &socket, UDPMessage &msg, const Address &addr);
 
     void handleClientCMD_UDP(SocketUDP &socket, NetClient &client, const UDPMessage &msg);
 

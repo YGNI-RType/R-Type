@@ -56,7 +56,7 @@ private:
 public:
     static bool sleep(uint32_t ms);
     static bool handleEvents(fd_set &readSet);
-    static bool handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
+    static bool handleUdpEvent(SocketUDP &socket, UDPMessage &msg, const Address &addr);
 
 private:
     static void createSets(fd_set &readSet);

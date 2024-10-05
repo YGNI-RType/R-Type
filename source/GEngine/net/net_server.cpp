@@ -100,7 +100,7 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
     channel.sendStream(msg);
 }
 
-bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool NetServer::handleUDPEvent(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     if (!isRunning())
         return false;
 
@@ -113,7 +113,7 @@ bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const A
     }
 }
 
-bool NetServer::handleUdpMessageClients(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool NetServer::handleUdpMessageClients(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     for (const auto &client : m_clients) {
         auto &channel = client->getChannel();
         if (channel.getAddress() != addr)

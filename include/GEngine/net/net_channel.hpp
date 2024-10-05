@@ -129,7 +129,7 @@ public:
         return m_enabled && m_tcpSocket.getSocket() != -1 && m_challenge != -1;
     }
 
-    bool readDatagram(const UDPMessage &msg, const Address &addr);
+    bool readDatagram(UDPMessage &msg, const Address &addr);
     /* steam if proper to socket, taht's why msg in not const */
     bool readStream(TCPMessage &msg);
 

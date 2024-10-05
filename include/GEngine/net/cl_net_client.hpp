@@ -37,9 +37,9 @@ public:
     void createSets(fd_set &readSet);
 
     bool handleTCPEvents(fd_set &readSet);
-    bool handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
+    bool handleUDPEvents(SocketUDP &socket, UDPMessage &msg, const Address &addr);
 
-    bool handleServerUDP(SocketUDP &socket, const UDPMessage &msg, const Address &addr);
+    bool handleServerUDP(SocketUDP &socket, UDPMessage &msg, const Address &addr);
     bool handleServerTCP(const TCPMessage &msg);
 
     void setChallenge(int challenge) {
