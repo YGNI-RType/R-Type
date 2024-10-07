@@ -11,7 +11,7 @@
 #include "GEngine/libdev/tools/Math.hpp"
 
 namespace gengine::component {
-struct Transform2D : public Component {
+struct Transform2D : public Component<Transform2D> {
     Vect2 pos;
     Vect2 scale;
     float rotation; // degree
@@ -20,9 +20,11 @@ struct Transform2D : public Component {
         , scale(scale)
         , rotation(rotation) {
     }
+
+    bool operator==(const Transform2D &) const = default;
 };
 
-struct Transform3D : public Component {
+struct Transform3D : public Component<Transform3D> {
     Vect3 pos;
     Vect3 scale;
     float rotation;
@@ -31,5 +33,7 @@ struct Transform3D : public Component {
         , scale(scale)
         , rotation(rotation) {
     }
+
+    bool operator==(const Transform3D &) const = default;
 };
 } // namespace gengine::component

@@ -15,6 +15,7 @@
 namespace gengine {
 class BaseEngine {
 public:
+    using world_t = ecs::component::Manager::component_map_t;
     // TODO add constructor whit Interface Type template
     template <typename T, typename... Params>
     inline void registerSystem(Params &&...p);
@@ -25,6 +26,10 @@ public:
     void compute(void);
 
     void start(void);
+
+    const world_t &getWorld(void) {
+        return m_ecs.getComponentMap();
+    }
 
 private:
     ecs::ECS m_ecs;

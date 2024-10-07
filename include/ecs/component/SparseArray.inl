@@ -76,6 +76,11 @@ std::size_t SparseArray<Component>::size() const {
 }
 
 template <class Component>
+std::size_t SparseArray<Component>::reserved() const {
+    return m_sparse.size();
+}
+
+template <class Component>
 typename SparseArray<Component>::dense_iterator SparseArray<Component>::begin() {
     return m_dense.begin();
 }

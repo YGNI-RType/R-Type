@@ -38,13 +38,13 @@ public:
 
     AddressType getType() const {
         return m_type;
-    };
+    }
     uint16_t getPort() const {
         return m_port;
-    };
+    }
     uint32_t getMask() const {
         return m_mask;
-    };
+    }
 
     bool operator==(const Address &other) const;
 
@@ -56,7 +56,8 @@ protected:
     virtual const byte_t *getData() const = 0;
     Address(AddressType type, uint16_t port)
         : m_type(type)
-        , m_port(port){};
+        , m_port(port) {
+    }
 
     bool isEqual(const byte_t *addr1, const byte_t *addr2, uint32_t mask) const;
 
@@ -76,7 +77,7 @@ public:
 
     const ipv4_t &getAddress() const {
         return m_address;
-    };
+    }
 
     void toSockAddr(sockaddr *addr) const override final;
     bool isLanAddr(void) const override final;
@@ -84,7 +85,7 @@ public:
 private:
     const byte_t *getData() const override final {
         return m_address.data();
-    };
+    }
 
     ipv4_t m_address;
 };
@@ -100,7 +101,7 @@ public:
 
     const ipv6_t &getAddress() const {
         return m_address;
-    };
+    }
 
     uint64_t getScopeId() const {
         return m_scopeId;
@@ -112,7 +113,7 @@ public:
 private:
     const byte_t *getData() const override final {
         return m_address.data();
-    };
+    }
 
     ipv6_t m_address;
     uint64_t m_scopeId;
@@ -126,17 +127,17 @@ public:
 
     AddressType getType(void) const {
         return m_type;
-    };
+    }
     void updateType(void);
     AddressV6 getV6() const;
     AddressV4 getV4() const;
 
     sockaddr *getAddr(void) {
         return reinterpret_cast<sockaddr *>(&m_addr);
-    };
+    }
     socklen_t &getLen(void) {
         return m_len;
-    };
+    }
 
 private:
     AddressType m_type = AT_NONE;

@@ -16,8 +16,7 @@ void Animate::onMainLoop(gengine::system::event::MainLoop &e) {
     auto &animations = getComponents<component::driver::output::Animation>();
     auto &sprites = getComponents<component::driver::output::Sprite>();
 
-    for (auto [entity, anim, sprite] :
-         Zip<component::driver::output::Animation, component::driver::output::Sprite>(animations, sprites)) {
+    for (auto [entity, anim, sprite] : Zip(animations, sprites)) {
         anim.currentTime += e.deltaTime;
         int newFrame = anim.currentTime / anim.frameDuration;
         if (!(newFrame - anim.currentFrame))

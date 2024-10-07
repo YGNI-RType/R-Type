@@ -7,7 +7,7 @@
 
 #include "driver/Engine.hpp"
 #include "game/Engine.hpp"
-#include "interface/Internal.hpp"
+#include "interface/network/Networked.hpp"
 
 #include "libdev/components/HitBoxs.hpp"
 // #include "libdev/components/Positions.hpp"
@@ -125,6 +125,6 @@ int main(void) {
     // gameEngine.registerSystem<ChangeColor>();
     // gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
 
-    gengine::interface::Internal interface(gameEngine, driverEngine);
+    gengine::interface::network::Networked interface(gameEngine, driverEngine);
     interface.run();
 }

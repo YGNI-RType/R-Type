@@ -43,6 +43,8 @@ public:
     template <typename T>
     component::SparseArray<T> &getComponents(void);
 
+    void setComponent(entity::Entity entity, const std::type_index &type, const std::any &comp);
+
     template <class T, class... Params>
     void registerSystem(Params &&...p);
 
