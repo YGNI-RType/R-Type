@@ -248,7 +248,7 @@ bool NET::sleep(uint32_t ms) {
     else if (res == 0)
         return false;
 
-    while(handleEvents(readSet));
+    handleEvents(readSet);
     return true;
 }
 
