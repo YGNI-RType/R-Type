@@ -15,7 +15,7 @@ int main(void) {
 
     auto &server = Network::NET::getServer();
 
-    while (1) {
+    for (size_t i = 0; i < 10; i++) {
         Network::NET::sleep(300);
         if (!server.isRunning())
             continue;

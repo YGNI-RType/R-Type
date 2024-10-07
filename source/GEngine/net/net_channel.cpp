@@ -8,6 +8,7 @@
 #include "GEngine/net/net_channel.hpp"
 #include "GEngine/cvar/net.hpp"
 #include "GEngine/time/time.hpp"
+#include "GEngine/net/socketError.hpp"
 
 namespace Network {
 
@@ -146,7 +147,12 @@ bool NetChannel::sendStream(const TCPMessage &msg) {
 bool NetChannel::readStream(TCPMessage &msg) {
     /* todo : add header check etc */
 
-    m_tcpSocket.receive(msg);
+    try {
+        m_tcpSocket.receive(msg);
+    } catch (const SocketDisconnected &e) {
+        m_disconnect = true;
+        return true;
+    }
     return true;
 }
 

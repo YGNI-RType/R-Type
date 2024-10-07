@@ -112,6 +112,9 @@ public:
     bool isEnabled(void) const {
         return m_enabled;
     }
+    bool isDisconnected(void) const {
+        return m_disconnect;
+    }
 
     const SocketTCP &getTcpSocket(void) const {
         return m_tcpSocket;
@@ -142,6 +145,8 @@ public:
 
 private:
     bool m_enabled = false;
+    bool m_disconnect = false;
+
     std::unique_ptr<Address> m_toTCPAddress; /* the recast to v6 or v4 is done later */
     std::unique_ptr<Address> m_toUDPAddress; /* the recast to v6 or v4 is done later */
 

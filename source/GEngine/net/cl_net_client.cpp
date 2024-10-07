@@ -120,6 +120,10 @@ bool CLNetClient::handleTCPEvents(fd_set &readSet) {
         if (!m_netChannel.readStream(msg))
             return false;
 
+        if (m_netChannel.isDisconnected()) {
+            disconnectFromServer(); /* ensure proper disconnection */
+            return true;
+        }
         return handleServerTCP(msg);
     }
     return false;

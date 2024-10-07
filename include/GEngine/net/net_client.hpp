@@ -63,6 +63,10 @@ public:
         return m_socketUdp;
     }
 
+    bool isDisconnected(void) const {
+        return m_channel.isDisconnected();
+    }
+
     void sendDatagram(UDPMessage &msg);
     void recvDatagram(UDPMessage &msg);
 

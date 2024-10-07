@@ -102,7 +102,7 @@ int main(void) {
 
     client.connectToServer("127.0.0.1", 4243, true);
 
-    while (1) {
+    for (size_t i = 0; i < 10; i++) {
         Network::NET::sleep(300);
         if (!client.isConnected()) {
             client.connectToServer(0);
