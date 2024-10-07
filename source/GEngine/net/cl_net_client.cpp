@@ -116,7 +116,7 @@ bool CLNetClient::handleTCPEvents(fd_set &readSet) {
     auto &sock = m_netChannel.getTcpSocket();
     if (sock.isFdSet(readSet)) {
         sock.removeFdSet(readSet);
-        TCPMessage msg(0, 0);
+        TCPMessage msg(0);
         if (!m_netChannel.readStream(msg))
             return false;
 
@@ -143,7 +143,7 @@ bool CLNetClient::handleServerTCP(const TCPMessage &msg) {
 
         {
             TCPCL_ConnectInformation sendData = {.udpPort = m_socketUdp.getPort()};
-            auto sendMsg = TCPMessage(0, CL_CONNECT_INFORMATION);
+            auto sendMsg = TCPMessage(CL_CONNECT_INFORMATION);
             sendMsg.writeData<TCPCL_ConnectInformation>(sendData);
             m_netChannel.sendStream(sendMsg);
         }

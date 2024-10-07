@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "GEngine/net/utils/pack.hpp"
+
 namespace Network {
 enum {
     SV_INIT_CONNECTON,
@@ -20,11 +22,11 @@ enum {
     CL_UPLOAD,
 };
 
-struct TCPSV_ClientInit {
-    int challenge;
+PACK(struct TCPSV_ClientInit {
+    uint32_t challenge;
     uint16_t udpPort;
     // todo : add more information, that client needs to know that the server won't change
-};
+});
 
 struct TCPCL_ConnectInformation {
     uint16_t udpPort;

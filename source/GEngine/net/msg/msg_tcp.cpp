@@ -9,8 +9,8 @@
 
 namespace Network {
 
-TCPMessage::TCPMessage(std::size_t maxSize, uint8_t type)
-    : AMessage(maxSize, type) {
+TCPMessage::TCPMessage(uint8_t type)
+    : AMessage(type) {
 }
 
 TCPMessage &TCPMessage::operator=(const TCPMessage &other) {

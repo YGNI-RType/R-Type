@@ -7,8 +7,8 @@
 
 #include "GEngine/net/net_channel.hpp"
 #include "GEngine/cvar/net.hpp"
-#include "GEngine/time/time.hpp"
 #include "GEngine/net/socketError.hpp"
+#include "GEngine/time/time.hpp"
 
 namespace Network {
 

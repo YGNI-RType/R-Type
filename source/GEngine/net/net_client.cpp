@@ -37,7 +37,7 @@ void NetClient::recvDatagram(UDPMessage &msg) {
 }
 
 bool NetClient::handleClientMsg(void) {
-    TCPMessage msg(false, 0);
+    TCPMessage msg(0);
 
     if (!m_channel.readStream(msg))
         return false;

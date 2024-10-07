@@ -123,7 +123,7 @@ public:
         m_tcpSocket = std::move(socket);
     }
 
-    int getChallenge(void) const {
+    uint32_t getChallenge(void) const {
         return m_challenge;
     }
     void setChallenge(int challenge) {
@@ -155,7 +155,7 @@ private:
     /* TODO : add delay (?) */
     // PacketPoolUdp m_udpPoolUnsent;
 
-    int m_challenge = -1;
+    uint32_t m_challenge = -1;
 
     /* most likely fragments, since the packets may be too big (mostly (always) for client from server) */
     PacketPoolUdp m_udpPoolSend;

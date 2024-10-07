@@ -53,9 +53,6 @@ public:
     uint8_t getType() const {
         return m_type;
     }
-    std::size_t getMaxSize() const {
-        return m_maxSize;
-    }
 
     virtual const byte_t *getData() const = 0;
 
@@ -101,19 +98,18 @@ public:
     void readData(void *data, std::size_t size) const;
 
 protected:
-    AMessage(std::size_t maxSize, uint8_t type);
+    AMessage(uint8_t type);
     virtual ~AMessage() = default;
 
     virtual byte_t *getDataMember() = 0;
 
-    const std::size_t m_maxSize;
     std::uint64_t m_curSize = 0;
     uint8_t m_type;
 };
 
 class TCPMessage : public AMessage {
 public:
-    TCPMessage(std::size_t maxSize, uint8_t type);
+    TCPMessage(uint8_t type);
     ~TCPMessage() = default;
 
     TCPMessage &operator=(const TCPMessage &other);

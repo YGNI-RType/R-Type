@@ -95,7 +95,7 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
     NetClient *clPtr = cl.get();
     m_clients.push_back(std::move(cl));
 
-    auto msg = TCPMessage(0, SV_INIT_CONNECTON);
+    auto msg = TCPMessage(SV_INIT_CONNECTON);
     auto &channel = clPtr->getChannel();
 
     msg.writeData<TCPSV_ClientInit>(
@@ -156,9 +156,11 @@ bool NetServer::handleTCPEvent(fd_set &readSet) {
     for (const auto &client : m_clients)
         if (client->handleTCPEvents(readSet)) {
             if (client->isDisconnected()) {
-                m_clients.erase(std::remove_if(m_clients.begin(), m_clients.end(),
-                                               [&client](const std::unique_ptr<NetClient> &cl) { return cl.get() == client.get(); }),
-                                m_clients.end());
+                m_clients.erase(
+                    std::remove_if(
+                        m_clients.begin(), m_clients.end(),
+                        [&client](const std::unique_ptr<NetClient> &cl) { return cl.get() == client.get(); }),
+                    m_clients.end());
             }
             return true;
         }

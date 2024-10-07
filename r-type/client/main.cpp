@@ -111,7 +111,7 @@ int main(void) {
 
         Network::UDPMessage msg(true, 3);
         const char *data = "Coucou je suis le client !!";
-        msg.appendData(data, std::strlen(data));
+        msg.writeData((const void *)data, std::strlen(data));
 
         client.sendDatagram(msg);
     }
