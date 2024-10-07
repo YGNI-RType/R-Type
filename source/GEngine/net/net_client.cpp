@@ -12,7 +12,8 @@
 
 namespace Network {
 NetClient::NetClient(std::unique_ptr<Address> addr, SocketTCP &&socket, SocketUDP &socketudp)
-    : m_channel(true, std::move(addr), std::move(socket)), m_socketUdp(socketudp) {
+    : m_channel(true, std::move(addr), std::move(socket))
+    , m_socketUdp(socketudp) {
 }
 
 void NetClient::sendStream(const TCPMessage &msg) {
@@ -43,24 +44,23 @@ bool NetClient::handleClientMsg(void) {
 
     std::cout << "SV: client just sent TCP specific message" << std::endl;
     switch (msg.getType()) {
-        case CL_CONNECT_INFORMATION: {
-            TCPCL_ConnectInformation recvData;
-            msg.readData<TCPCL_ConnectInformation>(recvData);
+    case CL_CONNECT_INFORMATION: {
+        TCPCL_ConnectInformation recvData;
+        msg.readData<TCPCL_ConnectInformation>(recvData);
 
-            m_channel.createUdpAddress(recvData.udpPort);
-            return true;
-        }
-        default:
-            return false;
+        m_channel.createUdpAddress(recvData.udpPort);
+        return true;
+    }
+    default:
+        return false;
     }
     return true;
 }
 
 bool NetClient::handleTCPEvents(fd_set &readSet) {
     auto &socket = m_channel.getTcpSocket();
-    if (!socket.isFdSet(readSet)) {
+    if (!socket.isFdSet(readSet))
         return false;
-    }
 
     socket.removeFdSet(readSet);
     return handleClientMsg();

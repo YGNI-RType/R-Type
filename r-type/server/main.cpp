@@ -22,7 +22,7 @@ int main(void) {
 
         Network::UDPMessage msg(true, 4);
         const char *data = "Coucou je suis le serveir !!";
-        msg.writeData(static_cast<const void *>( data), std::strlen(data));
+        msg.writeData(static_cast<const void *>(data), std::strlen(data));
 
         server.sendToAllClients(msg);
     }

@@ -69,7 +69,8 @@ public:
 
     bool addMessage(uint32_t sequence, const UDPMessage &msg);
     std::vector<const chunk_t *> getMissingFragments(uint32_t sequence, uint16_t mask);
-    void constructMessage(UDPMessage &msg, const chunk_t *chunk, size_t chunk_size, const UDPG_FragmentHeaderTo &header);
+    void constructMessage(UDPMessage &msg, const chunk_t *chunk, size_t chunk_size,
+                          const UDPG_FragmentHeaderTo &header);
 
     /* recv */
 

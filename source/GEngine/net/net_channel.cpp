@@ -70,8 +70,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg) {
         return true;
     }
 
-    UDPG_NetChannelHeader header = {.sequence = udpOutSequence,
-                                    .ackFragmentSequence = m_udpFromFragSequence};
+    UDPG_NetChannelHeader header = {.sequence = udpOutSequence, .ackFragmentSequence = m_udpFromFragSequence};
     if (msg.shouldAck())
         header.ack = udpInSequence;
     msg.writeHeader(header);

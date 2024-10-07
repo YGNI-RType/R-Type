@@ -56,7 +56,7 @@ protected:
     virtual const byte_t *getData() const = 0;
     Address(AddressType type, uint16_t port)
         : m_type(type)
-        , m_port(port) {};
+        , m_port(port){};
 
     bool isEqual(const byte_t *addr1, const byte_t *addr2, uint32_t mask) const;
 

@@ -68,7 +68,8 @@ SocketUDP NET::mg_socketUdpV6;
 SocketTCPMaster NET::mg_socketListenTcpV6;
 
 NetServer NET::mg_server(mg_socketUdp, mg_socketUdpV6);
-CLNetClient NET::mg_client(CVar::net_ipv6.getIntValue() ? mg_socketUdpV6 : mg_socketUdp, CVar::net_ipv6.getIntValue() ? AT_IPV6 : AT_IPV4);
+CLNetClient NET::mg_client(CVar::net_ipv6.getIntValue() ? mg_socketUdpV6 : mg_socketUdp,
+                           CVar::net_ipv6.getIntValue() ? AT_IPV6 : AT_IPV4);
 
 std::vector<IP> NET::g_localIPs;
 
@@ -208,19 +209,21 @@ void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockad
 }
 
 void NET::sortLocalAddresses(void) {
-    std::sort(g_localIPs.begin(), g_localIPs.end(), [](const IP &a, const IP &b) {
-        if (a.type == AT_LOOPBACK)
-            return true;
-        if (b.type == AT_LOOPBACK)
-            return false;
+    std::sort(
+        g_localIPs.begin(), g_localIPs.end(),
+        [](const IP &a, const IP &b) {
+            if (a.type == AT_LOOPBACK)
+                return true;
+            if (b.type == AT_LOOPBACK)
+                return false;
 
-        if (a.type == AT_IPV4 && b.type == AT_IPV6)
-            return true;
-        if (a.type == AT_IPV6 && b.type == AT_IPV4)
-            return false;
+            if (a.type == AT_IPV4 && b.type == AT_IPV6)
+                return true;
+            if (a.type == AT_IPV6 && b.type == AT_IPV4)
+                return false;
 
-        return false;
-    });
+            return false;
+        });
 }
 
 bool NET::isLanAddress(const Address &addr) {
