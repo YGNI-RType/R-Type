@@ -70,7 +70,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg) {
         return true;
     }
 
-    UDPG_NetChannelHeader header = {.sequence = NETCHAN_GENCHECKSUM(m_challenge, udpOutSequence),
+    UDPG_NetChannelHeader header = {.sequence = udpOutSequence,
                                     .ackFragmentSequence = m_udpFromFragSequence};
     if (msg.shouldAck())
         header.ack = udpInSequence;
@@ -92,8 +92,8 @@ bool NetChannel::readDatagram(UDPMessage &msg) {
     UDPG_NetChannelHeader header;
     msg.readHeader(header);
 
-    if (!NETCHAN_GENCHECKSUM(m_challenge, header.sequence))
-        return false; /* what is going on sir ???? */
+    // if (!NETCHAN_GENCHECKSUM(m_challenge, header.sequence))
+    //     return false; /* what is going on sir ???? */
 
     uint64_t &udpOutSequence = msg.shouldAck() ? m_udpACKOutSequence : m_udpOutSequence;
     uint64_t &udpInSequence = msg.shouldAck() ? m_udpACKInSequence : m_udpInSequence;
