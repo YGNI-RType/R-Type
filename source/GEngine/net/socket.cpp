@@ -151,6 +151,10 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
+    unsigned int opt = 1;
+    if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char *>(&opt), sizeof(opt)) < 0)
+        throw SocketException("(TCP) Failed to set socket options");
+
     m_port = port;
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(struct sockaddr_in));
@@ -170,6 +174,10 @@ SocketTCPMaster::SocketTCPMaster(uint16_t port, bool ipv6) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
+
+    unsigned int opt = 1;
+    if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char *>(&opt), sizeof(opt)) < 0)
+        throw SocketException("(TCP) Failed to set socket options");
 
     m_port = port;
     struct sockaddr_storage address = {0};
@@ -328,10 +336,13 @@ size_t SocketTCP::sendReliant(const TCPSerializedMessage *msg, size_t msgDataSiz
 
 /***********************************************/
 
-void SocketUDP::init(void) {
+void SocketUDP::init(bool block, uint16_t port) {
     m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (m_sock == -1)
         throw std::runtime_error("(UDP) Failed to create socket");
+
+    m_port = port;
+    setBlocking(block);
 
     unsigned int opt = 1;
     if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
@@ -346,8 +357,8 @@ void SocketUDP::init(void) {
 #endif
 }
 
-SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
-    init();
+SocketUDP::SocketUDP(const IP &ip, uint16_t port, bool block) {
+    init(block, port);
 
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
@@ -360,8 +371,8 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
     addSocketPool(m_sock);
 }
 
-SocketUDP::SocketUDP(uint16_t port, bool ipv6) {
-    init();
+SocketUDP::SocketUDP(uint16_t port, bool ipv6, bool block) {
+    init(block, port);
 
     struct sockaddr_storage address = {0};
     translateAutomaticAddressing(address, port, ipv6);

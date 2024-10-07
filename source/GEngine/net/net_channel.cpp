@@ -11,9 +11,9 @@
 
 namespace Network {
 
-NetChannel::NetChannel(bool isServer, std::unique_ptr<Address> clientAddress, SocketTCP &socket)
+NetChannel::NetChannel(bool isServer, std::unique_ptr<Address> clientAddress, SocketTCP &&socket)
     : m_enabled(true)
-    , m_toAddress(std::move(clientAddress))
+    , m_toTCPAddress(std::move(clientAddress))
     , m_tcpSocket(std::move(socket)) {
     if (!isServer)
         return;
@@ -23,7 +23,16 @@ NetChannel::NetChannel(bool isServer, std::unique_ptr<Address> clientAddress, So
     m_challenge = (((unsigned int)rand() << 16) ^ (unsigned int)rand()) ^ Time::Clock::milliseconds();
 }
 
-bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
+void NetChannel::createUdpAddress(uint16_t udpport) {
+    if (m_toTCPAddress->getType() == AT_IPV6) {
+        auto ipv6 = static_cast<AddressV6 *>(m_toTCPAddress.get());
+        m_toUDPAddress = std::make_unique<AddressV6>(AT_IPV6, udpport, ipv6->getAddress(), ipv6->getScopeId());
+    } else
+        m_toUDPAddress =
+            std::make_unique<AddressV4>(AT_IPV4, udpport, static_cast<AddressV4 *>(m_toTCPAddress.get())->getAddress());
+}
+
+bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg) {
     size_t msgLen = msg.getSize();
 
     /* check the client rating before or after ? */
@@ -51,7 +60,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
 
             m_udpPoolSend.constructMessage(newMsg, chunk, fragments.back() == chunk ? lastChunkSz : chunk->size(),
                                            fragHeader);
-            sendDatagram(socket, newMsg, addr);
+            sendDatagram(socket, newMsg);
             i++;
         }
 
@@ -64,7 +73,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
         header.ack = udpInSequence;
     msg.writeHeader(header);
 
-    size_t sent = socket.send(msg, addr);
+    size_t sent = socket.send(msg, *m_toTCPAddress);
     if (sent < 0) // guess it's send, but not quite, TODO : check any weird case (place breakpoint)
         return true;
 
@@ -76,7 +85,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address 
     return true;
 }
 
-bool NetChannel::readDatagram(UDPMessage &msg, const Address &addr) {
+bool NetChannel::readDatagram(UDPMessage &msg) {
     UDPG_NetChannelHeader header;
     msg.readHeader(header);
 
@@ -110,7 +119,7 @@ bool NetChannel::readDatagram(UDPMessage &msg, const Address &addr) {
 
             m_udpPoolRecv.reconstructMessage(m_udpFromFragSequence, msg);
             m_udpPoolRecv.deleteSequence(m_udpFromFragSequence);
-            return readDatagram(msg, addr);
+            return readDatagram(msg);
         }
         return false;
     }

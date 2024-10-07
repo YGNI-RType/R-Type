@@ -67,8 +67,8 @@ SocketTCPMaster NET::mg_socketListenTcp;
 SocketUDP NET::mg_socketUdpV6;
 SocketTCPMaster NET::mg_socketListenTcpV6;
 
-NetServer NET::mg_server;
-CLNetClient NET::mg_client;
+NetServer NET::mg_server(mg_socketUdp, mg_socketUdpV6);
+CLNetClient NET::mg_client(CVar::net_ipv6.getIntValue() ? mg_socketUdpV6 : mg_socketUdp, CVar::net_ipv6.getIntValue() ? AT_IPV6 : AT_IPV4);
 
 std::vector<IP> NET::g_localIPs;
 
@@ -267,7 +267,7 @@ bool NET::handleUdpEvent(SocketUDP &socket, UDPMessage &msg, const Address &addr
     if (mg_server.handleUDPEvent(socket, msg, addr))
         return true;
 
-    return mg_client.handleUDPEvents(socket, msg, addr);
+    return mg_client.handleUDPEvents(msg, addr);
 }
 
 bool NET::handleEvents(fd_set &readSet) {
@@ -293,8 +293,8 @@ bool NET::handleEvents(fd_set &readSet) {
 /* should it be bool ? should it returns a message instead of sending it directly ? */
 void NET::pingServers(void) {
     if (CVar::net_ipv6.getIntValue())
-        return mg_client.pingLanServers(mg_socketUdpV6, AT_IPV6);
-    return mg_client.pingLanServers(mg_socketUdp, AT_IPV4);
+        return mg_client.pingLanServers();
+    return mg_client.pingLanServers();
 }
 
 } // namespace Network

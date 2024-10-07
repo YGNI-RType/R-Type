@@ -69,6 +69,15 @@ public:
     static CLNetClient &getClient(void) {
         return mg_client;
     }
+    static NetServer &getServer(void) {
+        return mg_server;
+    }
+
+public:
+    /* todo : temp*/
+    static SocketUDP &getSocketUdp(void) {
+        return mg_socketUdp;
+    }
 
 private:
 };

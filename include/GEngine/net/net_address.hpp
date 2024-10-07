@@ -68,7 +68,7 @@ protected:
 class AddressV4 : public Address {
 
 public:
-    AddressV4(AddressType type, uint16_t port, ipv4_t address);
+    AddressV4(AddressType type, uint16_t port, const ipv4_t &address);
     AddressV4(AddressType type, uint16_t port);
     AddressV4(AddressType type, uint16_t port, in_addr_t ip);
     AddressV4(AddressType type, const std::string &ip, uint16_t port);
@@ -92,7 +92,7 @@ private:
 class AddressV6 : public Address {
 
 public:
-    AddressV6(AddressType type, uint16_t port, ipv6_t address, uint64_t scopeId);
+    AddressV6(AddressType type, uint16_t port, const ipv6_t &address, uint64_t scopeId);
     AddressV6(AddressType type, uint16_t port);
     AddressV6(AddressType type, uint16_t port, in6_addr ip, uint32_t scopeId);
     AddressV6(AddressType type, const std::string &ip, uint16_t port);
@@ -100,6 +100,10 @@ public:
 
     const ipv6_t &getAddress() const {
         return m_address;
+    };
+
+    uint64_t getScopeId() const {
+        return m_scopeId;
     };
 
     void toSockAddr(sockaddr *addr) const override final;

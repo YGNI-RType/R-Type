@@ -97,8 +97,8 @@ private:
 */
 class NetChannel {
 public:
-    NetChannel() = default;
-    NetChannel(bool isServer, std::unique_ptr<Address> addr, SocketTCP &socket);
+    // NetChannel() = default;
+    NetChannel(bool isServer, std::unique_ptr<Address> addr, SocketTCP &&socket);
     NetChannel(const NetChannel &other) = delete;
     NetChannel &operator=(const NetChannel &other) = delete;
     NetChannel(NetChannel &&other) = default;
@@ -106,7 +106,7 @@ public:
     ~NetChannel() = default;
 
     const Address &getAddress(void) const {
-        return *m_toAddress;
+        return *m_toTCPAddress;
     }
     bool isEnabled(void) const {
         return m_enabled;
@@ -129,18 +129,20 @@ public:
         return m_enabled && m_tcpSocket.getSocket() != -1 && m_challenge != -1;
     }
 
-    bool readDatagram(UDPMessage &msg, const Address &addr);
+    void createUdpAddress(uint16_t udpport);
+    bool readDatagram(UDPMessage &msg);
     /* steam if proper to socket, taht's why msg in not const */
     bool readStream(TCPMessage &msg);
 
-    bool sendDatagram(SocketUDP &socket, UDPMessage &msg, const Address &addr);
+    bool sendDatagram(SocketUDP &socket, UDPMessage &msg);
     bool sendStream(const TCPMessage &msg);
 
     bool isTimeout(void) const;
 
 private:
     bool m_enabled = false;
-    std::unique_ptr<Address> m_toAddress; /* the recast to v6 or v4 is done later */
+    std::unique_ptr<Address> m_toTCPAddress; /* the recast to v6 or v4 is done later */
+    std::unique_ptr<Address> m_toUDPAddress; /* the recast to v6 or v4 is done later */
 
     /* UDP */
 

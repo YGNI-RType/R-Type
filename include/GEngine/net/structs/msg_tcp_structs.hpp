@@ -22,6 +22,7 @@ enum {
 
 struct TCPSV_ClientInit {
     int challenge;
+    uint16_t udpPort;
     // todo : add more information, that client needs to know that the server won't change
 };
 

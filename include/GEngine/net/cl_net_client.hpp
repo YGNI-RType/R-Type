@@ -23,7 +23,9 @@ struct PingResponse {
 class CLNetClient {
 
 public:
-    CLNetClient() = default;
+    CLNetClient(SocketUDP &socketUdp, AddressType type)
+        : m_socketUdp(socketUdp), m_addrType(type), m_netChannel(NetChannel(false, nullptr, SocketTCP())) {
+    };
     ~CLNetClient() = default;
 
     void init(void);
@@ -37,9 +39,9 @@ public:
     void createSets(fd_set &readSet);
 
     bool handleTCPEvents(fd_set &readSet);
-    bool handleUDPEvents(SocketUDP &socket, UDPMessage &msg, const Address &addr);
+    bool handleUDPEvents(UDPMessage &msg, const Address &addr);
 
-    bool handleServerUDP(SocketUDP &socket, UDPMessage &msg, const Address &addr);
+    bool handleServerUDP(UDPMessage &msg, const Address &addr);
     bool handleServerTCP(const TCPMessage &msg);
 
     void setChallenge(int challenge) {
@@ -57,8 +59,10 @@ public:
         return m_connectionState >= CON_AUTHORIZING;
     }
 
+    bool sendDatagram(UDPMessage &finishedMsg);
+
 public:
-    void pingLanServers(SocketUDP &socketUDP, AddressType type);
+    void pingLanServers(void);
     void getPingResponse(const UDPMessage &msg, const Address &addr);
 
 private:
@@ -67,6 +71,9 @@ private:
     bool m_enabled = false;
     clientState m_state = CS_FREE;
     connectionState m_connectionState = CON_UNINITIALIZED;
+
+    SocketUDP &m_socketUdp;
+    AddressType m_addrType;
 
     NetChannel m_netChannel;
     std::vector<PingResponse> m_pingedServers;

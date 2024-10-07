@@ -95,8 +95,8 @@ protected:
 class SocketUDP : public ASocket {
 public:
     SocketUDP() = default;
-    SocketUDP(const IP &ip, uint16_t port);
-    SocketUDP(uint16_t port, bool ipv6);
+    SocketUDP(const IP &ip, uint16_t port, bool block = false);
+    SocketUDP(uint16_t port, bool ipv6, bool block = false);
 
     SocketUDP(const SocketUDP &other) = delete;
     SocketUDP &operator=(const SocketUDP &) = delete;
@@ -105,7 +105,7 @@ public:
 
     ~SocketUDP() = default;
 
-    void init(void);
+    void init(bool block, uint16_t port);
 
     /* return the nb bytes sent */
     size_t send(const UDPMessage &msg, const Address &addr) const;

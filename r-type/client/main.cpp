@@ -103,10 +103,17 @@ int main(void) {
     client.connectToServer("127.0.0.1", 4243, true);
 
     while (1) {
-        if (Network::NET::sleep(4000))
+        if (Network::NET::sleep(300))
             continue;
         if (!client.isConnected())
             client.connectToServer(0);
+        else {
+            // Network::UDPMessage msg(true, 1);
+            // const char *data = "Coucou je suis le client !!";
+            // msg.appendData(data, std::strlen(data));
+
+            // client.sendDatagram(Network::NET::getSocketUdp(), msg)= de;
+        }
     }
 
     Network::NET::stop();

@@ -21,11 +21,15 @@ bool CLNetClient::connectToServer(size_t index) {
     std::cout << "CL: connecting to server" << std::endl;
 
     auto &[response, addr] = m_pingedServers.at(index);
+
+    if (addr->getType() != m_addrType)
+        return false;
+
     auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), response.tcpv4Port)
                                            : SocketTCP(static_cast<AddressV6 &>(*addr), response.tcpv6Port);
 
     sock.setBlocking(false);
-    m_netChannel = std::move(NetChannel(false, std::move(addr), sock));
+    m_netChannel = std::move(NetChannel(false, std::move(addr), std::move(sock)));
     //     /* todo : some error handling just in case ? */
 
     m_state = CS_CONNECTED;
@@ -36,22 +40,19 @@ bool CLNetClient::connectToServer(size_t index) {
 bool CLNetClient::connectToServer(const std::string &ip, uint16_t port, bool block) {
     std::unique_ptr<Address> addr;
 
-    try {
+    if (m_addrType == AT_IPV4)
         addr = std::make_unique<AddressV4>(AT_IPV4, ip, port);
-    } catch (const std::exception &e) {
-        try {
-            addr = std::make_unique<AddressV6>(AT_IPV6, ip, port);
-        } catch (const std::exception &e) {
-            return false;
-        }
-    }
+    else if (m_addrType == AT_IPV6)
+        addr = std::make_unique<AddressV6>(AT_IPV6, ip, port);
+    else
+        return false;
 
     /* fix : when the addres is bad, it holds since it blocks, make it unblock by default ? */
-    auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), port, block)
-                                           : SocketTCP(static_cast<AddressV6 &>(*addr), port, block);
+    auto sock = m_addrType == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), port, block)
+                                      : SocketTCP(static_cast<AddressV6 &>(*addr), port, block);
 
     std::cout << "connecting is not ready ?: " << sock.isNotReady() << std::endl;
-    m_netChannel = std::move(NetChannel(false, std::move(addr), sock));
+    m_netChannel = std::move(NetChannel(false, std::move(addr), std::move(sock)));
     //     /* todo : some error handling just in case ? */
 
     m_state = CS_CONNECTED;
@@ -81,7 +82,7 @@ void CLNetClient::stop(void) {
     m_enabled = false;
 }
 
-bool CLNetClient::handleUDPEvents(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
+bool CLNetClient::handleUDPEvents(UDPMessage &msg, const Address &addr) {
     if (!m_enabled)
         return false;
 
@@ -91,16 +92,20 @@ bool CLNetClient::handleUDPEvents(SocketUDP &socket, UDPMessage &msg, const Addr
         std::cout << "CL: got ping response !!" << std::endl;
         return true;
     default:
-        return handleServerUDP(socket, msg, addr);
+        return handleServerUDP(msg, addr);
     }
 }
 
-bool CLNetClient::handleServerUDP(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
+bool CLNetClient::handleServerUDP(UDPMessage &msg, const Address &addr) {
     if (!m_netChannel.isEnabled() ||
         addr != m_netChannel.getAddress()) // why sending udp packets to the client ? who are you ?
         return false;
 
-    std::cout << "CL: received command !!" << std::endl;
+    if (!m_netChannel.readDatagram(msg))
+        return true;
+
+    /* todo : add things here */
+    std::cout << "CL: got udp message from server" << std::endl;
     return true;
 }
 
@@ -129,6 +134,8 @@ bool CLNetClient::handleServerTCP(const TCPMessage &msg) {
         m_netChannel.setChallenge(data.challenge);
         std::cout << "CL: Client challange: " << data.challenge << std::endl;
         m_connectionState = CON_AUTHORIZING;
+
+        m_netChannel.createUdpAddress(data.udpPort);
         return true;
     default:
         return false;
@@ -149,16 +156,24 @@ void CLNetClient::getPingResponse(const UDPMessage &msg, const Address &addr) {
     m_pingedServers.push_back({data, std::move(addrPtr)});
 }
 
-void CLNetClient::pingLanServers(SocketUDP &socketUDP, AddressType type) {
+void CLNetClient::pingLanServers(void) {
     m_pingedServers.clear();
+
     for (uint16_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS; port++) {
         auto message = UDPMessage(0, CL_BROADCAST_PING);
 
-        if (type == AT_IPV4)
-            socketUDP.send(message, AddressV4(AT_BROADCAST, port));
-        else if (type == AT_IPV6)
-            socketUDP.send(message, AddressV6(AT_MULTICAST, port));
+        if (m_addrType == AT_IPV4)
+            m_socketUdp.send(message, AddressV4(AT_BROADCAST, port));
+        else if (m_addrType == AT_IPV6)
+            m_socketUdp.send(message, AddressV6(AT_MULTICAST, port));
     }
+}
+
+bool CLNetClient::sendDatagram(UDPMessage &msg) {
+    if (!m_enabled || !m_netChannel.isEnabled())
+        return false;
+
+    return m_netChannel.sendDatagram(m_socketUdp, msg);
 }
 
 } // namespace Network
