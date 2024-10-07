@@ -8,12 +8,12 @@
 #pragma once
 
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/components/Motions.hpp"
 #include "GEngine/libdev/systems/events/MainLoop.hpp"
+#include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/systems/events/driver/input/Keyboard.hpp"
 
 namespace hagarioop::systems {
-class AutoMotion : public gengine::System<AutoMotion, gengine::component::Motion2D> {
+class AutoMotion : public gengine::System<AutoMotion, gengine::component::Velocity2D> {
 public:
     void init(void) override;
     void onMainLoop(gengine::system::event::MainLoop &);

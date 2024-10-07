@@ -7,17 +7,18 @@
 
 #include "GEngine/driver/Engine.hpp"
 #include "GEngine/game/Engine.hpp"
-#include "GEngine/interface/Internal.hpp"
+#include "GEngine/interface/network/Networked.hpp"
 
 #include "GEngine/libdev/components/HitBoxs.hpp"
-#include "GEngine/libdev/components/Motions.hpp"
+// #include "libdev/components/Positions.hpp"
 
 #include "GEngine/libdev/systems/Collisions.hpp"
 #include "GEngine/libdev/systems/MainLoop.hpp"
 
-#include "GEngine/libdev/components/Motions.hpp"
+#include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/systems/Collisions.hpp"
 #include "GEngine/libdev/systems/Logger.hpp"
+// #include "libdev/components/Positions.hpp"
 
 #include "GEngine/libdev/systems/Collisions.hpp"
 #include "GEngine/libdev/systems/Logger.hpp"
@@ -56,21 +57,20 @@ public:
     }
 
     void onClickLeft(gengine::system::driver::input::MouseLeftEvent &e) {
-        auto &transforms = getComponent<gengine::component::Transform2D>();
-        auto &hitboxes = getComponent<gengine::component::HitBoxSquare2D>();
+        auto &transforms = getComponents<gengine::component::Transform2D>();
+        auto &hitboxes = getComponents<gengine::component::HitBoxSquare2D>();
         for (auto &[entity, transf] : transforms) {
             if (hitboxes.contains(entity)) {
                 auto &hitbox = hitboxes.get(entity);
                 if (e.cursorPos.x >= transf.pos.x && e.cursorPos.y >= transf.pos.y &&
                     e.cursorPos.x <= transf.pos.x + hitbox.width * transf.scale.x &&
-                    e.cursorPos.y <= transf.pos.y + hitbox.height * transf.scale.y) {
+                    e.cursorPos.y <= transf.pos.y + hitbox.height * transf.scale.y)
                     killEntity(entity);
-                }
             }
         }
     }
     void onCollision(gengine::system::event::Collsion &e) {
-        // auto &colors = getComponent<gengine::component::driver::output::Color>();
+        // auto &colors = getComponents<gengine::component::driver::output::Color>();
         // std::string logMessage = "Receive collision between (" + std::to_string(e.entity1) + ") and (" +
         // std::to_string(e.entity2) + ").";
 
@@ -89,34 +89,42 @@ int main(void) {
     gengine::driver::Engine driverEngine;
 
     // Components
-    gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
-    gameEngine.registerComponent<gengine::component::HitBoxSquare2D>();
+    // gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
+    // gameEngine.registerComponent<gengine::component::HitBoxSquare2D>();
     gameEngine.registerComponent<gengine::component::Transform2D>();
-    gameEngine.registerComponent<gengine::component::Motion2D>();
+    gameEngine.registerComponent<gengine::component::Velocity2D>();
+
     gameEngine.registerComponent<gengine::component::driver::output::Animation>();
-    gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
-    gameEngine.registerComponent<gengine::component::driver::output::Circle>();
+    gameEngine.registerComponent<gengine::component::driver::output::Drawable>();
+    // gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
+    // gameEngine.registerComponent<gengine::component::driver::output::Circle>();
     gameEngine.registerComponent<gengine::component::driver::output::Sprite>();
+    gameEngine.registerComponent<gengine::component::driver::output::Text>();
 
     // Systems
     // customs
+    gameEngine.registerSystem<gengine::system::AutoMainLoop>();
+
     gameEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1080, 720, "hagar");
+    gameEngine.registerSystem<gengine::system::driver::output::Draw2D>();
+    gameEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
+    gameEngine.registerSystem<gengine::system::driver::output::DrawText>();
+    gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::driver::output::TextureManager>("../sprites");
+    gameEngine.registerSystem<gengine::system::driver::output::FontManager>("../font");
 
     gameEngine.registerSystem<hagarioop::systems::Start>();
     gameEngine.registerSystem<gengine::system::Motion2D>();
-    gameEngine.registerSystem<gengine::system::Collision2D>();
-    gameEngine.registerSystem<gengine::system::driver::output::Draw2D>();
-    gameEngine.registerSystem<gengine::system::driver::output::Animate>();
-    gameEngine.registerSystem<gengine::system::AutoMainLoop>();
+    // gameEngine.registerSystem<gengine::system::Collision2D>();
+    gameEngine.registerSystem<hagarioop::systems::AutoMotion>();
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
-    gameEngine.registerSystem<gengine::system::driver::input::MouseCatcher>();
-    // std::cout << "test" << std::endl;
+    // gameEngine.registerSystem<gengine::system::driver::input::MouseCatcher>();
+
     // gameEngine.registerSystem<ChangeColor>();
     // gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
     // gameEngine.registerSystem<ChangeColor>();
-    gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
+    // gameEngine.registerSystem<gengine::system::Logger>("ECS.log");
 
-    gengine::interface::Internal interface(gameEngine, driverEngine);
+    gengine::interface::network::Networked interface(gameEngine, driverEngine);
     interface.run();
 }
