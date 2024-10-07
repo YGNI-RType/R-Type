@@ -35,6 +35,7 @@
 //         subscribeToEvent<gengine::system::driver::input::KeyAEvent>(&Logger::onKeyA);
 //     }
 
+
 //     void onKeyA(gengine::system::driver::input::KeyAEvent &e) {
 //         switch (e.state) {
 //         case gengine::system::driver::input::InputState::RELEASE:
@@ -96,15 +97,24 @@ int main(void) {
     Network::NET::init();
 
     Network::NET::initClient();
-    Network::NET::pingServers();
+    // Network::NET::pingServers();
 
     Network::CLNetClient &client = Network::NET::getClient();
 
-    while (1) {
-        if (Network::NET::sleep(4000))
-            continue;
-        if (!client.isConnected())
+    client.connectToServer("127.0.0.1", 4243, true);
+
+    for (size_t i = 0; i < 10; i++) {
+        Network::NET::sleep(300);
+        if (!client.isConnected()) {
             client.connectToServer(0);
+            continue;
+        }
+
+        Network::UDPMessage msg(true, 3);
+        const char *data = "Coucou je suis le client !!";
+        msg.writeData((const void *)data, std::strlen(data));
+
+        client.sendDatagram(msg);
     }
 
     Network::NET::stop();

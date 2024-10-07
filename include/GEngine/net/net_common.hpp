@@ -38,8 +38,15 @@ typedef unsigned short sa_family_t;
 
 #define MAX_CLIENTS 100
 
+/* Due to MTU possible fragmentation, making the request even slower */
+#define MAX_UDP_PACKET_LENGTH 1450 /* wi-fi : ~1472 / ethernet : 1500 */
+
 #define MAX_UDP_MSGLEN 16384
 #define MAX_TCP_MSGLEN 32768
+
+#define CF_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define CF_MAX(a, b) ((a) > (b) ? (a) : (b))
+#define CF_CLAMP(x, a, b) CF_MIN(CF_MAX(x, a), b)
 
 typedef uint8_t byte_t;
 

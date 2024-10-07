@@ -47,15 +47,14 @@ void NetServer::createSets(fd_set &readSet) {
     for (const auto &client : m_clients) {
         auto &socket = client->getChannel().getTcpSocket();
         auto eventType = socket.getEventType();
-        auto socketId = socket.getSocket();
 
         if (eventType == SocketTCP::EventType::READ)
-            FD_SET(socketId, &readSet);
+            socket.setFdSet(readSet);
     }
 
-    FD_SET(m_socketv4.getSocket(), &readSet);
+    m_socketv4.setFdSet(readSet);
     if (CVar::net_ipv6.getIntValue())
-        FD_SET(m_socketv6.getSocket(), &readSet);
+        m_socketv6.setFdSet(readSet);
 }
 
 void NetServer::respondPingServers(const UDPMessage &msg, SocketUDP &udpsocket, const Address &addr) {
@@ -73,16 +72,22 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
     UnknownAddress unkwAddr;
     SocketTCP newSocket = socket.accept(unkwAddr);
 
+    std::cout << "SV: new client" << std::endl;
+
     if (getNumClients() >= getMaxClients()) {
         newSocket.socketClose();
         return;
     }
 
     std::unique_ptr<NetClient> cl;
-    if (unkwAddr.getType() == AT_IPV4)
-        cl = std::make_unique<NetClient>(std::make_unique<AddressV4>(unkwAddr.getV4()), newSocket);
-    else if (unkwAddr.getType() == AT_IPV6)
-        cl = std::make_unique<NetClient>(std::make_unique<AddressV6>(unkwAddr.getV6()), newSocket);
+    auto clientAddrType = unkwAddr.getType();
+    if (clientAddrType == AT_IPV4)
+        cl = std::make_unique<NetClient>(std::make_unique<AddressV4>(unkwAddr.getV4()), std::move(newSocket),
+                                         m_socketUdpV4);
+
+    else if (clientAddrType == AT_IPV6)
+        cl = std::make_unique<NetClient>(std::make_unique<AddressV6>(unkwAddr.getV6()), std::move(newSocket),
+                                         m_socketUdpV6);
     else
         return; /* impossible */
 
@@ -90,16 +95,19 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
     NetClient *clPtr = cl.get();
     m_clients.push_back(std::move(cl));
 
-    auto msg = TCPMessage(0, SV_INIT_CONNECTON);
+    auto msg = TCPMessage(SV_INIT_CONNECTON);
     auto &channel = clPtr->getChannel();
-    msg.writeData<TCPSV_ClientInit>({.challenge = channel.getChallenge()});
+
+    msg.writeData<TCPSV_ClientInit>(
+        {.challenge = channel.getChallenge(),
+         .udpPort = clientAddrType == AT_IPV6 ? m_socketUdpV6.getPort() : m_socketUdpV4.getPort()});
 
     std::cout << "SV: Client challange: " << channel.getChallenge() << std::endl;
 
     channel.sendStream(msg);
 }
 
-bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool NetServer::handleUDPEvent(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     if (!isRunning())
         return false;
 
@@ -112,13 +120,13 @@ bool NetServer::handleUDPEvent(SocketUDP &socket, const UDPMessage &msg, const A
     }
 }
 
-bool NetServer::handleUdpMessageClients(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool NetServer::handleUdpMessageClients(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     for (const auto &client : m_clients) {
         auto &channel = client->getChannel();
         if (channel.getAddress() != addr)
             continue;
 
-        if (channel.readDatagram(msg, addr))
+        if (channel.readDatagram(msg))
             handleClientCMD_UDP(socket, *client, msg);
         return true;
     }
@@ -133,27 +141,36 @@ bool NetServer::handleTCPEvent(fd_set &readSet) {
     if (!isRunning())
         return false;
 
-    if (FD_ISSET(m_socketv4.getSocket(), &readSet)) {
+    if (m_socketv4.isFdSet(readSet)) {
+        m_socketv4.removeFdSet(readSet);
         handleNewClient(m_socketv4);
         return true;
     }
 
-    if (CVar::net_ipv6.getIntValue() && FD_ISSET(m_socketv6.getSocket(), &readSet)) {
+    if (CVar::net_ipv6.getIntValue() && m_socketv6.isFdSet(readSet)) {
+        m_socketv6.removeFdSet(readSet);
         handleNewClient(m_socketv6);
         return true;
     }
 
-    for (const auto &client : m_clients) {
-        auto &socket = client->getChannel().getTcpSocket();
-        auto eventType = socket.getEventType();
-        auto socketId = socket.getSocket();
-
-        if (eventType == SocketTCP::EventType::READ && FD_ISSET(socketId, &readSet))
-            //     socket.handleEvent();
+    for (const auto &client : m_clients)
+        if (client->handleTCPEvents(readSet)) {
+            if (client->isDisconnected()) {
+                m_clients.erase(
+                    std::remove_if(
+                        m_clients.begin(), m_clients.end(),
+                        [&client](const std::unique_ptr<NetClient> &cl) { return cl.get() == client.get(); }),
+                    m_clients.end());
+            }
             return true;
-    }
+        }
 
     return false;
+}
+
+void NetServer::sendToAllClients(UDPMessage &msg) {
+    for (const auto &client : m_clients)
+        client->sendDatagram(msg);
 }
 
 } // namespace Network

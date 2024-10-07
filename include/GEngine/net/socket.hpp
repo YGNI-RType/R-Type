@@ -27,8 +27,6 @@ typedef int SOCKET;
 
 namespace Network {
 
-#define MAX_PACKETLEN 1400 // max size of a network packet
-
 #define UDP_SO_RCVBUF_SIZE 131072
 
 ////////////////////////////////////////
@@ -78,10 +76,13 @@ public:
         return m_port;
     }
     bool isFdSet(fd_set &set) const {
-        return FD_ISSET(m_sock, &m_fdSet);
+        return FD_ISSET(m_sock, &set);
     }
     void setFdSet(fd_set &set) const {
         FD_SET(m_sock, &set);
+    }
+    void removeFdSet(fd_set &set) const {
+        FD_CLR(m_sock, &set);
     }
 
 protected:
@@ -94,13 +95,17 @@ protected:
 class SocketUDP : public ASocket {
 public:
     SocketUDP() = default;
-    SocketUDP(const IP &ip, uint16_t port);
-    SocketUDP(uint16_t port, bool ipv6);
+    SocketUDP(const IP &ip, uint16_t port, bool block = false);
+    SocketUDP(uint16_t port, bool ipv6, bool block = false);
+
     SocketUDP(const SocketUDP &other) = delete;
     SocketUDP &operator=(const SocketUDP &) = delete;
     SocketUDP(SocketUDP &&other);
     SocketUDP &operator=(SocketUDP &&other);
+
     ~SocketUDP() = default;
+
+    void init(bool block, uint16_t port);
 
     /* return the nb bytes sent */
     size_t send(const UDPMessage &msg, const Address &addr) const;
@@ -144,9 +149,10 @@ public:
 
 public:
     SocketTCP() = default;
-    SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr); // accepts it from the socket master
-    SocketTCP(const AddressV4 &addr, uint16_t tcpPort); // connect to the address (only for client)
-    SocketTCP(const AddressV6 &addr, uint16_t tcpPort); // connect to the address (only for client)
+    SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr,
+              bool block = false);                                          // accepts it from the socket master
+    SocketTCP(const AddressV4 &addr, uint16_t tcpPort, bool block = false); // connect to the address (only for client)
+    SocketTCP(const AddressV6 &addr, uint16_t tcpPort, bool block = false); // connect to the address (only for client)
     SocketTCP(const SocketTCP &other) = delete;
     SocketTCP &operator=(const SocketTCP &) = delete;
     SocketTCP(SocketTCP &&other);
@@ -159,12 +165,16 @@ public:
     const EventType getEventType(void) const {
         return m_eventType;
     }
+    const bool isNotReady(void) const {
+        return m_notReady;
+    }
 
 private:
     std::size_t receiveReliant(TCPSerializedMessage *buffer, std::size_t size) const;
     std::size_t sendReliant(const TCPSerializedMessage *msg, std::size_t msgDataSize) const;
 
     EventType m_eventType = READ;
+    bool m_notReady = true;
 };
 
 SocketTCPMaster openSocketTcp(const IP &ip, uint16_t wantedPort);

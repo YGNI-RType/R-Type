@@ -25,7 +25,6 @@ template <typename T>
 struct is_one_of<T> : std::false_type {};
 
 class Manager;
-
 template <class Derived, class... DependTypes>
 class Base : public IsSystem {
 public:

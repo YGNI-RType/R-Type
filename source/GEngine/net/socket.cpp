@@ -151,6 +151,10 @@ SocketTCPMaster::SocketTCPMaster(const IP &ip, uint16_t port) {
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
+    unsigned int opt = 1;
+    if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char *>(&opt), sizeof(opt)) < 0)
+        throw SocketException("(TCP) Failed to set socket options");
+
     m_port = port;
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(struct sockaddr_in));
@@ -170,6 +174,10 @@ SocketTCPMaster::SocketTCPMaster(uint16_t port, bool ipv6) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
+
+    unsigned int opt = 1;
+    if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char *>(&opt), sizeof(opt)) < 0)
+        throw SocketException("(TCP) Failed to set socket options");
 
     m_port = port;
     struct sockaddr_storage address = {0};
@@ -199,18 +207,21 @@ SocketTCP SocketTCPMaster::accept(UnknownAddress &unkwAddr) const {
 
 /***********************************************/
 
-SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr) {
+SocketTCP::SocketTCP(const SocketTCPMaster &socketMaster, UnknownAddress &unkwAddr, bool block) {
     m_sock = accept(socketMaster.getSocket(), unkwAddr.getAddr(), &unkwAddr.getLen());
+    setBlocking(block);
     if (m_sock < 0)
         throw std::runtime_error("Failed to accept connection");
 
     unkwAddr.updateType();
     m_port = socketMaster.getPort();
+    m_notReady = false;
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort) {
+SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort, bool block) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    setBlocking(block);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
@@ -229,11 +240,13 @@ SocketTCP::SocketTCP(const AddressV4 &addr, uint16_t tcpPort) {
         throw SocketException(strerror(errno));
     }
 
+    m_notReady = false;
     addSocketPool(m_sock);
 }
 
-SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort) {
+SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort, bool block) {
     m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    setBlocking(block);
     if (m_sock == -1)
         throw std::runtime_error("(TCP) Failed to create socket");
 
@@ -252,6 +265,7 @@ SocketTCP::SocketTCP(const AddressV6 &addr, uint16_t tcpPort) {
         throw SocketException(strerror(errno));
     }
 
+    m_notReady = false;
     addSocketPool(m_sock);
 }
 
@@ -282,7 +296,7 @@ void SocketTCP::receive(TCPMessage &msg) const {
     /* WIN : need to use these parenthesis, to skip windows.h macro (todo : find why +1, another problem with packed
      * structs ?)*/
     recvSz = receiveReliant(reinterpret_cast<TCPSerializedMessage *>(ptrMsg + recvSz),
-                            (std::min)(sMsg.curSize + 1, sizeof(TCPSerializedMessage) - recvSz));
+                            CF_MIN(sMsg.curSize + 1, sizeof(TCPSerializedMessage) - recvSz));
 
     msg.setSerialize(sMsg);
 }
@@ -322,16 +336,29 @@ size_t SocketTCP::sendReliant(const TCPSerializedMessage *msg, size_t msgDataSiz
 
 /***********************************************/
 
-SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
-
+void SocketUDP::init(bool block, uint16_t port) {
     m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (m_sock == -1)
         throw std::runtime_error("(UDP) Failed to create socket");
 
     m_port = port;
+    setBlocking(block);
+
     unsigned int opt = 1;
     if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
         throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
+#ifdef IP_DONTFRAG
+#ifdef __FreeBSD__
+    if (setsockopt(m_sock, IPPROTO_IP, IP_DONTFRAG, &opt, sizeof(opt)))
+#else
+    if (setsockopt(m_sock, IPPROTO_IP, IP_MTU_DISCOVER, &opt, sizeof(opt)))
+#endif
+        throw std::runtime_error("(UDP) Failed to set socket options (IP_DONTFRAG)");
+#endif
+}
+
+SocketUDP::SocketUDP(const IP &ip, uint16_t port, bool block) {
+    init(block, port);
 
     struct sockaddr_in address;
     std::memcpy(&address, &ip.addr, sizeof(address));
@@ -344,16 +371,8 @@ SocketUDP::SocketUDP(const IP &ip, uint16_t port) {
     addSocketPool(m_sock);
 }
 
-SocketUDP::SocketUDP(uint16_t port, bool ipv6) {
-
-    m_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    if (m_sock == -1)
-        throw std::runtime_error("(UDP) Failed to create socket");
-
-    m_port = port;
-    unsigned int opt = 1;
-    if (setsockopt(m_sock, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)))
-        throw std::runtime_error("(UDP) Failed to set socket options (SO_BROADCAST)");
+SocketUDP::SocketUDP(uint16_t port, bool ipv6, bool block) {
+    init(block, port);
 
     struct sockaddr_storage address = {0};
     translateAutomaticAddressing(address, port, ipv6);
