@@ -63,6 +63,13 @@ public:
         return m_socketUdp;
     }
 
+    void sendDatagram(UDPMessage &msg);
+    void recvDatagram(UDPMessage &msg);
+
+    bool handleTCPEvents(fd_set &readSet);
+    bool handleClientMsg(void);
+    void sendStream(const TCPMessage &msg);
+
 private:
     NetChannel m_channel;
     NetClientInfo m_info;

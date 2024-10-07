@@ -33,6 +33,9 @@ void NetChannel::createUdpAddress(uint16_t udpport) {
 }
 
 bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg) {
+    if (!m_enabled || m_toUDPAddress == nullptr)
+        return false;
+
     size_t msgLen = msg.getSize();
 
     /* check the client rating before or after ? */
@@ -73,7 +76,7 @@ bool NetChannel::sendDatagram(SocketUDP &socket, UDPMessage &msg) {
         header.ack = udpInSequence;
     msg.writeHeader(header);
 
-    size_t sent = socket.send(msg, *m_toTCPAddress);
+    size_t sent = socket.send(msg, *m_toUDPAddress);
     if (sent < 0) // guess it's send, but not quite, TODO : check any weird case (place breakpoint)
         return true;
 
@@ -95,7 +98,7 @@ bool NetChannel::readDatagram(UDPMessage &msg) {
     uint64_t &udpOutSequence = msg.shouldAck() ? m_udpACKOutSequence : m_udpOutSequence;
     uint64_t &udpInSequence = msg.shouldAck() ? m_udpACKInSequence : m_udpInSequence;
 
-    if (header.sequence <= udpOutSequence) {
+    if (header.sequence <= udpInSequence) {
         /*out of order packet, delete it */
         return false;
     }
@@ -131,6 +134,9 @@ bool NetChannel::readDatagram(UDPMessage &msg) {
 }
 
 bool NetChannel::sendStream(const TCPMessage &msg) {
+    if (!m_enabled || m_toTCPAddress == nullptr)
+        return false;
+
     size_t sent = m_tcpSocket.send(msg);
     if (sent < 0)
         return false;

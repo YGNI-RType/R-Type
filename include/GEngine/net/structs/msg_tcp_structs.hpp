@@ -26,4 +26,10 @@ struct TCPSV_ClientInit {
     // todo : add more information, that client needs to know that the server won't change
 };
 
+struct TCPCL_ConnectInformation {
+    uint16_t udpPort;
+
+    /* todo: add the name, client information */
+};
+
 } // namespace Network

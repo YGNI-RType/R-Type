@@ -128,14 +128,22 @@ bool CLNetClient::handleTCPEvents(fd_set &readSet) {
 bool CLNetClient::handleServerTCP(const TCPMessage &msg) {
     switch (msg.getType()) {
     case SV_INIT_CONNECTON:
-        TCPSV_ClientInit data;
-        msg.readData<TCPSV_ClientInit>(data);
+        TCPSV_ClientInit recvData;
+        msg.readData<TCPSV_ClientInit>(recvData);
 
-        m_netChannel.setChallenge(data.challenge);
-        std::cout << "CL: Client challange: " << data.challenge << std::endl;
+        m_netChannel.setChallenge(recvData.challenge);
+        std::cout << "CL: Client challange: " << recvData.challenge << std::endl;
         m_connectionState = CON_AUTHORIZING;
 
-        m_netChannel.createUdpAddress(data.udpPort);
+        m_netChannel.createUdpAddress(recvData.udpPort);
+
+        {
+            TCPCL_ConnectInformation sendData = {.udpPort = m_socketUdp.getPort()};
+            auto sendMsg = TCPMessage(0, CL_CONNECT_INFORMATION);
+            sendMsg.writeData<TCPCL_ConnectInformation>(sendData);
+            m_netChannel.sendStream(sendMsg);
+        }
+
         return true;
     default:
         return false;

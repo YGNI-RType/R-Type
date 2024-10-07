@@ -82,9 +82,12 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
     std::unique_ptr<NetClient> cl;
     auto clientAddrType = unkwAddr.getType();
     if (clientAddrType == AT_IPV4)
-        cl = std::make_unique<NetClient>(std::make_unique<AddressV4>(unkwAddr.getV4()), std::move(newSocket), m_socketUdpV4);
+        cl = std::make_unique<NetClient>(std::make_unique<AddressV4>(unkwAddr.getV4()), std::move(newSocket),
+                                         m_socketUdpV4);
+
     else if (clientAddrType == AT_IPV6)
-        cl = std::make_unique<NetClient>(std::make_unique<AddressV6>(unkwAddr.getV6()), std::move(newSocket), m_socketUdpV6);
+        cl = std::make_unique<NetClient>(std::make_unique<AddressV6>(unkwAddr.getV6()), std::move(newSocket),
+                                         m_socketUdpV6);
     else
         return; /* impossible */
 
@@ -95,7 +98,9 @@ void NetServer::handleNewClient(SocketTCPMaster &socket) {
     auto msg = TCPMessage(0, SV_INIT_CONNECTON);
     auto &channel = clPtr->getChannel();
 
-    msg.writeData<TCPSV_ClientInit>({.challenge = channel.getChallenge(), .udpPort = clientAddrType == AT_IPV6 ? m_socketUdpV6.getPort() : m_socketUdpV4.getPort()});
+    msg.writeData<TCPSV_ClientInit>(
+        {.challenge = channel.getChallenge(),
+         .udpPort = clientAddrType == AT_IPV6 ? m_socketUdpV6.getPort() : m_socketUdpV4.getPort()});
 
     std::cout << "SV: Client challange: " << channel.getChallenge() << std::endl;
 
@@ -148,28 +153,16 @@ bool NetServer::handleTCPEvent(fd_set &readSet) {
         return true;
     }
 
-    for (const auto &client : m_clients) {
-        auto &socket = client->getChannel().getTcpSocket();
-        auto eventType = socket.getEventType();
-
-        if (eventType == SocketTCP::EventType::READ && socket.isFdSet(readSet)) {
-            socket.removeFdSet(readSet);
-            //     socket.handleEvent();
+    for (const auto &client : m_clients)
+        if (client->handleTCPEvents(readSet))
             return true;
-        }
-    }
 
     return false;
 }
 
 void NetServer::sendToAllClients(UDPMessage &msg) {
-    for (const auto &client : m_clients) {
-        auto &channel = client->getChannel();
-        if (!channel.isEnabled())
-            continue;
-
-        channel.sendDatagram(client->getSocketUdp(), msg);
-    }
+    for (const auto &client : m_clients)
+        client->sendDatagram(msg);
 }
 
 } // namespace Network

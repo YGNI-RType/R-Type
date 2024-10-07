@@ -62,7 +62,7 @@ protected:
 
     AddressType m_type;
     uint16_t m_port;
-    uint32_t m_mask = -1;
+    uint32_t m_mask = 0;
 };
 
 class AddressV4 : public Address {

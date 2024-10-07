@@ -20,7 +20,7 @@ int main(void) {
         if (!server.isRunning())
             continue;
 
-        Network::UDPMessage msg(true, 1);
+        Network::UDPMessage msg(true, 4);
         const char *data = "Coucou je suis le serveir !!";
         msg.writeData(static_cast<const void *>( data), std::strlen(data));
 

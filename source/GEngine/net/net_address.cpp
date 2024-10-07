@@ -162,15 +162,15 @@ bool AddressV6::isLanAddr(void) const {
 /************************************************************/
 
 AddressV4 UnknownAddress::getV4() const {
-    sockaddr_in *m_addr = reinterpret_cast<sockaddr_in *>(&m_addr);
+    auto addr = reinterpret_cast<const sockaddr_in *>(&m_addr);
 
-    return AddressV4(m_type, ntohs(m_addr->sin_port), htonl(m_addr->sin_addr.s_addr));
+    return AddressV4(m_type, ntohs(addr->sin_port), htonl(addr->sin_addr.s_addr));
 }
 
 AddressV6 UnknownAddress::getV6() const {
-    sockaddr_in6 *m_addr = reinterpret_cast<sockaddr_in6 *>(&m_addr);
+    auto addr = reinterpret_cast<const sockaddr_in6 *>(&m_addr);
 
-    return AddressV6(m_type, ntohs(m_addr->sin6_port), m_addr->sin6_addr, m_addr->sin6_scope_id);
+    return AddressV6(m_type, ntohs(addr->sin6_port), addr->sin6_addr, addr->sin6_scope_id);
 }
 
 void UnknownAddress::updateType(void) {
