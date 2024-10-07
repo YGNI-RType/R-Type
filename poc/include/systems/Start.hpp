@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "libdev/System.hpp"
-#include "libdev/systems/driver/output/TextureManager.hpp"
-#include "libdev/systems/events/Native.hpp"
+#include "GEngine/libdev/System.hpp"
+#include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
+#include "GEngine/libdev/systems/events/Native.hpp"
 
 namespace hagarioop::systems {
 class Start : public gengine::System<Start, gengine::system::driver::output::TextureManager> {

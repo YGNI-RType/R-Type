@@ -7,12 +7,10 @@
 
 #pragma once
 
-#include "libdev/System.hpp"
-#include "libdev/systems/events/MainLoop.hpp"
-
-#include "libdev/components/Velocities.hpp"
-
-#include "libdev/systems/events/driver/input/Keyboard.hpp"
+#include "GEngine/libdev/System.hpp"
+#include "GEngine/libdev/systems/events/MainLoop.hpp"
+#include "GEngine/libdev/components/Velocities.hpp"
+#include "GEngine/libdev/systems/events/driver/input/Keyboard.hpp"
 
 namespace hagarioop::systems {
 class AutoMotion : public gengine::System<AutoMotion, gengine::component::Velocity2D> {
