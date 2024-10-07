@@ -18,16 +18,42 @@ bool CLNetClient::connectToServer(size_t index) {
     if (index >= m_pingedServers.size())
         return false;
 
+    std::cout << "CL: connecting to server" << std::endl;
+
     auto &[response, addr] = m_pingedServers.at(index);
+
+    if (addr->getType() != m_addrType)
+        return false;
+
     auto sock = addr->getType() == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), response.tcpv4Port)
                                            : SocketTCP(static_cast<AddressV6 &>(*addr), response.tcpv6Port);
 
     sock.setBlocking(false);
-    m_netChannel = std::move(NetChannel(false, std::move(addr), sock));
-    // } catch (const std::exception &e) {
+    m_netChannel = std::move(NetChannel(false, std::move(addr), std::move(sock)));
     //     /* todo : some error handling just in case ? */
-    //     throw e;
-    // }
+
+    m_state = CS_CONNECTED;
+    m_connectionState = CON_CONNECTING;
+    return true;
+}
+
+bool CLNetClient::connectToServer(const std::string &ip, uint16_t port, bool block) {
+    std::unique_ptr<Address> addr;
+
+    if (m_addrType == AT_IPV4)
+        addr = std::make_unique<AddressV4>(AT_IPV4, ip, port);
+    else if (m_addrType == AT_IPV6)
+        addr = std::make_unique<AddressV6>(AT_IPV6, ip, port);
+    else
+        return false;
+
+    /* fix : when the addres is bad, it holds since it blocks, make it unblock by default ? */
+    auto sock = m_addrType == AT_IPV4 ? SocketTCP(static_cast<AddressV4 &>(*addr), port, block)
+                                      : SocketTCP(static_cast<AddressV6 &>(*addr), port, block);
+
+    std::cout << "connecting is not ready ?: " << sock.isNotReady() << std::endl;
+    m_netChannel = std::move(NetChannel(false, std::move(addr), std::move(sock)));
+    //     /* todo : some error handling just in case ? */
 
     m_state = CS_CONNECTED;
     m_connectionState = CON_CONNECTING;
@@ -45,7 +71,7 @@ void CLNetClient::createSets(fd_set &readSet) {
     if (!m_enabled || !m_netChannel.isEnabled())
         return;
 
-    FD_SET(m_netChannel.getTcpSocket().getSocket(), &readSet);
+    m_netChannel.getTcpSocket().setFdSet(readSet);
 }
 
 void CLNetClient::init(void) {
@@ -56,25 +82,30 @@ void CLNetClient::stop(void) {
     m_enabled = false;
 }
 
-bool CLNetClient::handleUDPEvents(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool CLNetClient::handleUDPEvents(UDPMessage &msg, const Address &addr) {
     if (!m_enabled)
         return false;
 
     switch (msg.getType()) {
     case SV_BROADCAST_PING:
         getPingResponse(msg, addr);
+        std::cout << "CL: got ping response !!" << std::endl;
         return true;
     default:
-        return handleServerUDP(socket, msg, addr);
+        return handleServerUDP(msg, addr);
     }
 }
 
-bool CLNetClient::handleServerUDP(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool CLNetClient::handleServerUDP(UDPMessage &msg, const Address &addr) {
     if (!m_netChannel.isEnabled() ||
         addr != m_netChannel.getAddress()) // why sending udp packets to the client ? who are you ?
         return false;
 
-    std::cout << "CL: received command !!" << std::endl;
+    if (!m_netChannel.readDatagram(msg))
+        return true;
+
+    /* todo : add things here */
+    std::cout << "CL: got udp message from server" << std::endl;
     return true;
 }
 
@@ -82,11 +113,17 @@ bool CLNetClient::handleTCPEvents(fd_set &readSet) {
     if (!m_enabled || !m_netChannel.isEnabled())
         return false;
 
-    if (FD_ISSET(m_netChannel.getTcpSocket().getSocket(), &readSet)) {
-        TCPMessage msg(0, 0);
+    auto &sock = m_netChannel.getTcpSocket();
+    if (sock.isFdSet(readSet)) {
+        sock.removeFdSet(readSet);
+        TCPMessage msg(0);
         if (!m_netChannel.readStream(msg))
             return false;
 
+        if (m_netChannel.isDisconnected()) {
+            disconnectFromServer(); /* ensure proper disconnection */
+            return true;
+        }
         return handleServerTCP(msg);
     }
     return false;
@@ -95,12 +132,22 @@ bool CLNetClient::handleTCPEvents(fd_set &readSet) {
 bool CLNetClient::handleServerTCP(const TCPMessage &msg) {
     switch (msg.getType()) {
     case SV_INIT_CONNECTON:
-        TCPSV_ClientInit data;
-        msg.readData<TCPSV_ClientInit>(data);
+        TCPSV_ClientInit recvData;
+        msg.readData<TCPSV_ClientInit>(recvData);
 
-        m_netChannel.setChallenge(data.challenge);
-        std::cout << "CL: Client challange: " << data.challenge << std::endl;
+        m_netChannel.setChallenge(recvData.challenge);
+        std::cout << "CL: Client challange: " << recvData.challenge << std::endl;
         m_connectionState = CON_AUTHORIZING;
+
+        m_netChannel.createUdpAddress(recvData.udpPort);
+
+        {
+            TCPCL_ConnectInformation sendData = {.udpPort = m_socketUdp.getPort()};
+            auto sendMsg = TCPMessage(CL_CONNECT_INFORMATION);
+            sendMsg.writeData<TCPCL_ConnectInformation>(sendData);
+            m_netChannel.sendStream(sendMsg);
+        }
+
         return true;
     default:
         return false;
@@ -121,16 +168,24 @@ void CLNetClient::getPingResponse(const UDPMessage &msg, const Address &addr) {
     m_pingedServers.push_back({data, std::move(addrPtr)});
 }
 
-void CLNetClient::pingLanServers(SocketUDP &socketUDP, AddressType type) {
+void CLNetClient::pingLanServers(void) {
     m_pingedServers.clear();
+
     for (uint16_t port = DEFAULT_PORT; port < DEFAULT_PORT + MAX_TRY_PORTS; port++) {
         auto message = UDPMessage(0, CL_BROADCAST_PING);
 
-        if (type == AT_IPV4)
-            socketUDP.send(message, AddressV4(AT_BROADCAST, port));
-        else if (type == AT_IPV6)
-            socketUDP.send(message, AddressV6(AT_MULTICAST, port));
+        if (m_addrType == AT_IPV4)
+            m_socketUdp.send(message, AddressV4(AT_BROADCAST, port));
+        else if (m_addrType == AT_IPV6)
+            m_socketUdp.send(message, AddressV6(AT_MULTICAST, port));
     }
+}
+
+bool CLNetClient::sendDatagram(UDPMessage &msg) {
+    if (!m_enabled || !m_netChannel.isEnabled())
+        return false;
+
+    return m_netChannel.sendDatagram(m_socketUdp, msg);
 }
 
 } // namespace Network

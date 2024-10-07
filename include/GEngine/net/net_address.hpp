@@ -56,21 +56,22 @@ protected:
     virtual const byte_t *getData() const = 0;
     Address(AddressType type, uint16_t port)
         : m_type(type)
-        , m_port(port) {};
+        , m_port(port){};
 
     bool isEqual(const byte_t *addr1, const byte_t *addr2, uint32_t mask) const;
 
     AddressType m_type;
     uint16_t m_port;
-    uint32_t m_mask = -1;
+    uint32_t m_mask = 0;
 };
 
 class AddressV4 : public Address {
 
 public:
-    AddressV4(AddressType type, uint16_t port, ipv4_t address);
+    AddressV4(AddressType type, uint16_t port, const ipv4_t &address);
     AddressV4(AddressType type, uint16_t port);
     AddressV4(AddressType type, uint16_t port, in_addr_t ip);
+    AddressV4(AddressType type, const std::string &ip, uint16_t port);
     ~AddressV4() = default;
 
     const ipv4_t &getAddress() const {
@@ -91,13 +92,18 @@ private:
 class AddressV6 : public Address {
 
 public:
-    AddressV6(AddressType type, uint16_t port, ipv6_t address, uint64_t scopeId);
+    AddressV6(AddressType type, uint16_t port, const ipv6_t &address, uint64_t scopeId);
     AddressV6(AddressType type, uint16_t port);
     AddressV6(AddressType type, uint16_t port, in6_addr ip, uint32_t scopeId);
+    AddressV6(AddressType type, const std::string &ip, uint16_t port);
     ~AddressV6() = default;
 
     const ipv6_t &getAddress() const {
         return m_address;
+    };
+
+    uint64_t getScopeId() const {
+        return m_scopeId;
     };
 
     void toSockAddr(sockaddr *addr) const override final;

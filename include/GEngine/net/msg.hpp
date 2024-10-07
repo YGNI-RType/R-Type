@@ -20,26 +20,21 @@
 
 namespace Network {
 
-#define FRAGMENT_SIZE (MAX_PACKETLEN - 100)
-#define FRAGMENT_BIT (1U << 31)
-#define PACKET_HEADER 10 // two ints and a short
-
 PACK(struct HeaderSerializedMessage {
     uint8_t type;
-    std::size_t curSize;
+    uint64_t curSize;
 });
 
 PACK(struct UDPSerializedMessage {
     uint8_t type;
-    std::size_t curSize;
+    uint64_t curSize;
     uint8_t flag;
-    uint16_t fragments;
     byte_t data[MAX_UDP_MSGLEN];
 });
 
 PACK(struct TCPSerializedMessage {
     uint8_t type;
-    std::size_t curSize;
+    uint64_t curSize;
     bool isFinished = true;
     byte_t data[MAX_TCP_MSGLEN];
 });
@@ -52,24 +47,30 @@ public:
     // virtual void writeHeader(); // override final;
     // virtual void readHeader(); // override final;
 
-    std::size_t getSize() const {
+    uint64_t getSize() const {
         return m_curSize;
     }
     uint8_t getType() const {
         return m_type;
     }
-    std::size_t getMaxSize() const {
-        return m_maxSize;
-    }
 
     virtual const byte_t *getData() const = 0;
 
     template <typename T>
-    void writeData(const T &data) {
+    void appendData(const T &data, size_t offset = 0) {
         byte_t *myData = getDataMember();
 
-        std::memcpy(myData + m_curSize, &data, sizeof(T));
+        std::memcpy(myData + m_curSize + offset, &data, sizeof(T));
         m_curSize += sizeof(T);
+    }
+
+    template <typename T>
+    void writeData(const T &data, size_t offset = 0, bool updateSize = true) {
+        byte_t *myData = getDataMember();
+
+        std::memcpy(myData, &data, sizeof(T));
+        if (updateSize)
+            m_curSize = sizeof(T);
     }
 
     template <typename T>
@@ -82,23 +83,33 @@ public:
         return sizeof(T);
     }
 
+    template <typename T>
+    size_t readContinuousData(T &data, size_t &readOffset) const {
+        if (sizeof(T) + readOffset > m_curSize)
+            throw std::runtime_error("Message is too small to read data");
+
+        const byte_t *myData = getData();
+        std::memcpy(&data, myData + readOffset, sizeof(T));
+        readOffset += sizeof(T);
+        return sizeof(T);
+    }
+
     void writeData(const void *data, std::size_t size);
     void readData(void *data, std::size_t size) const;
 
 protected:
-    AMessage(std::size_t maxSize, uint8_t type);
+    AMessage(uint8_t type);
     virtual ~AMessage() = default;
 
     virtual byte_t *getDataMember() = 0;
 
-    const std::size_t m_maxSize;
-    std::size_t m_curSize = 0;
+    std::uint64_t m_curSize = 0;
     uint8_t m_type;
 };
 
 class TCPMessage : public AMessage {
 public:
-    TCPMessage(std::size_t maxSize, uint8_t type);
+    TCPMessage(uint8_t type);
     ~TCPMessage() = default;
 
     TCPMessage &operator=(const TCPMessage &other);
@@ -128,6 +139,7 @@ public:
         HEADER = 2,
         FRAGMENTED = 4,
         ENCRYPTED = 8,
+        ACK = 16,
     };
 
 public:
@@ -153,10 +165,15 @@ public:
     bool isEncrypted() const {
         return m_flags & ENCRYPTED;
     }
+    bool shouldAck() const {
+        return m_flags & ACK;
+    }
+
     void setCompressed(bool compressed);
     void setHeader(bool header);
     void setFragmented(bool fragmented);
     void setEncrypted(bool encrypted);
+    void setAck(bool ack);
 
     void writeHeader(const UDPG_NetChannelHeader &header);
     void readHeader(UDPG_NetChannelHeader &header) const;

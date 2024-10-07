@@ -52,12 +52,27 @@ private:
 class NetClient {
 
 public:
-    NetClient(std::unique_ptr<Address> addr, SocketTCP &socket);
+    NetClient(std::unique_ptr<Address> addr, SocketTCP &&socket, SocketUDP &socketudp);
     ~NetClient() = default;
 
     NetChannel &getChannel(void) {
         return m_channel;
     }
+
+    SocketUDP &getSocketUdp(void) {
+        return m_socketUdp;
+    }
+
+    bool isDisconnected(void) const {
+        return m_channel.isDisconnected();
+    }
+
+    void sendDatagram(UDPMessage &msg);
+    void recvDatagram(UDPMessage &msg);
+
+    bool handleTCPEvents(fd_set &readSet);
+    bool handleClientMsg(void);
+    void sendStream(const TCPMessage &msg);
 
 private:
     NetChannel m_channel;
@@ -70,6 +85,8 @@ private:
     // NetClientSnapshot m_snapshots[PACKET_BACKUP];
 
     /* sends CMD, not any data */
+
+    SocketUDP &m_socketUdp;
 
     uint16_t ping;
 };

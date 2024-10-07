@@ -10,7 +10,7 @@
 
 namespace Network {
 UDPMessage::UDPMessage(bool hasHeader, uint8_t type)
-    : AMessage(0, type) {
+    : AMessage(type) {
     m_curSize = hasHeader ? sizeof(UDPG_NetChannelHeader) : 0;
 }
 
@@ -33,24 +33,7 @@ void UDPMessage::getSerialize(UDPSerializedMessage &msg) const {
     msg.type = m_type;
     msg.curSize = m_curSize;
     msg.flag = m_flags;
-    msg.fragments = 0;
     std::memcpy(&msg.data, m_data, m_curSize);
-}
-
-std::vector<UDPSerializedMessage> UDPMessage::getSerializeFragmented(void) const {
-
-    uint32_t nbFragments = m_curSize / FRAGMENT_SIZE;
-    std::vector<UDPSerializedMessage> fragments(nbFragments);
-
-    for (uint32_t i = 0; i < nbFragments; i++) {
-        fragments[i].type = m_type;
-        fragments[i].curSize = FRAGMENT_SIZE;
-        fragments[i].flag = m_flags;
-        fragments[i].fragments = i | FRAGMENT_BIT;
-        std::memcpy(&fragments[i].data, m_data + i * FRAGMENT_SIZE, FRAGMENT_SIZE);
-    }
-
-    return fragments;
 }
 
 void UDPMessage::writeHeader(const UDPG_NetChannelHeader &header) {
@@ -88,6 +71,13 @@ void UDPMessage::setEncrypted(bool encrypted) {
         m_flags |= ENCRYPTED;
     else
         m_flags &= ~ENCRYPTED;
+}
+
+void UDPMessage::setAck(bool ack) {
+    if (ack)
+        m_flags |= ACK;
+    else
+        m_flags &= ~ACK;
 }
 
 } // namespace Network

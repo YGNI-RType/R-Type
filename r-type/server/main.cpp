@@ -13,8 +13,19 @@ int main(void) {
 
     Network::NET::initServer();
 
-    while (1)
-        Network::NET::sleep(4000);
+    auto &server = Network::NET::getServer();
+
+    for (size_t i = 0; i < 10; i++) {
+        Network::NET::sleep(300);
+        if (!server.isRunning())
+            continue;
+
+        Network::UDPMessage msg(true, 4);
+        const char *data = "Coucou je suis le serveir !!";
+        msg.writeData(static_cast<const void *>(data), std::strlen(data));
+
+        server.sendToAllClients(msg);
+    }
 
     Network::NET::stop();
     return 0;

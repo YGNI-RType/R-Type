@@ -67,8 +67,9 @@ SocketTCPMaster NET::mg_socketListenTcp;
 SocketUDP NET::mg_socketUdpV6;
 SocketTCPMaster NET::mg_socketListenTcpV6;
 
-NetServer NET::mg_server;
-CLNetClient NET::mg_client;
+NetServer NET::mg_server(mg_socketUdp, mg_socketUdpV6);
+CLNetClient NET::mg_client(CVar::net_ipv6.getIntValue() ? mg_socketUdpV6 : mg_socketUdp,
+                           CVar::net_ipv6.getIntValue() ? AT_IPV6 : AT_IPV4);
 
 std::vector<IP> NET::g_localIPs;
 
@@ -208,19 +209,21 @@ void NET::addLocalAddress(char *ifname, struct sockaddr *sockaddr, struct sockad
 }
 
 void NET::sortLocalAddresses(void) {
-    std::sort(g_localIPs.begin(), g_localIPs.end(), [](const IP &a, const IP &b) {
-        if (a.type == AT_LOOPBACK)
-            return true;
-        if (b.type == AT_LOOPBACK)
-            return false;
+    std::sort(
+        g_localIPs.begin(), g_localIPs.end(),
+        [](const IP &a, const IP &b) {
+            if (a.type == AT_LOOPBACK)
+                return true;
+            if (b.type == AT_LOOPBACK)
+                return false;
 
-        if (a.type == AT_IPV4 && b.type == AT_IPV6)
-            return true;
-        if (a.type == AT_IPV6 && b.type == AT_IPV4)
-            return false;
+            if (a.type == AT_IPV4 && b.type == AT_IPV6)
+                return true;
+            if (a.type == AT_IPV6 && b.type == AT_IPV4)
+                return false;
 
-        return false;
-    });
+            return false;
+        });
 }
 
 bool NET::isLanAddress(const Address &addr) {
@@ -258,34 +261,34 @@ void NET::createSets(fd_set &readSet) {
     mg_server.createSets(readSet);
     mg_client.createSets(readSet);
 
-    FD_SET(mg_socketUdp.getSocket(), &readSet);
+    mg_socketUdp.setFdSet(readSet);
     if (CVar::net_ipv6.getIntValue())
-        FD_SET(mg_socketUdpV6.getSocket(), &readSet);
+        mg_socketUdpV6.setFdSet(readSet);
 }
 
-void NET::handleUdpEvent(SocketUDP &socket, const UDPMessage &msg, const Address &addr) {
+bool NET::handleUdpEvent(SocketUDP &socket, UDPMessage &msg, const Address &addr) {
     if (mg_server.handleUDPEvent(socket, msg, addr))
-        return;
+        return true;
 
-    mg_client.handleUDPEvents(socket, msg, addr);
+    return mg_client.handleUDPEvents(msg, addr);
 }
 
-void NET::handleEvents(fd_set &readSet) {
-    if (FD_ISSET(mg_socketUdp.getSocket(), &readSet)) {
+bool NET::handleEvents(fd_set &readSet) {
+    if (mg_socketUdp.isFdSet(readSet)) {
         UDPMessage msg(0, 0);
         auto addr = mg_socketUdp.receiveV4(msg);
         return handleUdpEvent(mg_socketUdp, msg, addr);
     }
-    if (CVar::net_ipv6.getIntValue() && FD_ISSET(mg_socketUdpV6.getSocket(), &readSet)) {
+    if (CVar::net_ipv6.getIntValue() && mg_socketUdpV6.isFdSet(readSet)) {
         UDPMessage msg(0, 0);
         auto addr = mg_socketUdpV6.receiveV6(msg);
         return handleUdpEvent(mg_socketUdpV6, msg, addr);
     }
 
     if (mg_server.handleTCPEvent(readSet))
-        return;
+        return true;
 
-    mg_client.handleTCPEvents(readSet);
+    return mg_client.handleTCPEvents(readSet);
 }
 
 /**************************************************************/
@@ -293,8 +296,8 @@ void NET::handleEvents(fd_set &readSet) {
 /* should it be bool ? should it returns a message instead of sending it directly ? */
 void NET::pingServers(void) {
     if (CVar::net_ipv6.getIntValue())
-        return mg_client.pingLanServers(mg_socketUdpV6, AT_IPV6);
-    return mg_client.pingLanServers(mg_socketUdp, AT_IPV4);
+        return mg_client.pingLanServers();
+    return mg_client.pingLanServers();
 }
 
 } // namespace Network

@@ -8,6 +8,7 @@
 #include "GEngine/net/net_address.hpp"
 
 #include <cstring>
+#include <stdexcept>
 
 namespace Network {
 
@@ -43,15 +44,26 @@ bool Address::isEqual(const byte_t *addr1, const byte_t *addr2, uint32_t mask) c
 
 /**********************************************/
 
-AddressV4::AddressV4(AddressType type, uint16_t port, ipv4_t address)
+AddressV4::AddressV4(AddressType type, uint16_t port, const ipv4_t &address)
     : Address(type, port)
-    , m_address(address) {};
+    , m_address(address){};
 AddressV4::AddressV4(AddressType type, uint16_t port)
-    : Address(type, port) {};
+    : Address(type, port){};
 
 AddressV4::AddressV4(AddressType type, uint16_t port, in_addr_t ip)
     : Address(type, port) {
     m_address = *(ipv4_t *)&ip;
+}
+AddressV4::AddressV4(AddressType type, const std::string &ip, uint16_t port)
+    : Address(type, port) {
+    in_addr_t addr = inet_addr(ip.c_str());
+
+    if (addr == INADDR_NONE)
+        throw std::runtime_error("Invalid IP address"); // todo : custom exception
+
+    auto convAddr = ntohl(addr);
+
+    m_address = *(ipv4_t *)&convAddr;
 }
 
 void AddressV4::toSockAddr(sockaddr *addr) const {
@@ -92,18 +104,27 @@ bool AddressV4::isLanAddr(void) const {
 
 /**********************************************/
 
-AddressV6::AddressV6(AddressType type, uint16_t port, ipv6_t address, uint64_t scopeId)
+AddressV6::AddressV6(AddressType type, uint16_t port, const ipv6_t &address, uint64_t scopeId)
     : Address(type, port)
     , m_address(address)
-    , m_scopeId(scopeId) {};
+    , m_scopeId(scopeId){};
 AddressV6::AddressV6(AddressType type, uint16_t port)
-    : Address(type, port) {};
+    : Address(type, port){};
 
 AddressV6::AddressV6(AddressType type, uint16_t port, in6_addr ip, uint32_t scopeId)
     : Address(type, port)
     , m_scopeId(scopeId) {
     m_address = *(ipv6_t *)&ip;
     m_scopeId = scopeId;
+}
+AddressV6::AddressV6(AddressType type, const std::string &ip, uint16_t port)
+    : Address(type, port) {
+    in6_addr addr;
+
+    if (inet_pton(AF_INET6, ip.c_str(), &addr) != 1)
+        throw std::runtime_error("Invalid IP address"); // todo : custom exception
+
+    m_address = *(ipv6_t *)&addr;
 }
 
 void AddressV6::toSockAddr(sockaddr *addr) const {
@@ -141,15 +162,15 @@ bool AddressV6::isLanAddr(void) const {
 /************************************************************/
 
 AddressV4 UnknownAddress::getV4() const {
-    sockaddr_in *m_addr = reinterpret_cast<sockaddr_in *>(&m_addr);
+    auto addr = reinterpret_cast<const sockaddr_in *>(&m_addr);
 
-    return AddressV4(m_type, ntohs(m_addr->sin_port), htonl(m_addr->sin_addr.s_addr));
+    return AddressV4(m_type, ntohs(addr->sin_port), htonl(addr->sin_addr.s_addr));
 }
 
 AddressV6 UnknownAddress::getV6() const {
-    sockaddr_in6 *m_addr = reinterpret_cast<sockaddr_in6 *>(&m_addr);
+    auto addr = reinterpret_cast<const sockaddr_in6 *>(&m_addr);
 
-    return AddressV6(m_type, ntohs(m_addr->sin6_port), m_addr->sin6_addr, m_addr->sin6_scope_id);
+    return AddressV6(m_type, ntohs(addr->sin6_port), addr->sin6_addr, addr->sin6_scope_id);
 }
 
 void UnknownAddress::updateType(void) {
