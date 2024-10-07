@@ -42,7 +42,7 @@ void Snapshot::deltaDiff(void) {
             std::cout << e << " -> " << t.name() << std::endl;
         if (v.size())
             std::cout << std::endl;
-        // std::vector<
+        // TODO order send to network
     }
 }
 } // namespace gengine::interface::network::system
