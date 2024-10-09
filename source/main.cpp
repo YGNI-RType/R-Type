@@ -6,20 +6,24 @@
 */
 
 // TODO reorder include
+
+//? ## Engine ##
 #include "GEngine/driver/Engine.hpp"
 #include "GEngine/game/Engine.hpp"
-#include "GEngine/interface/network/Networked.hpp"
+// #include "GEngine/interface/network/Networked.hpp"
+#include "GEngine/interface/Internal.hpp"
 
+//? ## GEngine Components ##
 #include "GEngine/libdev/components/HitBoxs.hpp"
-// #include "libdev/components/Positions.hpp"
-
-#include "GEngine/libdev/systems/Collisions.hpp"
-#include "GEngine/libdev/systems/MainLoop.hpp"
-
 #include "GEngine/libdev/components/Velocities.hpp"
+
+#include "GEngine/libdev/components/driver/output/Animation.hpp"
+#include "GEngine/libdev/components/driver/output/Shape.hpp"
+
+//? ## GEngine Systems ##
 #include "GEngine/libdev/systems/Collisions.hpp"
 #include "GEngine/libdev/systems/Logger.hpp"
-// #include "libdev/components/Positions.hpp"
+#include "GEngine/libdev/systems/MainLoop.hpp"
 
 #include "GEngine/libdev/systems/Collisions.hpp"
 #include "GEngine/libdev/systems/Logger.hpp"
@@ -35,9 +39,6 @@
 
 #include "GEngine/libdev/systems/events/Log.hpp"
 
-#include "systems/AutoMotion.hpp"
-#include "systems/Start.hpp"
-
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
 #include "GEngine/libdev/systems/driver/input/MouseCatcher.hpp"
 #include "GEngine/libdev/systems/driver/output/Animate.hpp"
@@ -45,8 +46,20 @@
 #include "GEngine/libdev/systems/driver/output/RenderWindow.hpp"
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 
-#include "GEngine/libdev/components/driver/output/Animation.hpp"
-#include "GEngine/libdev/components/driver/output/Shape.hpp"
+//? ### R-Type Components ###
+
+#include "components/Player.hpp"
+#include "components/PlayerControl.hpp"
+
+#include "components/Monster.hpp"
+
+//? ### R-Type Systems ###
+#include "systems/MonstersAutoMotion.hpp"
+#include "systems/PlayerMotion.hpp"
+#include "systems/PlayerShoot.hpp"
+#include "systems/Start.hpp"
+
+namespace rtype {
 
 void registerComponents(gengine::game::Engine &gameEngine) {
     gameEngine.registerComponent<gengine::component::Transform2D>();
@@ -54,6 +67,11 @@ void registerComponents(gengine::game::Engine &gameEngine) {
     gameEngine.registerComponent<gengine::component::driver::output::Animation>();
     gameEngine.registerComponent<gengine::component::driver::output::Drawable>();
     gameEngine.registerComponent<gengine::component::driver::output::Sprite>();
+    gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
+
+    gameEngine.registerComponent<component::Player>();
+    gameEngine.registerComponent<component::PlayerControl>();
+    gameEngine.registerComponent<component::Monster>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine) {
@@ -64,20 +82,24 @@ void registerSystems(gengine::game::Engine &gameEngine) {
     gameEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
     gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
-
-    gameEngine.registerSystem<hagarioop::systems::Start>();
-    gameEngine.registerSystem<gengine::system::Motion2D>();
-    gameEngine.registerSystem<hagarioop::systems::AutoMotion>();
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
+    gameEngine.registerSystem<gengine::system::Motion2D>();
+
+    gameEngine.registerSystem<system::Start>();
+    gameEngine.registerSystem<system::MonstersAutoMotion>();
+    gameEngine.registerSystem<system::PlayerMotion>();
+    gameEngine.registerSystem<system::PlayerShoot>();
 }
+} // namespace rtype
 
 int main(void) {
     gengine::game::Engine gameEngine;
     gengine::driver::Engine driverEngine;
-    gengine::interface::network::Networked interface(gameEngine, driverEngine);
+    // gengine::interface::network::Networked interface(gameEngine, driverEngine);
+    gengine::interface::Internal interface(gameEngine, driverEngine);
 
-    registerComponents(gameEngine);
-    registerSystems(gameEngine);
+    rtype::registerComponents(gameEngine);
+    rtype::registerSystems(gameEngine);
 
     interface.run();
 }
