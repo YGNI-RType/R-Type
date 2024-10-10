@@ -25,6 +25,7 @@ void PlayerShoot::init(void) {
 void PlayerShoot::shoot(gengine::system::event::driver::input::Key_B &e) {
     auto &players = getComponents<component::PlayerControl>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
+
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
         spawnEntity(gengine::component::Transform2D({transform.pos.x + 60, transform.pos.y + 10}, {2, 2}, 0),
                     gengine::component::Velocity2D(100 + rand() % 1000, rand() % 100 - 50),

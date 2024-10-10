@@ -24,8 +24,6 @@ void MonstersAutoMotion::onMainLoop(gengine::system::event::MainLoop &e) {
     auto &motions = getComponents<gengine::component::Velocity2D>();
     auto &monsters = getComponents<component::Monster>();
 
-    // return; // TODO remove
-
     for (auto [entity, motion, monster] : gengine::Zip(motions, monsters)) {
         if (change_chance_fork(gen) == 0)
             motion.x = motion_fork(gen) * monster.speed;

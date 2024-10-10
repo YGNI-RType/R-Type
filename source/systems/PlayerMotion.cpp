@@ -28,6 +28,7 @@ void PlayerMotion::movePlayerLeft(gengine::system::event::driver::input::Key_Lef
     auto &velocities = getComponents<gengine::component::Velocity2D>();
     auto &players = getComponents<component::Player>();
     auto &playerControls = getComponents<component::PlayerControl>();
+
     for (auto [entity, player, velocity, playerControl] : gengine::Zip(players, velocities, playerControls))
         if (e.state == gengine::system::event::driver::input::RELEASE)
             velocity.x += player.speed;
@@ -39,6 +40,7 @@ void PlayerMotion::movePlayerRight(gengine::system::event::driver::input::Key_Ri
     auto &velocities = getComponents<gengine::component::Velocity2D>();
     auto &players = getComponents<component::Player>();
     auto &playerControls = getComponents<component::PlayerControl>();
+
     for (auto [entity, player, velocity, playerControl] : gengine::Zip(players, velocities, playerControls))
         if (e.state == gengine::system::event::driver::input::RELEASE)
             velocity.x -= player.speed;
@@ -50,6 +52,7 @@ void PlayerMotion::movePlayerUp(gengine::system::event::driver::input::Key_Up &e
     auto &velocities = getComponents<gengine::component::Velocity2D>();
     auto &players = getComponents<component::Player>();
     auto &playerControls = getComponents<component::PlayerControl>();
+
     for (auto [entity, player, velocity, playerControls] : gengine::Zip(players, velocities, playerControls))
         if (e.state == gengine::system::event::driver::input::RELEASE)
             velocity.y += player.speed;
@@ -61,6 +64,7 @@ void PlayerMotion::movePlayerDown(gengine::system::event::driver::input::Key_Dow
     auto &velocities = getComponents<gengine::component::Velocity2D>();
     auto &players = getComponents<component::Player>();
     auto &playerControls = getComponents<component::PlayerControl>();
+
     for (auto [entity, player, velocity, playerControl] : gengine::Zip(players, velocities, playerControls))
         if (e.state == gengine::system::event::driver::input::RELEASE)
             velocity.y -= player.speed;
@@ -81,7 +85,6 @@ void PlayerMotion::decreaseSpeed(gengine::system::event::driver::input::Key_O &e
     auto &playerControls = getComponents<component::PlayerControl>();
 
     for (auto [entity, player, playerControl] : gengine::Zip(players, playerControls))
-        player.speed -= 10;
+        player.speed = std::max(player.speed - 10, 20.f);
 }
-
 } // namespace rtype::system
