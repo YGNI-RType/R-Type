@@ -10,37 +10,20 @@
 //? ## Engine ##
 #include "GEngine/driver/Engine.hpp"
 #include "GEngine/game/Engine.hpp"
-// #include "GEngine/interface/network/Networked.hpp"
 #include "GEngine/interface/Internal.hpp"
+// #include "GEngine/interface/network/Networked.hpp"
 
 //? ## GEngine Components ##
 #include "GEngine/libdev/components/HitBoxs.hpp"
 #include "GEngine/libdev/components/Velocities.hpp"
-
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
 
 //? ## GEngine Systems ##
 #include "GEngine/libdev/systems/Collisions.hpp"
-#include "GEngine/libdev/systems/Logger.hpp"
-#include "GEngine/libdev/systems/MainLoop.hpp"
-
-#include "GEngine/libdev/systems/Collisions.hpp"
-#include "GEngine/libdev/systems/Logger.hpp"
 #include "GEngine/libdev/systems/MainLoop.hpp"
 #include "GEngine/libdev/systems/Motions.hpp"
-
-#include "GEngine/libdev/systems/Motions.hpp"
-
-#include "GEngine/libdev/systems/Collisions.hpp"
-#include "GEngine/libdev/systems/Logger.hpp"
-#include "GEngine/libdev/systems/MainLoop.hpp"
-#include "GEngine/libdev/systems/Motions.hpp"
-
-#include "GEngine/libdev/systems/events/Log.hpp"
-
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
-#include "GEngine/libdev/systems/driver/input/MouseCatcher.hpp"
 #include "GEngine/libdev/systems/driver/output/Animate.hpp"
 #include "GEngine/libdev/systems/driver/output/Draw.hpp"
 #include "GEngine/libdev/systems/driver/output/RenderWindow.hpp"
@@ -48,10 +31,9 @@
 
 //? ### R-Type Components ###
 
+#include "components/Monster.hpp"
 #include "components/Player.hpp"
 #include "components/PlayerControl.hpp"
-
-#include "components/Monster.hpp"
 
 //? ### R-Type Systems ###
 #include "systems/MonstersAutoMotion.hpp"
@@ -60,7 +42,6 @@
 #include "systems/Start.hpp"
 
 namespace rtype {
-
 void registerComponents(gengine::game::Engine &gameEngine) {
     gameEngine.registerComponent<gengine::component::Transform2D>();
     gameEngine.registerComponent<gengine::component::Velocity2D>();
