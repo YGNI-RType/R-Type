@@ -31,7 +31,7 @@ void PlayerShoot::shoot(gengine::system::event::driver::input::Key_B &e) {
                     gengine::component::Velocity2D(100 + rand() % 1000, rand() % 100 - 50),
                     gengine::component::driver::output::Sprite("r-typesheet3.gif", Rectangle{0, 0, 17, 18}, WHITE),
                     gengine::component::driver::output::Animation(12, rand() % 12, 0.1f),
-                    gengine::component::driver::output::Drawable(0));
+                    gengine::component::driver::output::Drawable(1));
     }
 }
 } // namespace rtype::system
