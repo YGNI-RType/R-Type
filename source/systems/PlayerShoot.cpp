@@ -6,12 +6,11 @@
 */
 
 #include "systems/PlayerShoot.hpp"
-
-#include "GEngine/libdev/Component.hpp" // gengine::Zip
-
-#include <random>
+#include "components/Bullet.hpp"
+#include "components/Fire.hpp"
 
 // Spawn entity
+#include "GEngine/libdev/Component.hpp" // gengine::Zip
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/components/driver/output/Drawable.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
@@ -27,10 +26,16 @@ void PlayerShoot::shoot(gengine::system::event::driver::input::Key_B &e) {
     auto &transforms = getComponents<gengine::component::Transform2D>();
 
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
-        spawnEntity(gengine::component::Transform2D({transform.pos.x + 60, transform.pos.y + 10}, {2, 2}, 0),
-                    gengine::component::Velocity2D(100 + rand() % 1000, rand() % 100 - 50),
-                    gengine::component::driver::output::Sprite("r-typesheet3.gif", Rectangle{0, 0, 17, 18}, WHITE),
-                    gengine::component::driver::output::Animation(12, rand() % 12, 0.1f),
+        // spawnEntity(component::Fire(),
+        //             gengine::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
+        //             gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{214, 85, 17, 12},
+        //             WHITE), gengine::component::driver::output::Animation(2, 0, 0.05f, false),
+        //             gengine::component::driver::output::Drawable(1));
+
+        spawnEntity(component::Bullet(),
+                    gengine::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
+                    gengine::component::Velocity2D(1000, 0),
+                    gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{248, 85, 17, 12}, WHITE),
                     gengine::component::driver::output::Drawable(1));
     }
 }

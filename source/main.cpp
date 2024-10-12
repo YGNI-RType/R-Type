@@ -32,12 +32,15 @@
 //? ### R-Type Components ###
 
 #include "components/Background.hpp"
+#include "components/Bullet.hpp"
+#include "components/Fire.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
 #include "components/PlayerControl.hpp"
 
 //? ### R-Type Systems ###
 #include "systems/BackgroundMotion.hpp"
+#include "systems/ClearBullets.hpp"
 #include "systems/MonstersAutoMotion.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
@@ -56,6 +59,8 @@ void registerComponents(gengine::game::Engine &gameEngine) {
     gameEngine.registerComponent<component::PlayerControl>();
     gameEngine.registerComponent<component::Monster>();
     gameEngine.registerComponent<component::Background>();
+    gameEngine.registerComponent<component::Bullet>();
+    gameEngine.registerComponent<component::Fire>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine) {
@@ -74,6 +79,7 @@ void registerSystems(gengine::game::Engine &gameEngine) {
     gameEngine.registerSystem<system::PlayerMotion>();
     gameEngine.registerSystem<system::PlayerShoot>();
     gameEngine.registerSystem<system::BackgroundMotion>();
+    gameEngine.registerSystem<system::ClearBullets>();
 }
 } // namespace rtype
 
