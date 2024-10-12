@@ -41,6 +41,7 @@
 //? ### R-Type Systems ###
 #include "systems/BackgroundMotion.hpp"
 #include "systems/ClearBullets.hpp"
+#include "systems/DestroyOnCollision.hpp"
 #include "systems/MonstersAutoMotion.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
@@ -54,6 +55,8 @@ void registerComponents(gengine::game::Engine &gameEngine) {
     gameEngine.registerComponent<gengine::component::driver::output::Drawable>();
     gameEngine.registerComponent<gengine::component::driver::output::Sprite>();
     gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
+    gameEngine.registerComponent<gengine::component::HitBoxSquare2D>();
+    gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
 
     gameEngine.registerComponent<component::Player>();
     gameEngine.registerComponent<component::PlayerControl>();
@@ -73,6 +76,7 @@ void registerSystems(gengine::game::Engine &gameEngine) {
     gameEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
     gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     gameEngine.registerSystem<gengine::system::Motion2D>();
+    gameEngine.registerSystem<gengine::system::Collision2D>();
 
     gameEngine.registerSystem<system::Start>();
     gameEngine.registerSystem<system::MonstersAutoMotion>();
@@ -80,6 +84,7 @@ void registerSystems(gengine::game::Engine &gameEngine) {
     gameEngine.registerSystem<system::PlayerShoot>();
     gameEngine.registerSystem<system::BackgroundMotion>();
     gameEngine.registerSystem<system::ClearBullets>();
+    gameEngine.registerSystem<system::DestroyOnCollision>();
 }
 } // namespace rtype
 
