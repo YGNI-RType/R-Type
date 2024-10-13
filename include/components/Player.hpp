@@ -10,7 +10,7 @@
 #include "GEngine/libdev/Component.hpp"
 #include <string>
 
-#define DEFAULT_SPEED 500
+#define DEFAULT_SPEED 0.5
 #define DEFAULT_ATTACK_SPEED 3 // Shoot per second
 
 namespace rtype::component {

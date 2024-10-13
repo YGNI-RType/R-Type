@@ -63,7 +63,6 @@ void registerComponents(gengine::game::Engine &gameEngine) {
     gameEngine.registerComponent<component::Monster>();
     gameEngine.registerComponent<component::Background>();
     gameEngine.registerComponent<component::Bullet>();
-    gameEngine.registerComponent<component::Fire>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine) {

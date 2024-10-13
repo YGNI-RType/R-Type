@@ -55,7 +55,7 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
     // gengine::component::driver::output::Animation(5, 0, 0.2f, true));
 
     spawnEntity(component::Background(), gengine::component::Transform2D({0, 0}, {3.48, 3.48}),
-                gengine::component::Velocity2D(-100, 0), gengine::component::driver::output::Drawable(0),
+                gengine::component::Velocity2D(-0.2, 0), gengine::component::driver::output::Drawable(0),
                 gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1226, 207}, WHITE));
 }
 } // namespace rtype

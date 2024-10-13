@@ -7,10 +7,10 @@
 
 #include "systems/PlayerShoot.hpp"
 #include "components/Bullet.hpp"
-#include "components/Fire.hpp"
 
 // Spawn entity
 #include "GEngine/libdev/Component.hpp" // gengine::Zip
+#include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/components/driver/output/Drawable.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
@@ -34,7 +34,7 @@ void PlayerShoot::shoot(gengine::system::event::driver::input::Key_B &e) {
 
         spawnEntity(component::Bullet(),
                     gengine::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
-                    gengine::component::Velocity2D(1000, 0),
+                    gengine::component::Velocity2D(2, 0),
                     gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{248, 85, 17, 12}, WHITE),
                     gengine::component::driver::output::Drawable(1), gengine::component::HitBoxSquare2D(17, 12));
     }

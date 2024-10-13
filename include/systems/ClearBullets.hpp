@@ -19,7 +19,7 @@ class ClearBullets : public gengine::System<ClearBullets, gengine::component::Tr
 public:
     void init(void) override;
     void onMainLoop(gengine::system::event::MainLoop &);
-    void clearFires(void);
+    // void clearFires(void);
     void clearBullets(void);
 };
 } // namespace rtype::system

@@ -19,7 +19,7 @@ void MonstersAutoMotion::onMainLoop(gengine::system::event::MainLoop &e) {
     std::mt19937 gen(rd());
 
     std::uniform_int_distribution<> change_chance_fork(0, 20);
-    std::uniform_int_distribution<> motion_fork(-50, 50);
+    std::uniform_int_distribution<> motion_fork(-1, 1);
 
     auto &motions = getComponents<gengine::component::Velocity2D>();
     auto &monsters = getComponents<component::Monster>();

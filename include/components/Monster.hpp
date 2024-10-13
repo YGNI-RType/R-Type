@@ -10,7 +10,7 @@
 #include "GEngine/libdev/Component.hpp"
 #include <string>
 
-#define DEFAULT_MONSTER_SPEED 1        // Speed multiplicator (default = 1)
+#define DEFAULT_MONSTER_SPEED 0.05     // Speed multiplicator (default = 1)
 #define DEFAULT_MONSTER_ATTACK_SPEED 3 // Shoot per second
 
 namespace rtype::component {
