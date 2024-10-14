@@ -33,7 +33,6 @@
 
 #include "components/Background.hpp"
 #include "components/Bullet.hpp"
-#include "components/Fire.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
 #include "components/PlayerControl.hpp"
