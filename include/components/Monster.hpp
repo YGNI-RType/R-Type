@@ -19,8 +19,7 @@ struct Monster : public gengine::Component<Monster> {
     float speed;
     float attackSpeed;
 
-    Monster(float newSpeed = DEFAULT_MONSTER_SPEED,
-            float newAttackSpeed = DEFAULT_MONSTER_ATTACK_SPEED)
+    Monster(float newSpeed = DEFAULT_MONSTER_SPEED, float newAttackSpeed = DEFAULT_MONSTER_ATTACK_SPEED)
         : speed(newSpeed)
         , attackSpeed(newAttackSpeed) {
         // std::strncpy(name, newName.c_str(), newName.size());

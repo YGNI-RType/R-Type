@@ -14,7 +14,8 @@
 #include "GEngine/interface/components/RemoteDriver.hpp"
 
 namespace rtype::system {
-class Start : public gengine::System<Start, gengine::system::driver::output::TextureManager, gengine::interface::component::RemoteDriver> {
+class Start : public gengine::System<Start, gengine::system::driver::output::TextureManager,
+                                     gengine::interface::component::RemoteDriver> {
 public:
     void init(void) override;
     void onStartEngine(gengine::system::event::StartEngine &);
