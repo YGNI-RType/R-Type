@@ -9,14 +9,12 @@
 
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/components/Velocities.hpp"
-#include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 
 #include "components/Plane.hpp"
 
 namespace rtype::system {
-class PlanesAutoMotion : public gengine::System<PlanesAutoMotion, gengine::component::Velocity2D, component::Plane,
-                                                gengine::component::driver::output::Animation> {
+class PlanesAutoMotion : public gengine::System<PlanesAutoMotion, gengine::component::Velocity2D, component::Plane> {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);
