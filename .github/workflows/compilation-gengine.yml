@@ -45,20 +45,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install vcpkg for macOS & Linux
-        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
-        run: |
-          git clone https://github.com/microsoft/vcpkg.git
-          ./vcpkg/bootstrap-vcpkg.sh
-          ./vcpkg/vcpkg update
-
-      - name: Install vcpkg for Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          git clone https://github.com/microsoft/vcpkg.git
-          .\vcpkg\bootstrap-vcpkg.bat
-          .\vcpkg/vcpkg update
+      - name: Install ubuntu packages necessary for glfw3
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
 
       - name: Set reusable strings
         id: strings
@@ -73,7 +62,6 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
-          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}

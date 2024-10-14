@@ -17,6 +17,8 @@
 #include "GEngine/interface/events/RemoteEvent.hpp"
 #include "events/Shoot.hpp"
 
+#include "GEngine/interface/events/RemoteEvent.hpp"
+
 namespace rtype::system {
 class PlayerShoot : public gengine::System<PlayerShoot, component::PlayerControl, gengine::component::Transform2D,
                                            gengine::component::HitBoxSquare2D> {
