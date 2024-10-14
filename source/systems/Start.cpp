@@ -49,13 +49,6 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
                     gengine::component::HitBoxSquare2D(17, 18));
     }
 
-<<<<<<< Updated upstream
-=======
-    spawnEntity(component::Player(), component::PlayerControl(), gengine::component::Transform2D({0, 0}, {3, 3}, 0),
-                gengine::component::Velocity2D(0, 0), gengine::component::driver::output::Drawable(1),
-                gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{167, 0, 33, 17}, WHITE),
-                gengine::component::HitBoxSquare2D(33 * 2, 17 * 2));
->>>>>>> Stashed changes
     // gengine::component::driver::output::Animation(5, 0, 0.2f, true));
 
     spawnEntity(component::Background(), gengine::component::Transform2D({0, 0}, {3.48, 3.48}),
