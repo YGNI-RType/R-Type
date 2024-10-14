@@ -37,15 +37,15 @@ void PlayerMotion::movePlayer(gengine::interface::network::event::RemoteEvent<ev
 
     for (auto [entity, player, velocity, playerControl] : gengine::Zip(players, velocities, playerControls)) {
         if (e.remote == e.remote) // check if its the same remote (zip)
-        switch (e->state) {
-        case event::Movement::LEFT:
-            velocity.x = -10;
-            break;
-// TODO etc
-        case event::Movement::STANDING:
-            velocity = {0, 0};
-            break;
-        }
+            switch (e->state) {
+            case event::Movement::LEFT:
+                velocity.x = -10;
+                break;
+                // TODO etc
+            case event::Movement::STANDING:
+                velocity = {0, 0};
+                break;
+            }
     }
 }
 

@@ -28,11 +28,14 @@ public:
     // void movePlayerRight(
     //     gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Right> &);
     // void
-    // movePlayerLeft(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Left> &);
-    // void movePlayerUp(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Up> &);
+    // movePlayerLeft(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Left>
+    // &); void
+    // movePlayerUp(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Up> &);
     // void
-    // movePlayerDown(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Down> &);
-    // void increaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P> &);
-    // void decreaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O> &);
+    // movePlayerDown(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Down>
+    // &); void
+    // increaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P> &);
+    // void decreaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O>
+    // &);
 };
 } // namespace rtype::system

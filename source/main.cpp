@@ -110,8 +110,8 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
 #include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
 
-struct Test : public gengine::OnEventSystem<
-                  Test, gengine::interface::network::event::RemoteEvent<rtype::event::Movement>> {
+struct Test
+    : public gengine::OnEventSystem<Test, gengine::interface::network::event::RemoteEvent<rtype::event::Movement>> {
     void onEvent(gengine::interface::network::event::RemoteEvent<rtype::event::Movement> &e) {
         std::cout << "go: " << e->state << std::endl;
     }
@@ -127,11 +127,11 @@ int main(void) {
     gengine::driver::Engine driverEngine;
     gengine::game::Engine gameEngine;
 
-    driverEngine.registerSystem<gengine::interface::network::system::ClientEventPublisher<
-        rtype::event::Movement, rtype::event::Shoot>>();
+    driverEngine.registerSystem<
+        gengine::interface::network::system::ClientEventPublisher<rtype::event::Movement, rtype::event::Shoot>>();
 
-    gameEngine.registerSystem<gengine::interface::network::system::ServerEventReceiver<
-        rtype::event::Movement, rtype::event::Shoot>>();
+    gameEngine.registerSystem<
+        gengine::interface::network::system::ServerEventReceiver<rtype::event::Movement, rtype::event::Shoot>>();
 
     rtype::registerComponents(gameEngine, driverEngine);
     rtype::registerSystems(gameEngine, driverEngine);
