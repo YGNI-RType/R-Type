@@ -51,12 +51,14 @@ jobs:
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           ./vcpkg/bootstrap-vcpkg.sh
+          ./vcpkg/vcpkg update
 
       - name: Install vcpkg for Windows
         if: matrix.os == 'windows-latest'
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg/vcpkg update
 
       - name: Set reusable strings
         id: strings
