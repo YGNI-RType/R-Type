@@ -45,7 +45,7 @@
 #include "systems/BackgroundMotion.hpp"
 #include "systems/CaterpillarsBound.hpp"
 #include "systems/CaterpillarsWave.hpp"
-#include "systems/ClearBullets.hpp"
+#include "systems/ClearEntities.hpp"
 #include "systems/DestroyOnCollision.hpp"
 #include "systems/InputsToGameEvents.hpp"
 #include "systems/PlanesAutoMotion.hpp"
@@ -114,7 +114,7 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     gameEngine.registerSystem<system::PlayerMotion>();
     gameEngine.registerSystem<system::PlayerShoot>();
     gameEngine.registerSystem<system::BackgroundMotion>();
-    gameEngine.registerSystem<system::ClearBullets>();
+    gameEngine.registerSystem<system::ClearEntities>();
     gameEngine.registerSystem<system::DestroyOnCollision>();
 }
 } // namespace rtype
