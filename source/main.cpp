@@ -99,36 +99,33 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
 }
 } // namespace rtype
 
+#include "GEngine/interface/events/RemoteEvent.hpp"
 #include "GEngine/interface/network/Networked.hpp"
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
 #include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
-#include "GEngine/interface/events/RemoteEvent.hpp"
 
-struct Test: public gengine::OnEventSystem<Test,
-    gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_A>> {
-        void onEvent(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_A> &e) {
-            std::cout << "event from: " << e.remote.getUUIDString() << std::endl;
-        }
+struct Test : public gengine::OnEventSystem<
+                  Test, gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_A>> {
+    void onEvent(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_A> &e) {
+        std::cout << "event from: " << e.remote.getUUIDString() << std::endl;
+    }
 };
 
-struct TestDriver: public gengine::OnEventSystem<Test,
-    gengine::system::event::driver::input::Key_A> {
-        void onEvent(gengine::system::event::driver::input::Key_A &e) {
-            std::cout << "send key A" << std::endl;
-        }
+struct TestDriver : public gengine::OnEventSystem<Test, gengine::system::event::driver::input::Key_A> {
+    void onEvent(gengine::system::event::driver::input::Key_A &e) {
+        std::cout << "send key A" << std::endl;
+    }
 };
 
 int main(void) {
     gengine::driver::Engine driverEngine;
     gengine::game::Engine gameEngine;
 
-    driverEngine.registerSystem<gengine::interface::network::system::ClientEventPublisher<
-        gengine::system::event::driver::input::Key_A
-    >>();
+    driverEngine.registerSystem<
+        gengine::interface::network::system::ClientEventPublisher<gengine::system::event::driver::input::Key_A>>();
 
-    gameEngine.registerSystem<gengine::interface::network::system::ServerEventReceiver<
-        gengine::system::event::driver::input::Key_A
-    >>();
+    gameEngine.registerSystem<
+        gengine::interface::network::system::ServerEventReceiver<gengine::system::event::driver::input::Key_A>>();
 
     rtype::registerComponents(gameEngine, driverEngine);
     rtype::registerSystems(gameEngine, driverEngine);
