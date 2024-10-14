@@ -46,11 +46,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download GEngine artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }}
-          path: ${{ github.workspace }}/build
+      # - name: Download GEngine artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: gengine-build-${{ matrix.os }}-${{ matrix.cpp_compiler }}
+      #     path: ${{ github.workspace }}/build
 
       - name: Set reusable strings
         id: strings
