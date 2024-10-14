@@ -31,7 +31,5 @@ private:
 
     std::chrono::time_point<std::chrono::system_clock> m_lastCharge;
     event::Shoot::State m_lastState;
-
-    // std::vector<std::pair<event::Shoot::State, std::chrono::time_point<std::chrono::system_clock>>> m_shoots;
 };
 } // namespace rtype::system
