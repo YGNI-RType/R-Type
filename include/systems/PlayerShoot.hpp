@@ -13,7 +13,9 @@
 
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
-#include "GEngine/libdev/systems/events/driver/input/Keyboard.hpp"
+
+#include "GEngine/interface/events/RemoteEvent.hpp"
+#include "events/Shoot.hpp"
 
 #include "GEngine/interface/events/RemoteEvent.hpp"
 
@@ -22,6 +24,6 @@ class PlayerShoot : public gengine::System<PlayerShoot, component::PlayerControl
                                            gengine::component::HitBoxSquare2D> {
 public:
     void init(void) override;
-    void shoot(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_B> &);
+    void shoot(gengine::interface::network::event::RemoteEvent<event::Shoot> &);
 };
 } // namespace rtype::system

@@ -18,15 +18,15 @@
 
 namespace rtype::system {
 void PlayerShoot::init(void) {
-    subscribeToEvent<gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_B>>(
-        &PlayerShoot::shoot);
+    subscribeToEvent<gengine::interface::network::event::RemoteEvent<event::Shoot>>(&PlayerShoot::shoot);
 }
 
-void PlayerShoot::shoot(
-    gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_B> &e) {
+void PlayerShoot::shoot(gengine::interface::network::event::RemoteEvent<event::Shoot> &e) {
     auto &players = getComponents<component::PlayerControl>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
 
+    if (e->state == event::Shoot::REST)
+        return; // TODO change logic
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
         // spawnEntity(component::Fire(),
         //             gengine::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
