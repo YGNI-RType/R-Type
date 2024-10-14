@@ -17,20 +17,22 @@
 #include "GEngine/libdev/systems/events/driver/input/Keyboard.hpp"
 
 #include "GEngine/interface/events/RemoteEvent.hpp"
+#include "events/Movement.hpp"
 
 namespace rtype::system {
 class PlayerMotion : public gengine::System<PlayerMotion, gengine::component::Velocity2D, component::PlayerControl,
                                             component::Player> {
 public:
     void init(void) override;
-    void movePlayerRight(
-        gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Right> &);
-    void
-    movePlayerLeft(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Left> &);
-    void movePlayerUp(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Up> &);
-    void
-    movePlayerDown(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Down> &);
-    void increaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P> &);
-    void decreaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O> &);
+    void movePlayer(gengine::interface::network::event::RemoteEvent<event::Movement> &e);
+    // void movePlayerRight(
+    //     gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Right> &);
+    // void
+    // movePlayerLeft(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Left> &);
+    // void movePlayerUp(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Up> &);
+    // void
+    // movePlayerDown(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Down> &);
+    // void increaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P> &);
+    // void decreaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O> &);
 };
 } // namespace rtype::system
