@@ -46,38 +46,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Install vcpkg for macOS (arm64 and x64 separately)
-      - name: Install vcpkg for macOS (arm64 and x64)
-        if: matrix.os == 'macos-latest'
+      - name: Install vcpkg for macOS & Linux
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           ./vcpkg/bootstrap-vcpkg.sh
 
-          echo "Installing packages for x64-osx..."
-          ./vcpkg/vcpkg install <package-name>:x64-osx || echo "x64-osx package installation failed"
-          
-          echo "Installing packages for arm64-osx..."
-          ./vcpkg/vcpkg install <package-name>:arm64-osx || echo "arm64-osx package installation failed"
-
-      # Install vcpkg for Linux (Ubuntu)
-      - name: Install vcpkg for Ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          git clone https://github.com/microsoft/vcpkg.git
-          ./vcpkg/bootstrap-vcpkg.sh
-
-          echo "Installing packages for Linux..."
-          ./vcpkg/vcpkg install <package-name>:x64-linux || echo "Linux package installation failed"
-
-      # Install vcpkg for Windows
       - name: Install vcpkg for Windows
         if: matrix.os == 'windows-latest'
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           .\vcpkg\bootstrap-vcpkg.bat
-
-          echo "Installing packages for Windows..."
-          .\vcpkg\vcpkg install <package-name>:x64-windows || echo "Windows package installation failed"
 
       - name: Set reusable strings
         id: strings
