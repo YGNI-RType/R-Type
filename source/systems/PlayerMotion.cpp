@@ -16,19 +16,15 @@
 
 namespace rtype::system {
 void PlayerMotion::init(void) {
-    // subscribeToEvent<gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P>>(
-    //     &PlayerMotion::increaseSpeed);
-    // subscribeToEvent<gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O>>(
-    //     &PlayerMotion::decreaseSpeed);
     subscribeToEvent<gengine::interface::network::event::RemoteEvent<event::Movement>>(&PlayerMotion::movePlayer);
 }
 void PlayerMotion::movePlayer(gengine::interface::network::event::RemoteEvent<event::Movement> &e) {
     auto &velocities = getComponents<gengine::component::Velocity2D>();
     auto &players = getComponents<component::Player>();
-    auto &playerControls = getComponents<component::PlayerControl>();
+    auto &remotes = getComponents<gengine::interface::component::RemoteDriver>();
 
-    for (auto [entity, player, velocity, playerControl] : gengine::Zip(players, velocities, playerControls)) {
-        if (e.remote != e.remote) // check if its the same remote (zip)
+    for (auto [entity, remote, player, velocity] : gengine::Zip(remotes, players, velocities)) {
+        if (remote != e.remote) // check if its the same remote (zip)
             continue;
         switch (e->state) {
         case event::Movement::LEFT:
@@ -61,22 +57,4 @@ void PlayerMotion::movePlayer(gengine::interface::network::event::RemoteEvent<ev
         }
     }
 }
-
-// void PlayerMotion::increaseSpeed(
-//     gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P> &e) {
-//     auto &playerControls = getComponents<component::PlayerControl>();
-//     auto &players = getComponents<component::Player>();
-
-//     for (auto [entity, player, playerControl] : gengine::Zip(players, playerControls))
-//         player.speed += 10;
-// }
-
-// void PlayerMotion::decreaseSpeed(
-//     gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O> &e) {
-//     auto &players = getComponents<component::Player>();
-//     auto &playerControls = getComponents<component::PlayerControl>();
-
-//     for (auto [entity, player, playerControl] : gengine::Zip(players, playerControls))
-//         player.speed = std::max(player.speed - 10, 20.f);
-// }
 } // namespace rtype::system
