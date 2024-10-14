@@ -41,10 +41,15 @@
 #include "systems/BackgroundMotion.hpp"
 #include "systems/ClearBullets.hpp"
 #include "systems/DestroyOnCollision.hpp"
+#include "systems/InputsToGameEvents.hpp"
 #include "systems/MonstersAutoMotion.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
 #include "systems/Start.hpp"
+
+//? ### R-Type Events ###
+#include "events/Movement.hpp"
+#include "events/Shoot.hpp"
 
 namespace rtype {
 void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
@@ -86,6 +91,7 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     driverEngine.registerSystem<gengine::system::driver::output::Animate>();
     driverEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
     driverEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
+    driverEngine.registerSystem<system::InputsToGameEvents>();
 
     gameEngine.registerSystem<gengine::system::Motion2D>();
     gameEngine.registerSystem<gengine::system::Collision2D>();
@@ -105,15 +111,15 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
 #include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
 
 struct Test : public gengine::OnEventSystem<
-                  Test, gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_A>> {
-    void onEvent(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_A> &e) {
-        std::cout << "event from: " << e.remote.getUUIDString() << std::endl;
+                  Test, gengine::interface::network::event::RemoteEvent<rtype::event::Movement>> {
+    void onEvent(gengine::interface::network::event::RemoteEvent<rtype::event::Movement> &e) {
+        std::cout << "go: " << e->state << std::endl;
     }
 };
 
-struct TestDriver : public gengine::OnEventSystem<Test, gengine::system::event::driver::input::Key_A> {
-    void onEvent(gengine::system::event::driver::input::Key_A &e) {
-        std::cout << "send key A" << std::endl;
+struct TestDriver : public gengine::OnEventSystem<TestDriver, rtype::event::Movement> {
+    void onEvent(rtype::event::Movement &e) {
+        std::cout << "send " << e.state << std::endl;
     }
 };
 
@@ -122,14 +128,10 @@ int main(void) {
     gengine::game::Engine gameEngine;
 
     driverEngine.registerSystem<gengine::interface::network::system::ClientEventPublisher<
-        gengine::system::event::driver::input::Key_A, gengine::system::event::driver::input::Key_Right,
-        gengine::system::event::driver::input::Key_Left, gengine::system::event::driver::input::Key_Up,
-        gengine::system::event::driver::input::Key_Down, gengine::system::event::driver::input::Key_B>>();
+        rtype::event::Movement, rtype::event::Shoot>>();
 
     gameEngine.registerSystem<gengine::interface::network::system::ServerEventReceiver<
-        gengine::system::event::driver::input::Key_A, gengine::system::event::driver::input::Key_Right,
-        gengine::system::event::driver::input::Key_Left, gengine::system::event::driver::input::Key_Up,
-        gengine::system::event::driver::input::Key_Down, gengine::system::event::driver::input::Key_B>>();
+        rtype::event::Movement, rtype::event::Shoot>>();
 
     rtype::registerComponents(gameEngine, driverEngine);
     rtype::registerSystems(gameEngine, driverEngine);
