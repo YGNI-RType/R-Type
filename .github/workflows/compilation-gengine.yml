@@ -10,8 +10,6 @@ jobs:
   build_rtype:
     runs-on: ${{ matrix.os }}
 
-    needs: build_gengine
-
     strategy:
       #TODO Consider changing this to true when your workflow is stable.
       fail-fast: false
