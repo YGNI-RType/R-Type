@@ -10,8 +10,8 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 #include "GEngine/libdev/systems/events/Native.hpp"
-#include "Gengine/interface/events/RemoteDriver.hpp"
-#include "Gengine/interface/components/RemoteDriver.hpp"
+#include "GEngine/interface/events/RemoteDriver.hpp"
+#include "GEngine/interface/components/RemoteDriver.hpp"
 
 namespace rtype::system {
 class Start : public gengine::System<Start, gengine::system::driver::output::TextureManager, gengine::interface::component::RemoteDriver> {
