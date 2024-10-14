@@ -46,8 +46,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update vcpkg
-        run: vcpkg update
+      - name: Install vcpkg (for Linux and macOS)
+        if: matrix.os != 'windows-latest'
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          ./vcpkg/bootstrap-vcpkg.sh
+          ./vcpkg/vcpkg install
+
+      - name: Install vcpkg (for Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg install
+
 
       - name: Set reusable strings
         id: strings
