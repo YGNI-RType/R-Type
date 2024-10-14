@@ -15,11 +15,13 @@
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "GEngine/libdev/systems/events/driver/input/Keyboard.hpp"
 
+#include "GEngine/interface/events/RemoteEvent.hpp"
+
 namespace rtype::system {
 class PlayerShoot : public gengine::System<PlayerShoot, component::PlayerControl, gengine::component::Transform2D,
                                            gengine::component::HitBoxSquare2D> {
 public:
     void init(void) override;
-    void shoot(gengine::system::event::driver::input::Key_B &);
+    void shoot(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_B> &);
 };
 } // namespace rtype::system

@@ -16,16 +16,21 @@
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "GEngine/libdev/systems/events/driver/input/Keyboard.hpp"
 
+#include "GEngine/interface/events/RemoteEvent.hpp"
+
 namespace rtype::system {
 class PlayerMotion : public gengine::System<PlayerMotion, gengine::component::Velocity2D, component::PlayerControl,
                                             component::Player> {
 public:
     void init(void) override;
-    void movePlayerLeft(gengine::system::event::driver::input::Key_Left &);
-    void movePlayerRight(gengine::system::event::driver::input::Key_Right &);
-    void movePlayerUp(gengine::system::event::driver::input::Key_Up &);
-    void movePlayerDown(gengine::system::event::driver::input::Key_Down &);
-    void increaseSpeed(gengine::system::event::driver::input::Key_P &);
-    void decreaseSpeed(gengine::system::event::driver::input::Key_O &);
+    void movePlayerRight(
+        gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Right> &);
+    void
+    movePlayerLeft(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Left> &);
+    void movePlayerUp(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Up> &);
+    void
+    movePlayerDown(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Down> &);
+    void increaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P> &);
+    void decreaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O> &);
 };
 } // namespace rtype::system
