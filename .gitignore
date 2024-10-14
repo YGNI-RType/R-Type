@@ -140,5 +140,6 @@ Temporary Items
 .history
 .ionide
 TODO
+raylib
 
 # End of https://www.toptal.com/developers/gitignore/api/cmake,macos,c++,conan,visualstudiocode

@@ -128,7 +128,7 @@ int main(void) {
     // gameEngine.registerSystem<Start>();
     // gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     // gameEngine.registerSystem<Logger>();
-    // gameEngine.registerSystem<gengine::system::AutoMainLoop>();
+    // gameEngine.registerSystem<gengine::system::AutoGameLoop>();
     // gameEngine.registerSystem<gengine::system::driver::output::RenderWindow>();
     // gameEngine.registerSystem<gengine::system::driver::output::Draw>();
     // gengine::interface::Internal interface(gameEngine, driverEngine);

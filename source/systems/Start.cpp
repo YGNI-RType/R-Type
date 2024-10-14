@@ -17,33 +17,45 @@
 #include "GEngine/libdev/components/driver/output/Sprite.hpp"
 #include "GEngine/libdev/components/driver/output/Text.hpp"
 
+#include "components/Background.hpp"
+#include "components/Monster.hpp"
+#include "components/Player.hpp"
+#include "components/PlayerControl.hpp"
+
 #include <random>
 
-namespace hagarioop::systems {
-void Start::init(void) {
+namespace rtype {
+void system::Start::init(void) {
     subscribeToEvent<gengine::system::event::StartEngine>(&Start::onStartEngine);
 }
 
-void Start::onStartEngine(gengine::system::event::StartEngine &e) {
+void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    std::uniform_int_distribution<> transformXFork(0, 1280);
-    std::uniform_int_distribution<> transformYFork(0, 720);
+    std::uniform_int_distribution<> transformXFork(0 + 80, 1280 - 160);
+    std::uniform_int_distribution<> transformYFork(0 + 80, 720 - 160);
 
-    spawnEntity(gengine::component::Transform2D({0, 0}, {5, 5}, 0), gengine::component::Velocity2D(0, 0),
-                gengine::component::driver::output::Drawable(0),
-                gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{101, 0, 33, 17}, WHITE),
-                gengine::component::driver::output::Animation(5, 0, 10.f, false));
-
-    for (std::size_t i = 0; i < 5; i++) {
+    for (std::size_t i = 0; i < 10; i++) {
         float x = transformXFork(gen);
         float y = transformYFork(gen);
 
-        spawnEntity(gengine::component::Transform2D({x, y}, {5, 5}, 0), gengine::component::Velocity2D(5, 5),
+        spawnEntity(gengine::component::Transform2D({x, y}, {2, 2}, 0), gengine::component::Velocity2D(0, 0),
                     gengine::component::driver::output::Sprite("r-typesheet3.gif", Rectangle{0, 0, 17, 18}, WHITE),
                     gengine::component::driver::output::Animation(12, rand() % 12, 0.1f),
-                    gengine::component::driver::output::Drawable(0));
+                    gengine::component::driver::output::Drawable(1), component::Monster(),
+                    gengine::component::HitBoxSquare2D(17, 18));
     }
+
+    spawnEntity(component::Player(), component::PlayerControl(),
+                gengine::component::Transform2D({0, 0}, {3, 3}, 0), gengine::component::Velocity2D(0, 0),
+                gengine::component::driver::output::Drawable(1),
+                gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{167, 0, 33, 17}, WHITE),
+                gengine::component::HitBoxSquare2D(33 * 2, 17 * 2));
+    // gengine::component::driver::output::Animation(5, 0, 0.2f, true));
+
+    spawnEntity(component::Background(), gengine::component::Transform2D({0, 0}, {3.48, 3.48}),
+                gengine::component::Velocity2D(-0.2, 0), gengine::component::driver::output::Drawable(0),
+                gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1226, 207}, WHITE));
 }
-} // namespace hagarioop::systems
+} // namespace rtype
