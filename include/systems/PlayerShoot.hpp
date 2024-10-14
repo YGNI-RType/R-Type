@@ -12,7 +12,7 @@
 #include "components/PlayerControl.hpp"
 
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/systems/events/MainLoop.hpp"
+#include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "GEngine/libdev/systems/events/driver/input/Keyboard.hpp"
 
 namespace rtype::system {

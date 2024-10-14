@@ -11,10 +11,10 @@
 
 namespace rtype::system {
 void MonstersAutoMotion::init(void) {
-    subscribeToEvent<gengine::system::event::MainLoop>(&MonstersAutoMotion::onMainLoop);
+    subscribeToEvent<gengine::system::event::GameLoop>(&MonstersAutoMotion::onGameLoop);
 }
 
-void MonstersAutoMotion::onMainLoop(gengine::system::event::MainLoop &e) {
+void MonstersAutoMotion::onGameLoop(gengine::system::event::GameLoop &e) {
     std::random_device rd;
     std::mt19937 gen(rd());
 
