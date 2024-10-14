@@ -121,11 +121,15 @@ int main(void) {
     gengine::driver::Engine driverEngine;
     gengine::game::Engine gameEngine;
 
-    driverEngine.registerSystem<
-        gengine::interface::network::system::ClientEventPublisher<gengine::system::event::driver::input::Key_A>>();
+    driverEngine.registerSystem<gengine::interface::network::system::ClientEventPublisher<
+        gengine::system::event::driver::input::Key_A, gengine::system::event::driver::input::Key_Right,
+        gengine::system::event::driver::input::Key_Left, gengine::system::event::driver::input::Key_Up,
+        gengine::system::event::driver::input::Key_Down, gengine::system::event::driver::input::Key_B>>();
 
-    gameEngine.registerSystem<
-        gengine::interface::network::system::ServerEventReceiver<gengine::system::event::driver::input::Key_A>>();
+    gameEngine.registerSystem<gengine::interface::network::system::ServerEventReceiver<
+        gengine::system::event::driver::input::Key_A, gengine::system::event::driver::input::Key_Right,
+        gengine::system::event::driver::input::Key_Left, gengine::system::event::driver::input::Key_Up,
+        gengine::system::event::driver::input::Key_Down, gengine::system::event::driver::input::Key_B>>();
 
     rtype::registerComponents(gameEngine, driverEngine);
     rtype::registerSystems(gameEngine, driverEngine);

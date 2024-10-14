@@ -18,10 +18,12 @@
 
 namespace rtype::system {
 void PlayerShoot::init(void) {
-    subscribeToEvent<gengine::system::event::driver::input::Key_B>(&PlayerShoot::shoot);
+    subscribeToEvent<gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_B>>(
+        &PlayerShoot::shoot);
 }
 
-void PlayerShoot::shoot(gengine::system::event::driver::input::Key_B &e) {
+void PlayerShoot::shoot(
+    gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_B> &e) {
     auto &players = getComponents<component::PlayerControl>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
 
