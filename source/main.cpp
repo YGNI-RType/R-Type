@@ -35,6 +35,7 @@
 //? ### R-Type Components ###
 #include "components/Background.hpp"
 #include "components/Bullet.hpp"
+#include "components/Caterpillar.hpp"
 #include "components/Monster.hpp"
 #include "components/Plane.hpp"
 #include "components/Player.hpp"
@@ -42,6 +43,8 @@
 
 //? ### R-Type Systems ###
 #include "systems/BackgroundMotion.hpp"
+#include "systems/CaterpillarsBound.hpp"
+#include "systems/CaterpillarsWave.hpp"
 #include "systems/ClearBullets.hpp"
 #include "systems/DestroyOnCollision.hpp"
 #include "systems/InputsToGameEvents.hpp"
@@ -72,6 +75,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<component::Background>();
     gameEngine.registerComponent<component::Bullet>();
     gameEngine.registerComponent<component::Plane>();
+    gameEngine.registerComponent<component::Caterpillar>();
 
     driverEngine.registerComponent<gengine::component::Transform2D>();
     driverEngine.registerComponent<gengine::component::Velocity2D>();
@@ -88,6 +92,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     driverEngine.registerComponent<component::Background>();
     driverEngine.registerComponent<component::Bullet>();
     driverEngine.registerComponent<component::Plane>();
+    driverEngine.registerComponent<component::Caterpillar>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
@@ -102,6 +107,8 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     gameEngine.registerSystem<gengine::system::Motion2D>();
     gameEngine.registerSystem<gengine::system::Collision2D>();
     gameEngine.registerSystem<system::Start>();
+    gameEngine.registerSystem<system::CaterpillarsBound>();
+    gameEngine.registerSystem<system::CaterpillarsWave>();
     gameEngine.registerSystem<system::PlanesAutoMotion>();
     gameEngine.registerSystem<system::PlanesWave>();
     gameEngine.registerSystem<system::PlayerMotion>();
