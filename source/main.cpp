@@ -47,7 +47,7 @@
 #include "systems/Start.hpp"
 
 namespace rtype {
-void registerComponents(gengine::game::Engine &gameEngine) {
+void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
     gameEngine.registerComponent<gengine::component::Transform2D>();
     gameEngine.registerComponent<gengine::component::Velocity2D>();
     gameEngine.registerComponent<gengine::component::driver::output::Animation>();
@@ -62,20 +62,33 @@ void registerComponents(gengine::game::Engine &gameEngine) {
     gameEngine.registerComponent<component::Monster>();
     gameEngine.registerComponent<component::Background>();
     gameEngine.registerComponent<component::Bullet>();
+
+    driverEngine.registerComponent<gengine::component::Transform2D>();
+    driverEngine.registerComponent<gengine::component::Velocity2D>();
+    driverEngine.registerComponent<gengine::component::driver::output::Animation>();
+    driverEngine.registerComponent<gengine::component::driver::output::Drawable>();
+    driverEngine.registerComponent<gengine::component::driver::output::Sprite>();
+    driverEngine.registerComponent<gengine::component::driver::output::Rectangle>();
+    driverEngine.registerComponent<gengine::component::HitBoxSquare2D>();
+    driverEngine.registerComponent<gengine::component::HitBoxCircle2D>();
+
+    driverEngine.registerComponent<component::Player>();
+    driverEngine.registerComponent<component::PlayerControl>();
+    driverEngine.registerComponent<component::Monster>();
+    driverEngine.registerComponent<component::Background>();
+    driverEngine.registerComponent<component::Bullet>();
 }
 
-void registerSystems(gengine::game::Engine &gameEngine) {
-    gameEngine.registerSystem<gengine::system::AutoMainLoop>();
+void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
+    driverEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1280, 720, "R-Type");
+    driverEngine.registerSystem<gengine::system::driver::output::Draw2D>();
+    driverEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
+    driverEngine.registerSystem<gengine::system::driver::output::Animate>();
+    driverEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
+    driverEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
 
-    gameEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1280, 720, "R-Type");
-    gameEngine.registerSystem<gengine::system::driver::output::Draw2D>();
-    gameEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
-    gameEngine.registerSystem<gengine::system::driver::output::Animate>();
-    gameEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
-    gameEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     gameEngine.registerSystem<gengine::system::Motion2D>();
     gameEngine.registerSystem<gengine::system::Collision2D>();
-
     gameEngine.registerSystem<system::Start>();
     gameEngine.registerSystem<system::MonstersAutoMotion>();
     gameEngine.registerSystem<system::PlayerMotion>();
@@ -86,14 +99,44 @@ void registerSystems(gengine::game::Engine &gameEngine) {
 }
 } // namespace rtype
 
-int main(void) {
-    gengine::game::Engine gameEngine;
-    gengine::driver::Engine driverEngine;
-    // gengine::interface::network::Networked interface(gameEngine, driverEngine);
-    gengine::interface::Internal interface(gameEngine, driverEngine);
+#include "GEngine/interface/network/Networked.hpp"
+#include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
+#include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
+#include "GEngine/interface/events/RemoteEvent.hpp"
 
-    rtype::registerComponents(gameEngine);
-    rtype::registerSystems(gameEngine);
+struct Test: public gengine::OnEventSystem<Test,
+    gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_A>> {
+        void onEvent(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_A> &e) {
+            std::cout << "event from: " << e.remote.getUUIDString() << std::endl;
+        }
+};
+
+struct TestDriver: public gengine::OnEventSystem<Test,
+    gengine::system::event::driver::input::Key_A> {
+        void onEvent(gengine::system::event::driver::input::Key_A &e) {
+            std::cout << "send key A" << std::endl;
+        }
+};
+
+int main(void) {
+    gengine::driver::Engine driverEngine;
+    gengine::game::Engine gameEngine;
+
+    driverEngine.registerSystem<gengine::interface::network::system::ClientEventPublisher<
+        gengine::system::event::driver::input::Key_A
+    >>();
+
+    gameEngine.registerSystem<gengine::interface::network::system::ServerEventReceiver<
+        gengine::system::event::driver::input::Key_A
+    >>();
+
+    rtype::registerComponents(gameEngine, driverEngine);
+    rtype::registerSystems(gameEngine, driverEngine);
+
+    gameEngine.registerSystem<Test>();
+    driverEngine.registerSystem<TestDriver>();
+
+    gengine::interface::network::Networked interface(driverEngine, gameEngine, "127.0.0.1", 4243, true);
 
     interface.run();
 }

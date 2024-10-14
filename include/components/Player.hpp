@@ -15,14 +15,14 @@
 
 namespace rtype::component {
 struct Player : public gengine::Component<Player> {
-    char name[32] = {0};
+    // char name[32] = {0};
     float speed;
     float attackSpeed;
 
-    Player(const std::string &newName, float newSpeed = DEFAULT_SPEED, float newAttackSpeed = DEFAULT_ATTACK_SPEED)
+    Player(float newSpeed = DEFAULT_SPEED, float newAttackSpeed = DEFAULT_ATTACK_SPEED)
         : speed(newSpeed)
         , attackSpeed(newAttackSpeed) {
-        std::strncpy(name, newName.c_str(), 31);
+        // std::strncpy(name, newName.c_str(), newName.size());
     }
 };
 
