@@ -20,7 +20,6 @@
 #include "components/Background.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
-#include "components/PlayerControl.hpp"
 
 #include <random>
 
@@ -57,8 +56,7 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
 }
 
 void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver &e) {
-    spawnEntity(component::Player(), component::PlayerControl(),
-                gengine::component::Transform2D({0, static_cast<float>(rand() % 500)}, {3, 3}, 0),
+    spawnEntity(component::Player(), gengine::component::Transform2D({0, static_cast<float>(rand() % 500)}, {3, 3}, 0),
                 gengine::component::Velocity2D(0, 0), gengine::component::driver::output::Drawable(1),
                 gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{167, 0, 33, 17}, WHITE),
                 gengine::component::HitBoxSquare2D(33 * 2, 17 * 2),
