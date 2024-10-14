@@ -40,7 +40,7 @@ void PlanesWave::spawnWave(void) {
                     gengine::component::Velocity2D(-PLANE_DEFAULT_SPEED, 0),
                     gengine::component::driver::output::Sprite("r-typesheet5.gif", Rectangle{0, 0, 32, 36}, WHITE),
                     gengine::component::driver::output::Animation(8, randomFrame(gen), 0.075f),
-                    gengine::component::driver::output::Drawable(1), component::Plane(),
+                    gengine::component::driver::output::Drawable(1), component::Plane(), component::Monster(),
                     gengine::component::HitBoxSquare2D(32, 36));
         x += 75;
     }
