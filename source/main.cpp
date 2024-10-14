@@ -113,13 +113,13 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
 struct Test
     : public gengine::OnEventSystem<Test, gengine::interface::network::event::RemoteEvent<rtype::event::Movement>> {
     void onEvent(gengine::interface::network::event::RemoteEvent<rtype::event::Movement> &e) {
-        std::cout << "go: " << e->state << std::endl;
+        // std::cout << "go: " << e->state << std::endl;
     }
 };
 
 struct TestDriver : public gengine::OnEventSystem<TestDriver, rtype::event::Movement> {
     void onEvent(rtype::event::Movement &e) {
-        std::cout << "send " << e.state << std::endl;
+        // std::cout << "send " << e.state << std::endl;
     }
 };
 

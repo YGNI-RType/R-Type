@@ -25,5 +25,13 @@ class PlayerShoot : public gengine::System<PlayerShoot, component::PlayerControl
 public:
     void init(void) override;
     void shoot(gengine::interface::network::event::RemoteEvent<event::Shoot> &);
+private:
+    void shootBullet(void);
+    void shootBeam(void);
+
+    std::chrono::time_point<std::chrono::system_clock> m_lastCharge;
+    event::Shoot::State m_lastState;
+
+    // std::vector<std::pair<event::Shoot::State, std::chrono::time_point<std::chrono::system_clock>>> m_shoots;
 };
 } // namespace rtype::system
