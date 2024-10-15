@@ -68,6 +68,9 @@ void DestroyOnCollision::playerHit(ecs::entity::Entity entity, component::Player
         removeLife();
     } else {
         killEntity(entity);
+        spawnEntity(gengine::component::Transform2D({1280 / 2 - 350, 720 / 2 - 100}, {8, 8}),
+                    gengine::component::driver::output::Drawable(2),
+                    gengine::component::driver::output::Text("arcade.ttf", "GAME OVER", YELLOW));
     }
 }
 

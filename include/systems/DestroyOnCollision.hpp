@@ -12,6 +12,8 @@
 #include "GEngine/interface/components/RemoteDriver.hpp"
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/components/Transforms.hpp"
+#include "GEngine/libdev/components/driver/output/Drawable.hpp"
+#include "GEngine/libdev/components/driver/output/Text.hpp"
 #include "GEngine/libdev/systems/events/game/Collision.hpp"
 
 #include "components/Bullet.hpp"
@@ -25,7 +27,9 @@
 namespace rtype::system {
 class DestroyOnCollision
     : public gengine::System<DestroyOnCollision, component::Bullet, component::Monster, component::Score,
-                             component::Life, component::Player, gengine::interface::component::RemoteDriver> {
+                             component::Life, component::Player, gengine::interface::component::RemoteDriver,
+                             gengine::component::Transform2D, gengine::component::driver::output::Drawable,
+                             gengine::component::driver::output::Text> {
 public:
     void init(void) override;
     void destroyMonster(gengine::system::event::Collsion &);
