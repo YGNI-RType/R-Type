@@ -21,6 +21,8 @@
 #include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
+#include "GEngine/libdev/components/driver/output/Sprite.hpp"
+#include "GEngine/libdev/components/driver/output/Text.hpp"
 
 //? ## GEngine Systems ##
 #include "GEngine/libdev/systems/Collisions.hpp"
@@ -31,6 +33,7 @@
 #include "GEngine/libdev/systems/driver/output/Draw.hpp"
 #include "GEngine/libdev/systems/driver/output/RenderWindow.hpp"
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
+#include "GEngine/libdev/systems/driver/output/FontManager.hpp"
 
 //? ### R-Type Components ###
 #include "components/Background.hpp"
@@ -39,7 +42,8 @@
 #include "components/Monster.hpp"
 #include "components/Plane.hpp"
 #include "components/Player.hpp"
-#include "components/PlayerControl.hpp"
+#include "components/Score.hpp"
+#include "components/ScoreText.hpp"
 
 //? ### R-Type Systems ###
 #include "systems/BackgroundMotion.hpp"
@@ -54,6 +58,7 @@
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
 #include "systems/Start.hpp"
+#include "systems/UpdateScoreText.hpp"
 
 //? ### R-Type Events ###
 #include "events/Movement.hpp"
@@ -66,41 +71,48 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<gengine::component::driver::output::Animation>();
     gameEngine.registerComponent<gengine::component::driver::output::Drawable>();
     gameEngine.registerComponent<gengine::component::driver::output::Sprite>();
+    gameEngine.registerComponent<gengine::component::driver::output::Text>();
     gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
     gameEngine.registerComponent<gengine::component::HitBoxSquare2D>();
     gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
 
     gameEngine.registerComponent<component::Player>();
-    gameEngine.registerComponent<component::PlayerControl>();
     gameEngine.registerComponent<component::Monster>();
     gameEngine.registerComponent<component::Background>();
     gameEngine.registerComponent<component::Bullet>();
     gameEngine.registerComponent<component::Plane>();
     gameEngine.registerComponent<component::Caterpillar>();
+    gameEngine.registerComponent<component::Score>();
+    gameEngine.registerComponent<component::ScoreText>();
 
     driverEngine.registerComponent<gengine::component::Transform2D>();
     driverEngine.registerComponent<gengine::component::Velocity2D>();
     driverEngine.registerComponent<gengine::component::driver::output::Animation>();
     driverEngine.registerComponent<gengine::component::driver::output::Drawable>();
     driverEngine.registerComponent<gengine::component::driver::output::Sprite>();
+    driverEngine.registerComponent<gengine::component::driver::output::Text>();
     driverEngine.registerComponent<gengine::component::driver::output::Rectangle>();
     driverEngine.registerComponent<gengine::component::HitBoxSquare2D>();
     driverEngine.registerComponent<gengine::component::HitBoxCircle2D>();
 
     driverEngine.registerComponent<component::Player>();
-    driverEngine.registerComponent<component::PlayerControl>();
     driverEngine.registerComponent<component::Monster>();
     driverEngine.registerComponent<component::Background>();
     driverEngine.registerComponent<component::Bullet>();
     driverEngine.registerComponent<component::Plane>();
     driverEngine.registerComponent<component::Caterpillar>();
+    driverEngine.registerComponent<component::Score>();
+    driverEngine.registerComponent<component::ScoreText>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
     driverEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1280, 720, "R-Type");
     driverEngine.registerSystem<gengine::system::driver::output::Draw2D>();
     driverEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
+    driverEngine.registerSystem<gengine::system::driver::output::DrawText>();
+
     driverEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
+    driverEngine.registerSystem<gengine::system::driver::output::FontManager>("../assets/fonts");
     driverEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     driverEngine.registerSystem<system::InputsToGameEvents>();
 
@@ -120,6 +132,7 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     gameEngine.registerSystem<system::BackgroundMotion>();
     gameEngine.registerSystem<system::ClearEntities>();
     gameEngine.registerSystem<system::DestroyOnCollision>();
+    gameEngine.registerSystem<system::UpdateScoreText>();
 }
 } // namespace rtype
 

@@ -8,7 +8,6 @@
 #pragma once
 
 #include "components/Player.hpp"
-#include "components/PlayerControl.hpp"
 
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/components/driver/output/Animation.hpp"

@@ -19,6 +19,8 @@ struct Player : public gengine::Component<Player> {
     float speed;
     float attackSpeed;
 
+    // static void setScore(int score, )
+
     Player(float newSpeed = DEFAULT_SPEED, float newAttackSpeed = DEFAULT_ATTACK_SPEED)
         : speed(newSpeed)
         , attackSpeed(newAttackSpeed) {

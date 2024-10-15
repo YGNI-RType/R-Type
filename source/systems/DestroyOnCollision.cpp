@@ -7,6 +7,7 @@
 */
 
 #include "systems/DestroyOnCollision.hpp"
+#include <cstring>
 
 namespace rtype::system {
 void DestroyOnCollision::init(void) {
@@ -17,11 +18,19 @@ void DestroyOnCollision::init(void) {
 void DestroyOnCollision::destroyMonster(gengine::system::event::Collsion &e) {
     auto &monsters = getComponents<component::Monster>();
     auto &bullets = getComponents<component::Bullet>();
+    auto &scores = getComponents<component::Score>();
+    auto &players = getComponents<gengine::interface::component::RemoteDriver>();
 
     for (auto [entity_monster, monster] : monsters) {
         for (auto [entity_bullet, bullet] : bullets) {
             if ((e.entity1 == entity_monster || e.entity2 == entity_monster) &&
                 (e.entity1 == entity_bullet || e.entity2 == entity_bullet)) {
+                if (scores.contains(entity_monster)) {
+                    for (auto [entity_player, player] : players)
+                        if (std::strcmp(player.getUUIDString().c_str(), reinterpret_cast<const char *>(bullet.from)) ==
+                            0)
+                            scores.get(entity_player).score += scores.get(entity_monster).score;
+                }
                 killEntity(entity_monster);
                 if (!bullet.isBeam)
                     killEntity(entity_bullet);

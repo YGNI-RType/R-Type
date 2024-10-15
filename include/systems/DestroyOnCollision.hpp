@@ -9,14 +9,17 @@
 
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/game/Collision.hpp"
+#include "GEngine/interface/components/RemoteDriver.hpp"
 
 #include "components/Bullet.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
+#include "components/Score.hpp"
 
 namespace rtype::system {
 class DestroyOnCollision
-    : public gengine::System<DestroyOnCollision, component::Bullet, component::Monster, component::Player> {
+    : public gengine::System<DestroyOnCollision, component::Bullet, component::Monster, component::Score,
+                             component::Player, gengine::interface::component::RemoteDriver> {
 public:
     void init(void) override;
     void destroyMonster(gengine::system::event::Collsion &);

@@ -42,7 +42,7 @@ void PlanesWave::spawnWave(void) {
                     // gengine::component::driver::output::Animation("r-typesheet5.json/red_enemy", 0.075f,
                     // gengine::component::driver::output::AnimationTrack::Forward, randomFrame(gen)),
                     gengine::component::driver::output::Drawable(1), component::Plane(), component::Monster(),
-                    gengine::component::HitBoxSquare2D(32, 36));
+                    gengine::component::HitBoxSquare2D(32, 36), component::Score(100));
         x += 75;
     }
 }
