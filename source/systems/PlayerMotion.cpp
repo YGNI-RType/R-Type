@@ -16,12 +16,36 @@
 
 namespace rtype::system {
 void PlayerMotion::init(void) {
-    // subscribeToEvent<gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P>>(
-    //     &PlayerMotion::increaseSpeed);
-    // subscribeToEvent<gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O>>(
-    //     &PlayerMotion::decreaseSpeed);
+    subscribeToEvent<gengine::system::event::GameLoop>(&PlayerMotion::onGameLoop);
     subscribeToEvent<gengine::interface::network::event::RemoteEvent<event::Movement>>(&PlayerMotion::movePlayer);
 }
+
+void PlayerMotion::onGameLoop(gengine::system::event::GameLoop &e) {
+    auto &velocities = getComponents<gengine::component::Velocity2D>();
+    auto &transforms = getComponents<gengine::component::Transform2D>();
+    auto &players = getComponents<component::Player>();
+    auto &playerControls = getComponents<component::PlayerControl>();
+
+    for (auto [entity, player, velocity, transform, playerControl] :
+         gengine::Zip(players, velocities, transforms, playerControls)) {
+        if (transform.pos.x < 0) {
+            transform.pos.x = 0;
+            velocity.x = 0;
+        } else if (transform.pos.x > 1280 - 33 * 3) {
+            transform.pos.x = 1280 - 33 * 3;
+            velocity.x = 0;
+        }
+
+        if (transform.pos.y < 0) {
+            transform.pos.y = 0;
+            velocity.y = 0;
+        } else if (transform.pos.y > 720 - 17 * 3) {
+            transform.pos.y = 720 - 17 * 3;
+            velocity.y = 0;
+        }
+    }
+}
+
 void PlayerMotion::movePlayer(gengine::interface::network::event::RemoteEvent<event::Movement> &e) {
     auto &velocities = getComponents<gengine::component::Velocity2D>();
     auto &players = getComponents<component::Player>();

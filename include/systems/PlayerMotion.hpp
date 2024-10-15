@@ -11,6 +11,7 @@
 #include "components/PlayerControl.hpp"
 
 #include "GEngine/libdev/System.hpp"
+#include "GEngine/libdev/components/Transforms.hpp"
 #include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
@@ -21,21 +22,10 @@
 
 namespace rtype::system {
 class PlayerMotion : public gengine::System<PlayerMotion, gengine::component::Velocity2D, component::PlayerControl,
-                                            component::Player> {
+                                            gengine::component::Transform2D, component::Player> {
 public:
     void init(void) override;
+    void onGameLoop(gengine::system::event::GameLoop &);
     void movePlayer(gengine::interface::network::event::RemoteEvent<event::Movement> &e);
-    // void movePlayerRight(
-    //     gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Right> &);
-    // void
-    // movePlayerLeft(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Left>
-    // &); void
-    // movePlayerUp(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Up> &);
-    // void
-    // movePlayerDown(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_Down>
-    // &); void
-    // increaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_P> &);
-    // void decreaseSpeed(gengine::interface::network::event::RemoteEvent<gengine::system::event::driver::input::Key_O>
-    // &);
 };
 } // namespace rtype::system

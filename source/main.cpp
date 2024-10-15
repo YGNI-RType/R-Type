@@ -11,7 +11,10 @@
 #include "GEngine/driver/Engine.hpp"
 #include "GEngine/game/Engine.hpp"
 #include "GEngine/interface/Internal.hpp"
-// #include "GEngine/interface/network/Networked.hpp"
+#include "GEngine/interface/events/RemoteEvent.hpp"
+#include "GEngine/interface/network/Networked.hpp"
+#include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
+#include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
 
 //? ## GEngine Components ##
 #include "GEngine/libdev/components/HitBoxs.hpp"
@@ -30,19 +33,23 @@
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 
 //? ### R-Type Components ###
-
 #include "components/Background.hpp"
 #include "components/Bullet.hpp"
+#include "components/Caterpillar.hpp"
 #include "components/Monster.hpp"
+#include "components/Plane.hpp"
 #include "components/Player.hpp"
 #include "components/PlayerControl.hpp"
 
 //? ### R-Type Systems ###
 #include "systems/BackgroundMotion.hpp"
-#include "systems/ClearBullets.hpp"
+#include "systems/CaterpillarsBound.hpp"
+#include "systems/CaterpillarsWave.hpp"
+#include "systems/ClearEntities.hpp"
 #include "systems/DestroyOnCollision.hpp"
 #include "systems/InputsToGameEvents.hpp"
-#include "systems/MonstersAutoMotion.hpp"
+#include "systems/PlanesAutoMotion.hpp"
+#include "systems/PlanesWave.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
 #include "systems/Start.hpp"
@@ -67,6 +74,8 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<component::Monster>();
     gameEngine.registerComponent<component::Background>();
     gameEngine.registerComponent<component::Bullet>();
+    gameEngine.registerComponent<component::Plane>();
+    gameEngine.registerComponent<component::Caterpillar>();
 
     driverEngine.registerComponent<gengine::component::Transform2D>();
     driverEngine.registerComponent<gengine::component::Velocity2D>();
@@ -82,46 +91,33 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     driverEngine.registerComponent<component::Monster>();
     driverEngine.registerComponent<component::Background>();
     driverEngine.registerComponent<component::Bullet>();
+    driverEngine.registerComponent<component::Plane>();
+    driverEngine.registerComponent<component::Caterpillar>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
     driverEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1280, 720, "R-Type");
     driverEngine.registerSystem<gengine::system::driver::output::Draw2D>();
     driverEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
-    driverEngine.registerSystem<gengine::system::driver::output::Animate>();
     driverEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
     driverEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     driverEngine.registerSystem<system::InputsToGameEvents>();
 
+    gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::Motion2D>();
     gameEngine.registerSystem<gengine::system::Collision2D>();
     gameEngine.registerSystem<system::Start>();
-    gameEngine.registerSystem<system::MonstersAutoMotion>();
+    gameEngine.registerSystem<system::CaterpillarsBound>();
+    gameEngine.registerSystem<system::CaterpillarsWave>();
+    gameEngine.registerSystem<system::PlanesAutoMotion>();
+    gameEngine.registerSystem<system::PlanesWave>();
     gameEngine.registerSystem<system::PlayerMotion>();
     gameEngine.registerSystem<system::PlayerShoot>();
     gameEngine.registerSystem<system::BackgroundMotion>();
-    gameEngine.registerSystem<system::ClearBullets>();
+    gameEngine.registerSystem<system::ClearEntities>();
     gameEngine.registerSystem<system::DestroyOnCollision>();
 }
 } // namespace rtype
-
-#include "GEngine/interface/events/RemoteEvent.hpp"
-#include "GEngine/interface/network/Networked.hpp"
-#include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
-#include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
-
-struct Test
-    : public gengine::OnEventSystem<Test, gengine::interface::network::event::RemoteEvent<rtype::event::Movement>> {
-    void onEvent(gengine::interface::network::event::RemoteEvent<rtype::event::Movement> &e) {
-        // std::cout << "go: " << e->state << std::endl;
-    }
-};
-
-struct TestDriver : public gengine::OnEventSystem<TestDriver, rtype::event::Movement> {
-    void onEvent(rtype::event::Movement &e) {
-        // std::cout << "send " << e.state << std::endl;
-    }
-};
 
 int main(void) {
     gengine::driver::Engine driverEngine;
@@ -135,9 +131,6 @@ int main(void) {
 
     rtype::registerComponents(gameEngine, driverEngine);
     rtype::registerSystems(gameEngine, driverEngine);
-
-    gameEngine.registerSystem<Test>();
-    driverEngine.registerSystem<TestDriver>();
 
     gengine::interface::network::Networked interface(driverEngine, gameEngine, "127.0.0.1", 4243, true);
 
