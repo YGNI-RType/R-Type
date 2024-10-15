@@ -7,7 +7,6 @@
 */
 
 #include "systems/PlayerAnimation.hpp"
-#include "components/Bullet.hpp"
 
 // Spawn entity
 #include "GEngine/libdev/Component.hpp" // gengine::Zip
