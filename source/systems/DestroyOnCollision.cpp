@@ -38,7 +38,6 @@ void DestroyOnCollision::destroyPlayer(gengine::system::event::Collsion &e) {
         for (auto [entity_monster, monster] : monsters) {
             if ((e.entity1 == entity_player || e.entity2 == entity_player) &&
                 (e.entity1 == entity_monster || e.entity2 == entity_monster)) {
-
                 // killEntity(entity_player);
             }
         }
