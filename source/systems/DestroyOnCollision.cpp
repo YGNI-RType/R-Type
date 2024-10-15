@@ -25,6 +25,7 @@ void DestroyOnCollision::destroyMonster(gengine::system::event::Collsion &e) {
                 killEntity(entity_monster);
                 if (!bullet.isBeam)
                     killEntity(entity_bullet);
+                return;
             }
         }
     }
@@ -40,6 +41,7 @@ void DestroyOnCollision::destroyPlayer(gengine::system::event::Collsion &e) {
                 (e.entity1 == entity_monster || e.entity2 == entity_monster)) {
 
                 // killEntity(entity_player);
+                return;
             }
         }
     }
