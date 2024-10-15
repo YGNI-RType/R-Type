@@ -11,9 +11,10 @@
 
 namespace rtype::component {
 struct Score : public gengine::Component<Score> {
+    int score = 0;
+
     Score(int score)
         : score(score) {
     }
-    int score = 0;
 };
 } // namespace rtype::component

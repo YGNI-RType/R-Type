@@ -18,6 +18,7 @@ struct Player : public gengine::Component<Player> {
     // char name[32] = {0};
     float speed;
     float attackSpeed;
+    int life = 3;
 
     // static void setScore(int score, )
 

@@ -18,6 +18,7 @@
 #include "GEngine/libdev/components/driver/output/Text.hpp"
 
 #include "components/Background.hpp"
+#include "components/Life.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
 #include "components/Score.hpp"
@@ -46,6 +47,12 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
                 gengine::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0),
                 gengine::component::driver::output::Drawable(0),
                 gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE));
+
+    for (std::size_t i = 0; i < 2; i++) {
+        spawnEntity(component::Life(), gengine::component::Transform2D({99 - i * 66.f, 726}, {1, 1}, 0),
+                    gengine::component::driver::output::Drawable(1),
+                    gengine::component::driver::output::Sprite("r-typesheet42.gif", Rectangle{66, 0, 33, 17}, WHITE));
+    }
 }
 
 void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver &e) {
@@ -54,7 +61,7 @@ void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver
         gengine::component::Velocity2D(0, 0), gengine::component::driver::output::Drawable(1),
         gengine::component::driver::output::Sprite("r-typesheet42.gif", Rectangle{66, 16.f * (m_nbPlayer % 5), 33, 17},
                                                    WHITE),
-        gengine::component::HitBoxSquare2D(33 * 2, 17 * 2), gengine::interface::component::RemoteDriver(e.remote),
+        gengine::component::HitBoxSquare2D(33, 17), gengine::interface::component::RemoteDriver(e.remote),
         gengine::component::driver::output::Animation("r-typesheet42.json/spaceship", 0.1f,
                                                       gengine::component::driver::output::AnimationTrack::Idling, 2),
         component::Score(0));
