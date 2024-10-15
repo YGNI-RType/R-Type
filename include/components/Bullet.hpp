@@ -10,5 +10,10 @@
 #include "GEngine/libdev/Component.hpp"
 
 namespace rtype::component {
-struct Bullet : public gengine::Component<Bullet> {};
+struct Bullet : public gengine::Component<Bullet> {
+    Bullet(bool isBeam = false)
+        : isBeam(isBeam) {
+    }
+    bool isBeam = false;
+};
 } // namespace rtype::component
