@@ -24,6 +24,7 @@
 #include "components/Score.hpp"
 #include "components/ScoreText.hpp"
 
+#include <format>
 #include <random>
 
 namespace rtype {
@@ -34,9 +35,9 @@ void system::Start::init(void) {
 }
 
 void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
-    spawnEntity(component::ScoreText(), gengine::component::Transform2D({50, 50}, {5, 4}),
+    spawnEntity(component::ScoreText(), gengine::component::Transform2D({1280 - 315, 726}, {2, 2}),
                 gengine::component::driver::output::Drawable(2),
-                gengine::component::driver::output::Text("arial.ttf", "Score: 0", WHITE));
+                gengine::component::driver::output::Text("arcade.ttf", std::format("Score: {:08}", 0), WHITE));
 
     spawnEntity(component::Background(), gengine::component::Transform2D({0, 0}, {3.48, 3.48}),
                 gengine::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0),

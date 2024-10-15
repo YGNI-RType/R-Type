@@ -7,6 +7,8 @@
 
 #include "systems/UpdateScoreText.hpp"
 
+#include <format>
+
 namespace rtype::system {
 void UpdateScoreText::init(void) {
     subscribeToEvent<gengine::system::event::GameLoop>(&UpdateScoreText::onGameLoop);
@@ -25,6 +27,6 @@ void UpdateScoreText::onGameLoop(gengine::system::event::GameLoop &e) {
     auto &texts = getComponents<gengine::component::driver::output::Text>();
 
     for (auto [entity, scoreText, text] : gengine::Zip(scoreTexts, texts))
-        text.str = "Score: " + std::to_string(totalScore);
+        text.str = std::format("Score: {:08}", totalScore);
 }
 } // namespace rtype::system
