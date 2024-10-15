@@ -1,7 +1,7 @@
 {
   "name": "gengine",
   "version": "0.0.1",
-  "homepage": "https://github.com/YGNI-RType/GameEngine",
+  "homepage": "https://github.com/YGNI-RType/GEngine",
   "description": "An amazing Game Engine.",
   "license": "MIT",
   "dependencies": [

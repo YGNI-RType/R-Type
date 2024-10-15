@@ -11,7 +11,6 @@
 #include "GEngine/libdev/components/Transforms.hpp"
 #include "GEngine/libdev/components/Velocities.hpp"
 
-#include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/components/driver/output/Drawable.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
 #include "GEngine/libdev/components/driver/output/Sprite.hpp"

@@ -52,6 +52,7 @@
 #include "systems/PlanesWave.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
+#include "systems/PlayerAnimation.hpp"
 #include "systems/Start.hpp"
 
 //? ### R-Type Events ###
@@ -103,6 +104,7 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     driverEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     driverEngine.registerSystem<system::InputsToGameEvents>();
 
+    gameEngine.registerSystem<gengine::system::driver::output::AnimationManager>("../assets/animations");
     gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::Motion2D>();
     gameEngine.registerSystem<gengine::system::Collision2D>();
@@ -113,6 +115,7 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     gameEngine.registerSystem<system::PlanesWave>();
     gameEngine.registerSystem<system::PlayerMotion>();
     gameEngine.registerSystem<system::PlayerShoot>();
+    gameEngine.registerSystem<system::PlayerAnimation>();
     gameEngine.registerSystem<system::BackgroundMotion>();
     gameEngine.registerSystem<system::ClearEntities>();
     gameEngine.registerSystem<system::DestroyOnCollision>();
