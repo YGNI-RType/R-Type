@@ -25,6 +25,7 @@ class PlayerShoot : public gengine::System<PlayerShoot, component::PlayerControl
 public:
     void init(void) override;
     void shoot(gengine::interface::network::event::RemoteEvent<event::Shoot> &);
+
 private:
     void shootBullet(void);
     void shootBeam(void);
