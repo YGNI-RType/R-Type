@@ -33,33 +33,15 @@ void system::Start::init(void) {
 }
 
 void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    std::uniform_int_distribution<> transformXFork(0 + 80, 1280 - 160);
-    std::uniform_int_distribution<> transformYFork(0 + 80, 720 - 160);
-
-    // for (std::size_t i = 0; i < 10; i++) {
-    //     float x = transformXFork(gen);
-    //     float y = transformYFork(gen);
-
-    //     spawnEntity(gengine::component::Transform2D({x, y}, {2, 2}, 0), gengine::component::Velocity2D(0, 0),
-    //                 gengine::component::driver::output::Sprite("r-typesheet3.gif", Rectangle{0, 0, 17, 18}, WHITE),
-    //                 gengine::component::driver::output::Drawable(1), component::Monster(),
-    //                 gengine::component::HitBoxSquare2D(17, 18),
-    //                 gengine::component::driver::output::Animation("r-typesheet42.json/spaceship", 0.1f,
-    //                 gengine::component::driver::output::AnimationTrack::Reverse, 2));
-    // }
-
-    // gengine::component::driver::output::Animation(5, 0, 0.2f, true));
-
-    spawnEntity(component::Background(), gengine::component::Transform2D({0, 0}, {3.48, 3.48}),
-                gengine::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0),
-                gengine::component::driver::output::Drawable(0),
-                gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1226, 207}, WHITE));
     spawnEntity(component::ScoreText(), gengine::component::Transform2D({50, 50}, {5, 4}),
                 gengine::component::driver::output::Drawable(2),
                 gengine::component::driver::output::Text("arial.ttf", "Score: 0", WHITE));
+                gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE));
+
+    spawnEntity(component::Background(), gengine::component::Transform2D({1119 * 3.48, 0}, {3.48, 3.48}),
+                gengine::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0),
+                gengine::component::driver::output::Drawable(0),
+                gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE));
 }
 
 void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver &e) {
