@@ -17,6 +17,7 @@
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "components/Monster.hpp"
 #include "components/Plane.hpp"
+#include "components/Score.hpp"
 
 namespace rtype::system {
 class PlanesWave

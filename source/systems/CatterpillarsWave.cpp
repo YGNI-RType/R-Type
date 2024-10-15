@@ -45,7 +45,7 @@ void CaterpillarsWave::spawnWave(void) {
                     gengine::component::Velocity2D(-CATERPILLAR_DEFAULT_SPEED, CATERPILLAR_DEFAULT_SPEED * direction),
                     gengine::component::driver::output::Sprite("r-typesheet8.gif", rec, WHITE),
                     gengine::component::driver::output::Drawable(1), component::Caterpillar(), component::Monster(),
-                    gengine::component::HitBoxSquare2D(rec.width, rec.height));
+                    gengine::component::HitBoxSquare2D(rec.width, rec.height), component::Score(100));
         x += 50;
         y += 50 * -direction;
     }
