@@ -25,8 +25,7 @@ void PlayerMotion::onGameLoop(gengine::system::event::GameLoop &e) {
     auto &transforms = getComponents<gengine::component::Transform2D>();
     auto &players = getComponents<component::Player>();
 
-    for (auto [entity, player, velocity, transform] :
-         gengine::Zip(players, velocities, transforms)) {
+    for (auto [entity, player, velocity, transform] : gengine::Zip(players, velocities, transforms)) {
         if (transform.pos.x < 0) {
             transform.pos.x = 0;
             velocity.x = 0;
