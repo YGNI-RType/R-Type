@@ -20,6 +20,7 @@
 #include "GEngine/interface/events/RemoteEvent.hpp"
 
 namespace rtype::system {
+
 class PlayerShoot : public gengine::System<PlayerShoot, component::PlayerControl, gengine::component::Transform2D,
                                            gengine::component::HitBoxSquare2D> {
 public:
@@ -29,6 +30,8 @@ public:
 private:
     void shootBullet(void);
     void shootBeam(void);
+
+    long getChargeDuration(void);
 
     std::chrono::time_point<std::chrono::system_clock> m_lastCharge;
     event::Shoot::State m_lastState;
