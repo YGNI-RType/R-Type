@@ -24,17 +24,17 @@ void PlayerShoot::init(void) {
 }
 
 void PlayerShoot::shoot(gengine::interface::network::event::RemoteEvent<event::Shoot> &e) {
-    if (e->state == event::Shoot::REST && m_lastState == event::Shoot::CHARGING) {
-        m_lastState = event::Shoot::REST;
-        if (getChargeDuration() < 500)
-            return;
-        shootBeam();
-        return;
-    }
     if (e->state == event::Shoot::CHARGING && m_lastState == event::Shoot::REST) {
         m_lastCharge = std::chrono::system_clock::now();
         m_lastState = event::Shoot::CHARGING;
         shootBullet();
+        return;
+    }
+    if (e->state == event::Shoot::REST && m_lastState == event::Shoot::CHARGING) {
+        m_lastState = event::Shoot::REST;
+        if (getChargeDuration() > 500)
+            shootBeam();
+        return;
     }
 }
 

@@ -50,9 +50,9 @@
 #include "systems/InputsToGameEvents.hpp"
 #include "systems/PlanesAutoMotion.hpp"
 #include "systems/PlanesWave.hpp"
+#include "systems/PlayerAnimation.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
-#include "systems/PlayerAnimation.hpp"
 #include "systems/Start.hpp"
 
 //? ### R-Type Events ###
