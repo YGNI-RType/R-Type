@@ -35,10 +35,13 @@ void DestroyOnCollision::destroyPlayer(gengine::system::event::Collsion &e) {
     auto &monsters = getComponents<component::Monster>();
 
     for (auto [entity_player, player] : players) {
-        for (auto [entity_monster, monster] : monsters)
+        for (auto [entity_monster, monster] : monsters) {
             if ((e.entity1 == entity_player || e.entity2 == entity_player) &&
-                (e.entity1 == entity_monster || e.entity2 == entity_monster))
-                killEntity(entity_player);
+                (e.entity1 == entity_monster || e.entity2 == entity_monster)) {
+
+                // killEntity(entity_player);
+            }
+        }
     }
 }
 } // namespace rtype::system

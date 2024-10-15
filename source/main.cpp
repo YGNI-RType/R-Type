@@ -114,6 +114,7 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     gameEngine.registerSystem<system::PlanesAutoMotion>();
     gameEngine.registerSystem<system::PlanesWave>();
     gameEngine.registerSystem<system::PlayerMotion>();
+    gameEngine.registerSystem<system::PlayerAnimation>();
     gameEngine.registerSystem<system::PlayerShoot>();
     gameEngine.registerSystem<system::PlayerAnimation>();
     gameEngine.registerSystem<system::BackgroundMotion>();
