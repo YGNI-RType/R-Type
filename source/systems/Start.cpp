@@ -38,10 +38,11 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
                 gengine::component::driver::output::Text("arial.ttf", "Score: 0", WHITE));
                 gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE));
 
-    spawnEntity(component::Background(), gengine::component::Transform2D({1119 * 3.48, 0}, {3.48, 3.48}),
-                gengine::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0),
-                gengine::component::driver::output::Drawable(0),
-                gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE));
+                spawnEntity(
+                    component::Background(), gengine::component::Transform2D({1119 * 3.48, 0}, {3.48, 3.48}),
+                    gengine::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0),
+                    gengine::component::driver::output::Drawable(0),
+                    gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE));
 }
 
 void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver &e) {

@@ -8,8 +8,8 @@
 #pragma once
 
 #include "GEngine/interface/components/RemoteDriver.hpp"
-#include "GEngine/libdev/components/driver/output/Text.hpp"
 #include "GEngine/libdev/System.hpp"
+#include "GEngine/libdev/components/driver/output/Text.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "components/Score.hpp"
 #include "components/ScoreText.hpp"
