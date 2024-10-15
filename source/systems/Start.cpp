@@ -43,9 +43,9 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
 
         spawnEntity(gengine::component::Transform2D({x, y}, {2, 2}, 0), gengine::component::Velocity2D(0, 0),
                     gengine::component::driver::output::Sprite("r-typesheet3.gif", Rectangle{0, 0, 17, 18}, WHITE),
-                    gengine::component::driver::output::Animation(12, rand() % 12, 0.1f),
                     gengine::component::driver::output::Drawable(1), component::Monster(),
-                    gengine::component::HitBoxSquare2D(17, 18));
+                    gengine::component::HitBoxSquare2D(17, 18),
+                    gengine::component::driver::output::Animation("r-typesheet42.json/spaceship", 0.1f, gengine::component::driver::output::AnimationTrack::Reverse, 2));
     }
 
     // gengine::component::driver::output::Animation(5, 0, 0.2f, true));
@@ -58,17 +58,18 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
 void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver &e) {
     spawnEntity(component::Player(), gengine::component::Transform2D({0, static_cast<float>(rand() % 500)}, {3, 3}, 0),
                 gengine::component::Velocity2D(0, 0), gengine::component::driver::output::Drawable(1),
-                gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{167, 0, 33, 17}, WHITE),
+                gengine::component::driver::output::Sprite("r-typesheet42.gif", Rectangle{66, 16.f * (m_nbPlayer % 5), 33, 17}, WHITE),
                 gengine::component::HitBoxSquare2D(33 * 2, 17 * 2),
                 gengine::interface::component::RemoteDriver(e.remote));
+    m_nbPlayer++;
 }
 
 void system::Start::onDeleteRemoteDriver(gengine::interface::event::DeleteRemoteDriver &e) {
-    std::cout << "disconnected" << std::endl;
     auto &remotes = getComponents<gengine::interface::component::RemoteDriver>();
     for (auto &[entity, remote] : remotes) {
         if (remote == e.remote) {
             killEntity(entity);
+            m_nbPlayer--;
             return;
         }
     }

@@ -35,6 +35,7 @@
 #include "components/Bullet.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
+#include "components/PlayerControl.hpp"
 
 //? ### R-Type Systems ###
 #include "systems/BackgroundMotion.hpp"
@@ -42,6 +43,7 @@
 #include "systems/DestroyOnCollision.hpp"
 #include "systems/InputsToGameEvents.hpp"
 #include "systems/MonstersAutoMotion.hpp"
+#include "systems/PlayerAnimation.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
 #include "systems/Start.hpp"
@@ -62,7 +64,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
 
     gameEngine.registerComponent<component::Player>();
-    // gameEngine.registerComponent<component::PlayerControl>();
+    gameEngine.registerComponent<component::PlayerControl>();
     gameEngine.registerComponent<component::Monster>();
     gameEngine.registerComponent<component::Background>();
     gameEngine.registerComponent<component::Bullet>();
@@ -77,7 +79,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     driverEngine.registerComponent<gengine::component::HitBoxCircle2D>();
 
     driverEngine.registerComponent<component::Player>();
-    // driverEngine.registerComponent<component::PlayerControl>();
+    driverEngine.registerComponent<component::PlayerControl>();
     driverEngine.registerComponent<component::Monster>();
     driverEngine.registerComponent<component::Background>();
     driverEngine.registerComponent<component::Bullet>();
@@ -88,15 +90,17 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     driverEngine.registerSystem<gengine::system::driver::output::Draw2D>();
     driverEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
     driverEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
+    gameEngine.registerSystem<gengine::system::driver::output::AnimationManager>("../assets/animations");
+    gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     driverEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     driverEngine.registerSystem<system::InputsToGameEvents>();
 
-    gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::Motion2D>();
     gameEngine.registerSystem<gengine::system::Collision2D>();
     gameEngine.registerSystem<system::Start>();
     gameEngine.registerSystem<system::MonstersAutoMotion>();
     gameEngine.registerSystem<system::PlayerMotion>();
+    gameEngine.registerSystem<system::PlayerAnimation>();
     gameEngine.registerSystem<system::PlayerShoot>();
     gameEngine.registerSystem<system::BackgroundMotion>();
     gameEngine.registerSystem<system::ClearBullets>();
