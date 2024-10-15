@@ -16,6 +16,8 @@
 #include "components/Player.hpp"
 #include "components/Score.hpp"
 
+#include "ecs/entity/Entity.hpp"
+
 namespace rtype::system {
 class DestroyOnCollision
     : public gengine::System<DestroyOnCollision, component::Bullet, component::Monster, component::Score,
@@ -24,5 +26,8 @@ public:
     void init(void) override;
     void destroyMonster(gengine::system::event::Collsion &);
     void destroyPlayer(gengine::system::event::Collsion &);
+
+private:
+    void claimScore(ecs::entity::Entity entity, const char *forPlayerUuid);
 };
 } // namespace rtype::system

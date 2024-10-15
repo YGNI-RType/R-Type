@@ -15,22 +15,27 @@ void DestroyOnCollision::init(void) {
     subscribeToEvent<gengine::system::event::Collsion>(&DestroyOnCollision::destroyPlayer);
 }
 
+void DestroyOnCollision::claimScore(ecs::entity::Entity entity_monster, const char *forPlayerUuid) {
+    auto &scores = getComponents<component::Score>();
+    auto &players = getComponents<gengine::interface::component::RemoteDriver>();
+
+    if (scores.contains(entity_monster)) {
+        for (auto [entity_player, player] : players)
+            if (std::strcmp(player.getUUIDString().c_str(), forPlayerUuid) == 0)
+                scores.get(entity_player).score += scores.get(entity_monster).score;
+    }
+}
+
 void DestroyOnCollision::destroyMonster(gengine::system::event::Collsion &e) {
     auto &monsters = getComponents<component::Monster>();
     auto &bullets = getComponents<component::Bullet>();
-    auto &scores = getComponents<component::Score>();
-    auto &players = getComponents<gengine::interface::component::RemoteDriver>();
 
     for (auto [entity_monster, monster] : monsters) {
         for (auto [entity_bullet, bullet] : bullets) {
             if ((e.entity1 == entity_monster || e.entity2 == entity_monster) &&
                 (e.entity1 == entity_bullet || e.entity2 == entity_bullet)) {
-                if (scores.contains(entity_monster)) {
-                    for (auto [entity_player, player] : players)
-                        if (std::strcmp(player.getUUIDString().c_str(), reinterpret_cast<const char *>(bullet.from)) ==
-                            0)
-                            scores.get(entity_player).score += scores.get(entity_monster).score;
-                }
+
+                claimScore(entity_monster, reinterpret_cast<const char *>(bullet.from));
                 killEntity(entity_monster);
                 if (!bullet.isBeam)
                     killEntity(entity_bullet);
