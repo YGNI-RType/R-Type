@@ -7,7 +7,7 @@
 
 #include "systems/UpdateScoreText.hpp"
 
-#include <format>
+// #include <format>
 
 namespace rtype::system {
 void UpdateScoreText::init(void) {
@@ -27,6 +27,7 @@ void UpdateScoreText::onGameLoop(gengine::system::event::GameLoop &e) {
     auto &texts = getComponents<gengine::component::driver::output::Text>();
 
     for (auto [entity, scoreText, text] : gengine::Zip(scoreTexts, texts))
-        text.str = std::format("Score: {:08}", totalScore);
+        std::strncpy(text.str.data(), (std::string("Score: ") + std::to_string(totalScore).c_str()).c_str(), 64);
+        // text.str = "Score: " + std::to_string(totalScore);
 }
 } // namespace rtype::system
