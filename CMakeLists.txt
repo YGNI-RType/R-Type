@@ -1,21 +1,25 @@
 cmake_minimum_required(VERSION 3.10)
+project(rtype)
 
-project(R-Type VERSION 0.0.1)
-
-# Specify the C++ standard
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_EXTENSIONS NO)
 
-# Add the shared library
-add_library(shared_rtype src/shared/shared.cpp)
-target_include_directories(shared_rtype PUBLIC include/shared)
+include(cmake/automate-vcpkg-gengine.cmake)
+vcpkg_bootstrap()
+vcpkg_install_gengine()
 
-# Add the client executable
-add_executable(client src/client/client.cpp)
-target_include_directories(client PRIVATE include/client)
-target_link_libraries(client PRIVATE shared_rtype)
+include_directories(include)
 
-# Add the server executable
-add_executable(server src/server/server.cpp)
-target_include_directories(server PRIVATE include/server)
-target_link_libraries(server PRIVATE shared_rtype)
+file(GLOB_RECURSE SOURCES source/*.cpp)
+
+add_executable(r_type-server ${SOURCES})
+add_executable(r_type-client ${SOURCES})
+
+
+find_package(GEngine CONFIG REQUIRED)
+target_link_libraries(r_type-server PRIVATE GEngine)
+target_link_libraries(r_type-client PRIVATE GEngine)
+
+target_compile_definitions(r_type-server PRIVATE Server)
+target_compile_definitions(r_type-client PRIVATE Client)
