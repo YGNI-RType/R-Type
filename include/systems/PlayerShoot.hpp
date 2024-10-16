@@ -34,7 +34,7 @@ public:
 private:
     void shootBullet(const gengine::interface::component::RemoteDriver &from);
     void shootBeam(const gengine::interface::component::RemoteDriver &from, int bulletScale);
-    void spawnBeam(const gengine::component::Transform2D &tr, int bulletScale);
+    void spawnBeam(const gengine::component::Transform2D &tr, const std::string &from, int bulletScale);
     long getChargeDuration(const std::chrono::time_point<std::chrono::system_clock> &lastCharge);
 
     using shoot_infos_t = std::pair<event::Shoot::State, std::chrono::time_point<std::chrono::system_clock>>;

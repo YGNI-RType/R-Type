@@ -88,12 +88,12 @@ void PlayerShoot::shootBeam(const gengine::interface::component::RemoteDriver &f
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
         if (player != from)
             continue;
-        spawnBeam(transform.pos, bulletScale);
+        spawnBeam(transform.pos, player.getUUIDString(), bulletScale);
         return;
     }
 }
 
-void PlayerShoot::spawnBeam(const gengine::component::Transform2D &tr, int bulletScale) {
+void PlayerShoot::spawnBeam(const gengine::component::Transform2D &tr, const std::string &from, int bulletScale) {
     Rectangle rect;
     gengine::Vect2 pos({tr.pos.x + 50, tr.pos.y + 22});
 
@@ -116,7 +116,7 @@ void PlayerShoot::spawnBeam(const gengine::component::Transform2D &tr, int bulle
         break;
     }
 
-    spawnEntity(component::Bullet(true), gengine::component::Transform2D(pos, {2, 2}),
+    spawnEntity(component::Bullet(from, true), gengine::component::Transform2D(pos, {2, 2}),
                 gengine::component::Velocity2D(BULLET_SPEED * 2, 0),
                 gengine::component::HitBoxSquare2D(rect.width, rect.height),
                 gengine::component::driver::output::Sprite("r-typesheet1.gif", rect),

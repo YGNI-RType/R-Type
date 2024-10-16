@@ -21,7 +21,8 @@
 
 namespace rtype::system {
 class DestroyOnCollision : public gengine::System<DestroyOnCollision, component::Bullet, component::Monster,
-                                   component::Player, gengine::interface::component::RemoteDriver, gengine::component::Transform2D> {
+                                                  component::Player, gengine::interface::component::RemoteDriver,
+                                                  gengine::component::Transform2D, component::Score> {
 public:
     void init(void) override;
     void destroyMonster(gengine::system::event::Collsion &);
