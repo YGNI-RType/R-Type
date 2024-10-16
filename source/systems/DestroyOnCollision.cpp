@@ -20,7 +20,7 @@ void DestroyOnCollision::init(void) {
     subscribeToEvent<gengine::system::event::Collsion>(&DestroyOnCollision::destroyPlayer);
 }
 
-void DestroyOnCollision::claimScore(ecs::entity::Entity entity_monster, const char *forPlayerUuid) {
+void DestroyOnCollision::claimScore(ecs::entity::Entity entity_monster, char *forPlayerUuid) {
     auto &scores = getComponents<component::Score>();
     auto &players = getComponents<gengine::interface::component::RemoteDriver>();
 
@@ -61,19 +61,43 @@ void DestroyOnCollision::destroyPlayer(gengine::system::event::Collsion &e) {
     auto &monsters = getComponents<component::Monster>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
 
-    for (auto [entity_player, player] : players) {
-        for (auto [entity_monster, monster] : monsters) {
-            if (e.entity1 == entity_player && e.entity2 == entity_monster) {
-                if (transforms.contains(entity_player))
-                    spawnEntity(gengine::component::Transform2D(transforms.get(entity_player).pos, {3, 3}),
+    for (auto [entityPlayer, player, transform] : gengine::Zip(players, transforms)) {
+        for (auto [entityMonster, monster] : monsters) {
+            if ((e.entity1 == entityPlayer || e.entity2 == entityPlayer) &&
+                (e.entity1 == entityMonster || e.entity2 == entityMonster)) {
+                    spawnEntity(gengine::component::Transform2D(transform.pos, {3, 3}),
                                 gengine::component::driver::output::Drawable(3),
                                 gengine::component::driver::output::Sprite("r-typesheet1.gif", {67, 342, 33, 30}),
                                 gengine::component::driver::output::Animation("r-typesheet1.json/playerdeath", 0.06f),
                                 gengine::component::SpanLife(0.42));
-                killEntity(entity_player);
+                playerHit(entityPlayer, player, transform);
                 return;
             }
         }
+    }
+}
+
+void DestroyOnCollision::playerHit(ecs::entity::Entity entity, component::Player &player,
+                                   gengine::component::Transform2D &transform) {
+    player.life--;
+
+    if (player.life > 0) {
+        transform.pos = {0, static_cast<float>(rand() % 500)};
+        removeLife();
+    } else {
+        killEntity(entity);
+        spawnEntity(gengine::component::Transform2D({1280 / 2 - 350, 720 / 2 - 100}, {8, 8}),
+                    gengine::component::driver::output::Drawable(2),
+                    gengine::component::driver::output::Text("arcade.ttf", "GAME OVER", YELLOW));
+    }
+}
+
+void DestroyOnCollision::removeLife(void) {
+    auto &lifes = getComponents<component::Life>();
+
+    for (auto [entity, life] : lifes) {
+        killEntity(entity);
+        return;
     }
 }
 } // namespace rtype::system

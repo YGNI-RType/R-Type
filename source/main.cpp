@@ -42,6 +42,7 @@
 #include "components/Background.hpp"
 #include "components/Bullet.hpp"
 #include "components/Caterpillar.hpp"
+#include "components/Life.hpp"
 #include "components/Monster.hpp"
 #include "components/Plane.hpp"
 #include "components/Player.hpp"
@@ -88,6 +89,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<component::Caterpillar>();
     gameEngine.registerComponent<component::Score>();
     gameEngine.registerComponent<component::ScoreText>();
+    gameEngine.registerComponent<component::Life>();
 
     driverEngine.registerComponent<gengine::component::Transform2D>();
     driverEngine.registerComponent<gengine::component::Velocity2D>();
@@ -108,11 +110,12 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     driverEngine.registerComponent<component::Caterpillar>();
     driverEngine.registerComponent<component::Score>();
     driverEngine.registerComponent<component::ScoreText>();
+    driverEngine.registerComponent<component::Life>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
-    driverEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1280, 720, "R-Type");
-    driverEngine.registerSystem<gengine::system::driver::output::Draw2D>();
+    driverEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1280, 750, "R-Type");
+    driverEngine.registerSystem<gengine::system::driver::output::Draw2D>(BLACK);
     driverEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
     driverEngine.registerSystem<gengine::system::driver::output::DrawText>();
 

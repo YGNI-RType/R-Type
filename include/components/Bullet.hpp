@@ -15,9 +15,11 @@ namespace rtype::component {
 struct Bullet : public gengine::Component<Bullet> {
     Bullet(std::string fromString, bool isBeam = false)
         : isBeam(isBeam) {
-        std::strncpy(reinterpret_cast<char *>(from), fromString.c_str(), 36);
+        std::strncpy(from, fromString.c_str(), 36);
+        from[36] = '\0';
     }
-    unsigned char from[36];
+
+    char from[37];
     bool isBeam = false;
 };
 } // namespace rtype::component

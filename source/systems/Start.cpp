@@ -18,11 +18,13 @@
 #include "GEngine/libdev/components/driver/output/Text.hpp"
 
 #include "components/Background.hpp"
+#include "components/Life.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
 #include "components/Score.hpp"
 #include "components/ScoreText.hpp"
 
+// #include <format>
 #include <random>
 
 namespace rtype {
@@ -33,9 +35,10 @@ void system::Start::init(void) {
 }
 
 void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
-    spawnEntity(component::ScoreText(), gengine::component::Transform2D({50, 50}, {5, 4}),
+    spawnEntity(component::ScoreText(), gengine::component::Transform2D({1280 - 315, 726}, {2, 2}),
                 gengine::component::driver::output::Drawable(2),
-                gengine::component::driver::output::Text("arial.ttf", "Score: 0", WHITE));
+                gengine::component::driver::output::Text("arcade.ttf", "Score: 0", WHITE));
+    // gengine::component::driver::output::Text("arcade.ttf", std::format("Score: {:08}", 0), WHITE));
 
     spawnEntity(component::Background(), gengine::component::Transform2D({0, 0}, {3.48, 3.48}),
                 gengine::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0),
@@ -46,6 +49,12 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
                 gengine::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0),
                 gengine::component::driver::output::Drawable(0),
                 gengine::component::driver::output::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE));
+
+    for (std::size_t i = 0; i < 2; i++) {
+        spawnEntity(component::Life(), gengine::component::Transform2D({99 - i * 66.f, 726}, {1, 1}, 0),
+                    gengine::component::driver::output::Drawable(1),
+                    gengine::component::driver::output::Sprite("r-typesheet42.gif", Rectangle{66, 0, 33, 17}, WHITE));
+    }
 }
 
 void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver &e) {
