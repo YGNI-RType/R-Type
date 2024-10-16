@@ -72,7 +72,7 @@ void PlayerShoot::shootBullet(const gengine::interface::component::RemoteDriver 
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
         if (player != from)
             continue;
-        spawnEntity(component::Bullet(),
+        spawnEntity(component::Bullet(from.getUUIDString()),
                     gengine::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
                     gengine::component::Velocity2D(BULLET_SPEED, 0),
                     gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{248, 85, 17, 12}, WHITE),

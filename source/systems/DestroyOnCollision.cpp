@@ -7,6 +7,7 @@
 */
 
 #include "systems/DestroyOnCollision.hpp"
+#include <cstring>
 
 #include "GEngine/libdev/components/SpanLife.hpp"
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
@@ -17,6 +18,17 @@ namespace rtype::system {
 void DestroyOnCollision::init(void) {
     subscribeToEvent<gengine::system::event::Collsion>(&DestroyOnCollision::destroyMonster);
     subscribeToEvent<gengine::system::event::Collsion>(&DestroyOnCollision::destroyPlayer);
+}
+
+void DestroyOnCollision::claimScore(ecs::entity::Entity entity_monster, const char *forPlayerUuid) {
+    auto &scores = getComponents<component::Score>();
+    auto &players = getComponents<gengine::interface::component::RemoteDriver>();
+
+    if (scores.contains(entity_monster)) {
+        for (auto [entity_player, player] : players)
+            if (std::strcmp(player.getUUIDString().c_str(), forPlayerUuid) == 0)
+                scores.get(entity_player).score += scores.get(entity_monster).score;
+    }
 }
 
 void DestroyOnCollision::destroyMonster(gengine::system::event::Collsion &e) {
@@ -33,6 +45,8 @@ void DestroyOnCollision::destroyMonster(gengine::system::event::Collsion &e) {
                                 gengine::component::driver::output::Sprite("r-typesheet44.gif", {129, 0, 33, 33}),
                                 gengine::component::driver::output::Animation("r-typesheet44.json/small", 0.06f),
                                 gengine::component::SpanLife(0.42));
+
+                claimScore(entity_monster, reinterpret_cast<const char *>(bullet.from));
                 killEntity(entity_monster);
                 if (!bullet.isBeam)
                     killEntity(entity_bullet);

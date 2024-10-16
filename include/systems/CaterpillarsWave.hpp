@@ -16,6 +16,7 @@
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "components/Caterpillar.hpp"
 #include "components/Monster.hpp"
+#include "components/Score.hpp"
 
 namespace rtype::system {
 class CaterpillarsWave
