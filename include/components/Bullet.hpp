@@ -9,7 +9,6 @@
 
 #include "GEngine/libdev/Component.hpp"
 
-#include "boost/uuid/uuid.hpp"
 #include <cstring>
 
 namespace rtype::component {
