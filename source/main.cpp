@@ -18,11 +18,13 @@
 
 //? ## GEngine Components ##
 #include "GEngine/libdev/components/HitBoxs.hpp"
+#include "GEngine/libdev/components/SpanLife.hpp"
 #include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/components/driver/output/Shape.hpp"
 
 //? ## GEngine Systems ##
+#include "GEngine/libdev/systems/AutoKiller.hpp"
 #include "GEngine/libdev/systems/Collisions.hpp"
 #include "GEngine/libdev/systems/MainLoop.hpp"
 #include "GEngine/libdev/systems/Motions.hpp"
@@ -30,6 +32,7 @@
 #include "GEngine/libdev/systems/driver/output/Animate.hpp"
 #include "GEngine/libdev/systems/driver/output/Draw.hpp"
 #include "GEngine/libdev/systems/driver/output/RenderWindow.hpp"
+#include "GEngine/libdev/systems/driver/output/SoundManager.hpp"
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 
 //? ### R-Type Components ###
@@ -69,6 +72,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<gengine::component::driver::output::Rectangle>();
     gameEngine.registerComponent<gengine::component::HitBoxSquare2D>();
     gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
+    gameEngine.registerComponent<gengine::component::SpanLife>();
 
     gameEngine.registerComponent<component::Player>();
     gameEngine.registerComponent<component::PlayerControl>();
@@ -86,6 +90,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     driverEngine.registerComponent<gengine::component::driver::output::Rectangle>();
     driverEngine.registerComponent<gengine::component::HitBoxSquare2D>();
     driverEngine.registerComponent<gengine::component::HitBoxCircle2D>();
+    driverEngine.registerComponent<gengine::component::SpanLife>();
 
     driverEngine.registerComponent<component::Player>();
     driverEngine.registerComponent<component::PlayerControl>();
@@ -103,11 +108,14 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     driverEngine.registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
     driverEngine.registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     driverEngine.registerSystem<system::InputsToGameEvents>();
+    driverEngine.registerSystem<gengine::system::driver::output::SoundManager>("../assets/sounds");
+    driverEngine.registerSystem<system::PlayerShoot>();
 
     gameEngine.registerSystem<gengine::system::driver::output::AnimationManager>("../assets/animations");
     gameEngine.registerSystem<gengine::system::driver::output::Animate>();
     gameEngine.registerSystem<gengine::system::Motion2D>();
     gameEngine.registerSystem<gengine::system::Collision2D>();
+    gameEngine.registerSystem<gengine::system::AutoKiller>();
     gameEngine.registerSystem<system::Start>();
     gameEngine.registerSystem<system::CaterpillarsBound>();
     gameEngine.registerSystem<system::CaterpillarsWave>();
