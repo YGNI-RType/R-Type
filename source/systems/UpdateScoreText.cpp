@@ -28,6 +28,6 @@ void UpdateScoreText::onGameLoop(gengine::system::event::GameLoop &e) {
 
     for (auto [entity, scoreText, text] : gengine::Zip(scoreTexts, texts))
         std::strncpy(text.str.data(), (std::string("Score: ") + std::to_string(totalScore).c_str()).c_str(), 64);
-        // text.str = "Score: " + std::to_string(totalScore);
+    // text.str = "Score: " + std::to_string(totalScore);
 }
 } // namespace rtype::system
