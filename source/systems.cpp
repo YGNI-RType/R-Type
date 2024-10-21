@@ -47,7 +47,7 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::system::driver::output::DrawText>();
     r->registerSystem<gengine::system::driver::output::DrawRectangle>();
 
-    r->registerSystem<gengine::system::driver::output::TextureManager>("../assets/sprites");
+    r->registerSystem<gengine::system::driver::output::TextureManager>("../assets/textures");
     r->registerSystem<gengine::system::driver::output::FontManager>("../assets/fonts");
     r->registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     r->registerSystem<gengine::system::driver::output::SoundManager>("../assets/sounds");

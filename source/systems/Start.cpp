@@ -20,7 +20,6 @@
 #include "components/Score.hpp"
 #include "components/ScoreText.hpp"
 
-// #include <format>
 #include <random>
 
 namespace rtype {
@@ -37,18 +36,18 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
 
     spawnEntity(component::Background(), geg::component::Transform2D({0, 0}, {3.48, 3.48}),
                 geg::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0), geg::component::io::Drawable(0),
-                geg::component::io::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE),
+                geg::component::io::Sprite("background.png", Rectangle{0, 0, 1120, 207}, WHITE),
                 geg::component::network::NetSend());
 
     spawnEntity(component::Background(), geg::component::Transform2D({1119 * 3.48, 0}, {3.48, 3.48}),
                 geg::component::Velocity2D(-DEFAULT_BACKGROUND_SPEED, 0), geg::component::io::Drawable(0),
-                geg::component::io::Sprite("r-typesheet0.png", Rectangle{0, 0, 1120, 207}, WHITE),
+                geg::component::io::Sprite("background.png", Rectangle{0, 0, 1120, 207}, WHITE),
                 geg::component::network::NetSend());
 
     for (std::size_t i = 0; i < 2; i++) {
         spawnEntity(component::Life(), geg::component::Transform2D({99 - i * 66.f, 726}, {1, 1}, 0),
                     geg::component::io::Drawable(1),
-                    geg::component::io::Sprite("r-typesheet42.gif", Rectangle{66, 0, 33, 17}, WHITE),
+                    geg::component::io::Sprite("spaceships.gif", Rectangle{66, 0, 33, 17}, WHITE),
                     geg::component::network::NetSend());
     }
 
@@ -71,14 +70,13 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
 }
 
 void system::Start::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {
-    spawnEntity(component::Player(), component::Invincible(3),
-                geg::component::Transform2D({0, float(rand() % 500)}, {3, 3}, 0), geg::component::Velocity2D(0, 0),
-                geg::component::io::Drawable(1),
-                geg::component::io::Sprite("r-typesheet42.gif", Rectangle{66, 17.f * (m_nbPlayer % 5), 33, 17}, WHITE),
-                geg::component::HitBoxSquare2D(33, 17), gengine::interface::component::RemoteLocal(e.uuid),
-                geg::component::io::Animation("r-typesheet42.json/spaceship", 0.1f,
-                                              geg::component::io::AnimationTrack::Idling, 2),
-                component::Score(0), geg::component::network::NetSend());
+    spawnEntity(
+        component::Player(), component::Invincible(3), geg::component::Transform2D({0, float(rand() % 500)}, {3, 3}, 0),
+        geg::component::Velocity2D(0, 0), geg::component::io::Drawable(1),
+        geg::component::io::Sprite("spaceships.gif", Rectangle{66, 17.f * (m_nbPlayer % 5), 33, 17}, WHITE),
+        geg::component::HitBoxSquare2D(33, 17), gengine::interface::component::RemoteLocal(e.uuid),
+        geg::component::io::Animation("spaceships.json/fly", 0.1f, geg::component::io::AnimationTrack::Idling, 2),
+        component::Score(0), geg::component::network::NetSend());
     m_nbPlayer++;
 }
 

@@ -8,8 +8,7 @@
 
 #include "systems/PlayerAnimation.hpp"
 
-// Spawn entity
-#include "GEngine/libdev/Component.hpp" // gengine::Zip
+#include "GEngine/libdev/Component.hpp"
 #include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/components/driver/output/Drawable.hpp"

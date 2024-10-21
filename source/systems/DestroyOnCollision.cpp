@@ -47,8 +47,8 @@ void DestroyOnCollision::destroyMonster(geg::event::Collision &e) {
                 if (transforms.contains(entity_monster))
                     spawnEntity(gengine::component::Transform2D(transforms.get(entity_monster).pos, {2, 2}),
                                 gengine::component::driver::output::Drawable(3),
-                                gengine::component::driver::output::Sprite("r-typesheet44.gif", {129, 0, 33, 33}),
-                                gengine::component::driver::output::Animation("r-typesheet44.json/small", 0.06f),
+                                gengine::component::driver::output::Sprite("explosions.gif", {129, 0, 33, 33}),
+                                gengine::component::driver::output::Animation("explosions.json/small", 0.06f),
                                 gengine::component::SpanLife(0.42));
 
                 claimScore(entity_monster, bullet.from.c_str());

@@ -43,10 +43,9 @@ void EnemyShoot::shoot(event::EnemyShootEvent &e) {
                 spawnEntity(component::BulletEnemy(),
                             geg::component::Transform2D({planeTransform.pos.x, planeTransform.pos.y}, {2, 2}),
                             geg::component::Velocity2D(velocity),
-                            geg::component::io::Sprite("r-typesheet43.gif", Rectangle{136, 6, 17, 6}, WHITE),
-                            geg::component::io::Animation("r-typesheet43.json/bullet", 0.1f),
-                            geg::component::io::Drawable(1), geg::component::HitBoxSquare2D(7, 6),
-                            geg::component::network::NetSend());
+                            geg::component::io::Sprite("bullets.gif", Rectangle{136, 6, 17, 6}, WHITE),
+                            geg::component::io::Animation("bullets.json/small", 0.1f), geg::component::io::Drawable(1),
+                            geg::component::HitBoxSquare2D(7, 6), geg::component::network::NetSend());
             }
         }
         randomPlayer--;
