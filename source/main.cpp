@@ -41,6 +41,7 @@
 //? ### R-Type Components ###
 #include "components/Background.hpp"
 #include "components/Bullet.hpp"
+#include "components/BulletEnemy.hpp"
 #include "components/Caterpillar.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
@@ -55,6 +56,7 @@
 #include "systems/CaterpillarsWave.hpp"
 #include "systems/ClearEntities.hpp"
 #include "systems/DestroyOnCollision.hpp"
+#include "systems/EnemyShoot.hpp"
 #include "systems/InputsToGameEvents.hpp"
 #include "systems/PlanesAutoMotion.hpp"
 #include "systems/PlanesWave.hpp"
@@ -65,10 +67,21 @@
 #include "systems/UpdateScoreText.hpp"
 
 //? ### R-Type Events ###
+#include "events/EnemyShootEvent.hpp"
 #include "events/Movement.hpp"
 #include "events/Shoot.hpp"
 
 namespace rtype {
+
+void registerEvents(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
+
+    driverEngine
+        .registerSystem<gengine::interface::network::system::ClientEventPublisher<event::Movement, event::Shoot>>();
+
+    gameEngine
+        .registerSystem<gengine::interface::network::system::ServerEventReceiver<event::Movement, event::Shoot>>();
+}
+
 void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
     gameEngine.registerComponent<gengine::component::Transform2D>();
     gameEngine.registerComponent<gengine::component::Velocity2D>();
@@ -85,6 +98,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<component::Monster>();
     gameEngine.registerComponent<component::Background>();
     gameEngine.registerComponent<component::Bullet>();
+    gameEngine.registerComponent<component::BulletEnemy>();
     gameEngine.registerComponent<component::Plane>();
     gameEngine.registerComponent<component::Caterpillar>();
     gameEngine.registerComponent<component::Score>();
@@ -106,6 +120,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     driverEngine.registerComponent<component::Monster>();
     driverEngine.registerComponent<component::Background>();
     driverEngine.registerComponent<component::Bullet>();
+    driverEngine.registerComponent<component::BulletEnemy>();
     driverEngine.registerComponent<component::Plane>();
     driverEngine.registerComponent<component::Caterpillar>();
     driverEngine.registerComponent<component::Score>();
@@ -144,6 +159,7 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     gameEngine.registerSystem<system::ClearEntities>();
     gameEngine.registerSystem<system::DestroyOnCollision>();
     gameEngine.registerSystem<system::UpdateScoreText>();
+    gameEngine.registerSystem<system::EnemyShoot>();
 }
 } // namespace rtype
 
@@ -156,12 +172,7 @@ int main(int argc, char **argv) {
     gengine::driver::Engine driverEngine;
     gengine::game::Engine gameEngine;
 
-    driverEngine.registerSystem<
-        gengine::interface::network::system::ClientEventPublisher<rtype::event::Movement, rtype::event::Shoot>>();
-
-    gameEngine.registerSystem<
-        gengine::interface::network::system::ServerEventReceiver<rtype::event::Movement, rtype::event::Shoot>>();
-
+    rtype::registerEvents(gameEngine, driverEngine);
     rtype::registerComponents(gameEngine, driverEngine);
     rtype::registerSystems(gameEngine, driverEngine);
 

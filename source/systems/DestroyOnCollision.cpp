@@ -59,17 +59,20 @@ void DestroyOnCollision::destroyMonster(gengine::system::event::Collsion &e) {
 void DestroyOnCollision::destroyPlayer(gengine::system::event::Collsion &e) {
     auto &players = getComponents<component::Player>();
     auto &monsters = getComponents<component::Monster>();
+    auto &bulletsEnemy = getComponents<component::BulletEnemy>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
 
     for (auto [entityPlayer, player, transform] : gengine::Zip(players, transforms)) {
         for (auto [entityMonster, monster] : monsters) {
             if ((e.entity1 == entityPlayer || e.entity2 == entityPlayer) &&
                 (e.entity1 == entityMonster || e.entity2 == entityMonster)) {
-                spawnEntity(gengine::component::Transform2D(transform.pos, {3, 3}),
-                            gengine::component::driver::output::Drawable(3),
-                            gengine::component::driver::output::Sprite("r-typesheet1.gif", {67, 342, 33, 30}),
-                            gengine::component::driver::output::Animation("r-typesheet1.json/playerdeath", 0.06f),
-                            gengine::component::SpanLife(0.42));
+                // playerHit(entityPlayer, player, transform);
+                return;
+            }
+        }
+        for (auto [entityBulletEnemy, bulletEnemy] : bulletsEnemy) {
+            if ((e.entity1 == entityPlayer || e.entity2 == entityPlayer) &&
+                (e.entity1 == entityBulletEnemy || e.entity2 == entityBulletEnemy)) {
                 playerHit(entityPlayer, player, transform);
                 return;
             }
@@ -79,6 +82,10 @@ void DestroyOnCollision::destroyPlayer(gengine::system::event::Collsion &e) {
 
 void DestroyOnCollision::playerHit(ecs::entity::Entity entity, component::Player &player,
                                    gengine::component::Transform2D &transform) {
+    spawnEntity(gengine::component::Transform2D(transform.pos, {3, 3}), gengine::component::driver::output::Drawable(3),
+                gengine::component::driver::output::Sprite("r-typesheet1.gif", {67, 342, 33, 30}),
+                gengine::component::driver::output::Animation("r-typesheet1.json/playerdeath", 0.06f),
+                gengine::component::SpanLife(0.42));
     player.life--;
 
     if (player.life > 0) {
