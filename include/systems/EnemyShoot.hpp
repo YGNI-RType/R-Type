@@ -25,11 +25,12 @@
 
 namespace rtype::system {
 
-class EnemyShoot
-    : public gengine::System<EnemyShoot, component::Monster, component::BulletEnemy, component::Plane,
-                             gengine::interface::component::RemoteDriver, gengine::component::Transform2D> {
+class EnemyShoot : public gengine::System<EnemyShoot, component::Monster, component::BulletEnemy, component::Plane,
+                                          gengine::interface::component::RemoteDriver, gengine::component::Transform2D,
+                                          gengine::component::HitBoxSquare2D> {
 public:
     void init(void) override;
     void shoot(event::EnemyShootEvent &);
+    void rotateBullets(gengine::system::event::GameLoop &);
 };
 } // namespace rtype::system

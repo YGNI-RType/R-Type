@@ -21,26 +21,30 @@
 namespace rtype::system {
 void EnemyShoot::init(void) {
     subscribeToEvent<event::EnemyShootEvent>(&EnemyShoot::shoot);
+    subscribeToEvent<gengine::system::event::GameLoop>(&EnemyShoot::rotateBullets);
 }
 
 void EnemyShoot::shoot(event::EnemyShootEvent &e) {
     auto &planes = getComponents<component::Plane>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
     auto &players = getComponents<gengine::interface::component::RemoteDriver>();
+    auto &hitboxes = getComponents<gengine::component::HitBoxSquare2D>();
 
-    std::cout << players.size() << std::endl;
     std::random_device dev;
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist6(1, players.size());
     int randomPlayer = dist6(rng);
-    for (auto [entity, player, playerTransform] : gengine::Zip(players, transforms)) {
+    //TODO Remove hitboxes if useless
+    for (auto [entity, player, playerTransform, playerHitbox] : gengine::Zip(players, transforms, hitboxes)) {
         if (randomPlayer == 1) {
             for (auto [planeEntity, plane, planeTransform] : gengine::Zip(planes, transforms)) {
                 if (planeEntity != e.from)
                     continue;
-                gengine::component::Velocity2D direction = gengine::component::Velocity2D(
+                gengine::component::Velocity2D velocity = gengine::component::Velocity2D(
+                    // {playerTransform.pos.x + playerHitbox.width / 2 * playerTransform.scale.x - planeTransform.pos.x,
+                    //  playerTransform.pos.y + playerHitbox.height / 2 * playerTransform.scale.y -
+                    //  planeTransform.pos.y});
                     {playerTransform.pos.x - planeTransform.pos.x, playerTransform.pos.y - planeTransform.pos.y});
-                gengine::component::Velocity2D velocity(direction);
                 velocity.x = velocity.x / sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) * BULLET_SPEED_ENEMY;
                 velocity.y = velocity.y / sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) * BULLET_SPEED_ENEMY;
                 float rotation = atan2(velocity.y, velocity.x) * 180 / M_PI;
@@ -48,12 +52,21 @@ void EnemyShoot::shoot(event::EnemyShootEvent &e) {
                     component::BulletEnemy(),
                     gengine::component::Transform2D({planeTransform.pos.x, planeTransform.pos.y}, {2, 2}, rotation),
                     gengine::component::Velocity2D(velocity),
-                    gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{248, 85, 17, 12}, RED),
-                    gengine::component::driver::output::Drawable(1), gengine::component::HitBoxSquare2D(17, 12));
+                    gengine::component::driver::output::Sprite("r-typesheet43.gif", Rectangle{136, 6, 7, 6}, WHITE),
+                    gengine::component::driver::output::Drawable(1), gengine::component::HitBoxSquare2D(7, 6));
             }
         }
         randomPlayer--;
     }
+}
+
+void EnemyShoot::rotateBullets(gengine::system::event::GameLoop &e) {
+    auto &bullets = getComponents<component::BulletEnemy>();
+    auto &transforms = getComponents<gengine::component::Transform2D>();
+
+    // Can rotate be from center ?
+    for (auto [entity, bullet, transform] : gengine::Zip(bullets, transforms))
+        transform.rotation += 8;
 }
 
 } // namespace rtype::system

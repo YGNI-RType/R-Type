@@ -31,7 +31,7 @@ void PlanesAutoMotion::onGameLoop(gengine::system::event::GameLoop &e) {
 
     auto &transforms = getComponents<gengine::component::Transform2D>();
     for (auto [entity, transform, plane] : gengine::Zip(transforms, planes))
-        if (transform.pos.x < 400 && transform.pos.x > 390)
+        if (transform.pos.x < 500 && transform.pos.x > 490)
             publishEvent(event::EnemyShootEvent(entity));
 }
 } // namespace rtype::system
