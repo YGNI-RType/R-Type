@@ -1,7 +1,7 @@
 mkdir -p build
 cd build
 touch .gitkeep
-cmake .. || { echo "CMake configuration failed"; exit 1; }
+cmake .. -DCMAKE_TOOLCHAIN_FILE=./cmake/define-compilers.cmake || { echo "CMake configuration failed"; exit 1; }
 cmake --build . || { echo "CMake build failed"; exit 1; }
 
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -11,7 +11,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 echo "Running server..."
-./r_type-server > server_output.log &
+./r-type_server > server_output.log &
 SERVER_PID=$!
 
 cleanup() {
@@ -27,7 +27,7 @@ trap cleanup SIGINT
 sleep 1
 
 echo "Running client..."
-./r_type-client
+./r-type_client
 
 kill $SERVER_PID 2>/dev/null
 
