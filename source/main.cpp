@@ -139,7 +139,6 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     gameEngine.registerSystem<system::PlayerMotion>();
     gameEngine.registerSystem<system::PlayerAnimation>();
     gameEngine.registerSystem<system::PlayerShoot>();
-    gameEngine.registerSystem<system::PlayerAnimation>();
     gameEngine.registerSystem<system::BackgroundMotion>();
     gameEngine.registerSystem<system::ClearEntities>();
     gameEngine.registerSystem<system::DestroyOnCollision>();
@@ -147,7 +146,12 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
 }
 } // namespace rtype
 
-int main(void) {
+int main(int argc, char **argv) {
+    std::string ip;
+    if (argc > 1)
+        ip = std::string(argv[1]);
+    else
+        ip = "127.0.0.1";
     gengine::driver::Engine driverEngine;
     gengine::game::Engine gameEngine;
 
@@ -160,7 +164,7 @@ int main(void) {
     rtype::registerComponents(gameEngine, driverEngine);
     rtype::registerSystems(gameEngine, driverEngine);
 
-    gengine::interface::network::Networked interface(driverEngine, gameEngine, "127.0.0.1", 4243, true);
+    gengine::interface::network::Networked interface(driverEngine, gameEngine, ip, 4243, true);
 
     interface.run();
 }
