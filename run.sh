@@ -11,12 +11,17 @@ if [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 echo "Running server..."
-./r-type_server > server_output.log &
+mkfifo pipe
+./r-type_server > pipe &
 SERVER_PID=$!
+tee server_output.log < pipe &
+TEE_PID=$!
 
 cleanup() {
     echo "\nCleaning up..."
     kill $SERVER_PID 2>/dev/null
+    kill $TEE_PID 2>/dev/null
+    rm pipe
     kill $CLIENT_PID 2>/dev/null
     exit 0
 }
@@ -30,6 +35,8 @@ echo "Running client..."
 ./r-type_client
 
 kill $SERVER_PID 2>/dev/null
+kill $TEE_PID 2>/dev/null
+rm pipe
 
 cd ..
 exit 0

@@ -73,7 +73,7 @@ void DestroyOnCollision::destroyPlayer(geg::event::Collision &e) {
         for (auto [entityBulletEnemy, bulletEnemy] : bulletsEnemy) {
             if ((e.entity1 == entityPlayer || e.entity2 == entityPlayer) &&
                 (e.entity1 == entityBulletEnemy || e.entity2 == entityBulletEnemy)) {
-                playerHit(entityPlayer, player, transform);
+                // playerHit(entityPlayer, player, transform);
                 return;
             }
         }

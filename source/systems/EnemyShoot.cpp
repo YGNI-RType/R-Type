@@ -34,19 +34,17 @@ void EnemyShoot::shoot(event::EnemyShootEvent &e) {
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist6(1, players.size());
     int randomPlayer = dist6(rng);
-    //TODO Remove hitboxes if useless
     for (auto [entity, player, playerTransform, playerHitbox] : gengine::Zip(players, transforms, hitboxes)) {
         if (randomPlayer == 1) {
             for (auto [planeEntity, plane, planeTransform] : gengine::Zip(planes, transforms)) {
                 if (planeEntity != e.from)
                     continue;
                 gengine::component::Velocity2D velocity = gengine::component::Velocity2D(
-                    // {playerTransform.pos.x + playerHitbox.width / 2 * playerTransform.scale.x - planeTransform.pos.x,
-                    //  playerTransform.pos.y + playerHitbox.height / 2 * playerTransform.scale.y -
-                    //  planeTransform.pos.y});
-                    {playerTransform.pos.x - planeTransform.pos.x, playerTransform.pos.y - planeTransform.pos.y});
-                velocity.x = velocity.x / sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) * BULLET_SPEED_ENEMY;
-                velocity.y = velocity.y / sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) * BULLET_SPEED_ENEMY;
+                    {playerTransform.pos.x + playerHitbox.width / 2 * playerTransform.scale.x - planeTransform.pos.x,
+                     playerTransform.pos.y + playerHitbox.height / 2 * playerTransform.scale.y - planeTransform.pos.y});
+                float norm = std::sqrt(std::pow(velocity.x, 2) + std::pow(velocity.y, 2));
+                velocity.x = velocity.x / norm * BULLET_SPEED_ENEMY;
+                velocity.y = velocity.y / norm * BULLET_SPEED_ENEMY;
                 float rotation = atan2(velocity.y, velocity.x) * 180 / M_PI;
                 spawnEntity(
                     component::BulletEnemy(),
