@@ -5,7 +5,7 @@
 ** main.cpp
 */
 
-// TODO reorder include
+#include "Constants.hpp"
 
 //? ## Engine ##
 #include "GEngine/driver/Engine.hpp"
@@ -44,6 +44,7 @@
 #include "components/Bullet.hpp"
 #include "components/BulletEnemy.hpp"
 #include "components/Caterpillar.hpp"
+#include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
 #include "components/Plane.hpp"
@@ -59,6 +60,7 @@
 #include "systems/DestroyOnCollision.hpp"
 #include "systems/EnemyShoot.hpp"
 #include "systems/InputsToGameEvents.hpp"
+#include "systems/Invincibility.hpp"
 #include "systems/PlanesAutoMotion.hpp"
 #include "systems/PlanesWave.hpp"
 #include "systems/PlayerAnimation.hpp"
@@ -68,6 +70,7 @@
 #include "systems/UpdateScoreText.hpp"
 
 //? ### R-Type Events ###
+#include "events/BecomeInvincible.hpp"
 #include "events/EnemyShootEvent.hpp"
 #include "events/Movement.hpp"
 #include "events/Shoot.hpp"
@@ -76,11 +79,11 @@ namespace rtype {
 
 void registerEvents(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
 
-    driverEngine
-        .registerSystem<gengine::interface::network::system::ClientEventPublisher<event::Movement, event::Shoot>>();
+    driverEngine.registerSystem<gengine::interface::network::system::ClientEventPublisher<event::Movement, event::Shoot,
+                                                                                          event::BecomeInvincible>>();
 
-    gameEngine
-        .registerSystem<gengine::interface::network::system::ServerEventReceiver<event::Movement, event::Shoot>>();
+    gameEngine.registerSystem<gengine::interface::network::system::ServerEventReceiver<event::Movement, event::Shoot,
+                                                                                       event::BecomeInvincible>>();
 }
 
 void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
@@ -117,6 +120,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<component::ScoreText>();
     gameEngine.registerComponent<component::Life>();
     gameEngine.registerComponent<component::Barriers>();
+    gameEngine.registerComponent<component::Invincible>();
 
     driverEngine.registerComponent<component::Player>();
     driverEngine.registerComponent<component::Monster>();
@@ -129,10 +133,12 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     driverEngine.registerComponent<component::ScoreText>();
     driverEngine.registerComponent<component::Life>();
     driverEngine.registerComponent<component::Barriers>();
+    driverEngine.registerComponent<component::Invincible>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
-    driverEngine.registerSystem<gengine::system::driver::output::RenderWindow>(1280, 750, "R-Type");
+    driverEngine.registerSystem<gengine::system::driver::output::RenderWindow>(WINDOW_WIDTH, WINDOW_TOTAL_HEIGHT,
+                                                                               "R-Type");
     driverEngine.registerSystem<gengine::system::driver::output::Draw2D>(BLACK);
     driverEngine.registerSystem<gengine::system::driver::output::DrawSprite>();
     driverEngine.registerSystem<gengine::system::driver::output::DrawText>();
@@ -162,6 +168,7 @@ void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine 
     gameEngine.registerSystem<system::DestroyOnCollision>();
     gameEngine.registerSystem<system::UpdateScoreText>();
     gameEngine.registerSystem<system::EnemyShoot>();
+    gameEngine.registerSystem<system::Invincibility>();
 }
 } // namespace rtype
 

@@ -14,6 +14,8 @@
 #include "GEngine/libdev/components/driver/output/Drawable.hpp"
 #include "GEngine/libdev/components/driver/output/Sprite.hpp"
 
+#include "components/Invincible.hpp"
+
 namespace rtype::system {
 void DestroyOnCollision::init(void) {
     subscribeToEvent<geg::event::Collision>(&DestroyOnCollision::destroyMonster);
@@ -35,8 +37,11 @@ void DestroyOnCollision::destroyMonster(geg::event::Collision &e) {
     auto &monsters = getComponents<component::Monster>();
     auto &bullets = getComponents<component::Bullet>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
+    auto &barriers = getComponents<component::Barriers>();
 
     for (auto [entity_monster, monster] : monsters) {
+        if (barriers.contains(entity_monster))
+            continue;
         for (auto [entity_bullet, bullet] : bullets) {
             if (e.entity1 == entity_monster && e.entity2 == entity_bullet) {
                 if (transforms.contains(entity_monster))
@@ -61,19 +66,22 @@ void DestroyOnCollision::destroyPlayer(geg::event::Collision &e) {
     auto &monsters = getComponents<component::Monster>();
     auto &bulletsEnemy = getComponents<component::BulletEnemy>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
+    auto &invincibles = getComponents<component::Invincible>();
 
     for (auto [entityPlayer, player, transform] : gengine::Zip(players, transforms)) {
+        if (invincibles.contains(entityPlayer))
+            continue;
         for (auto [entityMonster, monster] : monsters) {
             if ((e.entity1 == entityPlayer || e.entity2 == entityPlayer) &&
                 (e.entity1 == entityMonster || e.entity2 == entityMonster)) {
-                // playerHit(entityPlayer, player, transform);
+                playerHit(entityPlayer, player, transform);
                 return;
             }
         }
         for (auto [entityBulletEnemy, bulletEnemy] : bulletsEnemy) {
             if ((e.entity1 == entityPlayer || e.entity2 == entityPlayer) &&
                 (e.entity1 == entityBulletEnemy || e.entity2 == entityBulletEnemy)) {
-                // playerHit(entityPlayer, player, transform);
+                playerHit(entityPlayer, player, transform);
                 return;
             }
         }
@@ -89,6 +97,7 @@ void DestroyOnCollision::playerHit(ecs::entity::Entity entity, component::Player
     player.life--;
 
     if (player.life > 0) {
+        setComponent(entity, component::Invincible(3));
         transform.pos = {0, static_cast<float>(rand() % 500)};
         removeLife();
     } else {

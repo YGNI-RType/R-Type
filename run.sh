@@ -2,7 +2,7 @@ mkdir -p build
 cd build
 touch .gitkeep
 cmake .. -DCMAKE_TOOLCHAIN_FILE=./cmake/define-compilers.cmake || { echo "CMake configuration failed"; exit 1; }
-cmake --build . || { echo "CMake build failed"; exit 1; }
+cmake --build . --parallel 8 || { echo "CMake build failed"; exit 1; }
 
 if [[ "$(uname)" == "Darwin" ]]; then
     echo "Running on macOS. Copying GEngine..."

@@ -17,7 +17,7 @@ void ExSystem::init(void) {
 
 void ExSystem::onCustomEvent(event::ExEvent &e) {
     auto &components = getComponents<component::ExComponent>();
-    for (auto [entity, component] : components) {
+    for (auto &[entity, component] : components) {
         // Do something with component
     }
 }
@@ -25,7 +25,7 @@ void ExSystem::onCustomEvent(event::ExEvent &e) {
 void ExSystem::onGameLoop(gengine::system::event::GameLoop &e) {
     auto &components = getComponents<component::ExComponent>();
 
-    for (auto [entity, component] : components) {
+    for (auto &[entity, component] : components) {
         // Do something with component
     }
 }

@@ -7,6 +7,7 @@
 
 #include "systems/ClearEntities.hpp"
 #include "ecs/system/Base.hpp"
+#include "Constants.hpp"
 
 namespace rtype::system {
 void ClearEntities::init(void) {
@@ -30,9 +31,10 @@ void ClearEntities::clearBullets(void) {
 void ClearEntities::clearMonsters(void) {
     auto &monsters = getComponents<component::Monster>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
+    auto &barriers = getComponents<component::Barriers>();
 
     for (auto [entity, monster, transform] : gengine::Zip(monsters, transforms))
-        if (transform.pos.x < -100)
+        if (transform.pos.x < (barriers.contains(entity) ? -WINDOW_WIDTH : -100))
             killEntity(entity);
 }
 } // namespace rtype::system

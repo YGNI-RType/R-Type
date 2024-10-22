@@ -10,12 +10,13 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/components/Transforms.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
+#include "components/Barriers.hpp"
 #include "components/Bullet.hpp"
 #include "components/Monster.hpp"
 
 namespace rtype::system {
-class ClearEntities
-    : public gengine::System<ClearEntities, gengine::component::Transform2D, component::Bullet, component::Monster> {
+class ClearEntities : public gengine::System<ClearEntities, gengine::component::Transform2D, component::Bullet,
+                                             component::Monster, component::Barriers> {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);

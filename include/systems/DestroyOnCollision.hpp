@@ -15,8 +15,10 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/Systems.hpp"
 
+#include "components/Barriers.hpp"
 #include "components/Bullet.hpp"
 #include "components/BulletEnemy.hpp"
+#include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
@@ -27,9 +29,10 @@
 namespace rtype::system {
 class DestroyOnCollision
     : public gengine::System<DestroyOnCollision, component::Bullet, component::BulletEnemy, component::Monster,
-                             component::Life, component::Player, gengine::interface::component::RemoteDriver,
-                             gengine::component::Transform2D, component::Score,
-                             gengine::component::driver::output::Drawable, gengine::component::driver::output::Text> {
+                             component::Barriers, component::Life, component::Player, component::Invincible,
+                             gengine::interface::component::RemoteDriver, gengine::component::Transform2D,
+                             component::Score, gengine::component::driver::output::Drawable,
+                             gengine::component::driver::output::Text> {
 public:
     void init(void) override;
     void destroyMonster(geg::event::Collision &);
