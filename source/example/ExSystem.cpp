@@ -5,7 +5,7 @@
 ** ExSystem.cpp
 */
 
-#include "systems/ExSystem.hpp"
+#include "example/ExSystem.hpp"
 
 #include "GEngine/libdev/Component.hpp" // gengine::Zip
 

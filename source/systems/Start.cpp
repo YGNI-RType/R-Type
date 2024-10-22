@@ -18,6 +18,7 @@
 #include "GEngine/libdev/components/driver/output/Text.hpp"
 
 #include "components/Background.hpp"
+#include "components/Barriers.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
@@ -55,6 +56,11 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
                     gengine::component::driver::output::Drawable(1),
                     gengine::component::driver::output::Sprite("r-typesheet42.gif", Rectangle{66, 0, 33, 17}, WHITE));
     }
+
+    float scale = 5;
+    spawnEntity(component::Barriers(), gengine::component::Transform2D({200, 23 * scale}, {scale, scale}, 180),
+                gengine::component::Velocity2D(0, 0), gengine::component::driver::output::Drawable(0),
+                gengine::component::driver::output::Sprite("background.png", Rectangle{419, 225, 45, 23}, WHITE));
 }
 
 void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver &e) {

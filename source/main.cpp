@@ -95,6 +95,17 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<gengine::component::HitBoxCircle2D>();
     gameEngine.registerComponent<gengine::component::SpanLife>();
 
+    driverEngine.registerComponent<gengine::component::Transform2D>();
+    driverEngine.registerComponent<gengine::component::Velocity2D>();
+    driverEngine.registerComponent<gengine::component::driver::output::Animation>();
+    driverEngine.registerComponent<gengine::component::driver::output::Drawable>();
+    driverEngine.registerComponent<gengine::component::driver::output::Sprite>();
+    driverEngine.registerComponent<gengine::component::driver::output::Text>();
+    driverEngine.registerComponent<gengine::component::driver::output::Rectangle>();
+    driverEngine.registerComponent<gengine::component::HitBoxSquare2D>();
+    driverEngine.registerComponent<gengine::component::HitBoxCircle2D>();
+    driverEngine.registerComponent<gengine::component::SpanLife>();
+
     gameEngine.registerComponent<component::Player>();
     gameEngine.registerComponent<component::Monster>();
     gameEngine.registerComponent<component::Background>();
@@ -106,17 +117,6 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<component::ScoreText>();
     gameEngine.registerComponent<component::Life>();
     gameEngine.registerComponent<component::Barriers>();
-
-    driverEngine.registerComponent<gengine::component::Transform2D>();
-    driverEngine.registerComponent<gengine::component::Velocity2D>();
-    driverEngine.registerComponent<gengine::component::driver::output::Animation>();
-    driverEngine.registerComponent<gengine::component::driver::output::Drawable>();
-    driverEngine.registerComponent<gengine::component::driver::output::Sprite>();
-    driverEngine.registerComponent<gengine::component::driver::output::Text>();
-    driverEngine.registerComponent<gengine::component::driver::output::Rectangle>();
-    driverEngine.registerComponent<gengine::component::HitBoxSquare2D>();
-    driverEngine.registerComponent<gengine::component::HitBoxCircle2D>();
-    driverEngine.registerComponent<gengine::component::SpanLife>();
 
     driverEngine.registerComponent<component::Player>();
     driverEngine.registerComponent<component::Monster>();
