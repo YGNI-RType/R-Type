@@ -40,6 +40,7 @@
 
 //? ### R-Type Components ###
 #include "components/Background.hpp"
+#include "components/Barriers.hpp"
 #include "components/Bullet.hpp"
 #include "components/BulletEnemy.hpp"
 #include "components/Caterpillar.hpp"
@@ -104,6 +105,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     gameEngine.registerComponent<component::Score>();
     gameEngine.registerComponent<component::ScoreText>();
     gameEngine.registerComponent<component::Life>();
+    gameEngine.registerComponent<component::Barriers>();
 
     driverEngine.registerComponent<gengine::component::Transform2D>();
     driverEngine.registerComponent<gengine::component::Velocity2D>();
@@ -126,6 +128,7 @@ void registerComponents(gengine::game::Engine &gameEngine, gengine::driver::Engi
     driverEngine.registerComponent<component::Score>();
     driverEngine.registerComponent<component::ScoreText>();
     driverEngine.registerComponent<component::Life>();
+    driverEngine.registerComponent<component::Barriers>();
 }
 
 void registerSystems(gengine::game::Engine &gameEngine, gengine::driver::Engine &driverEngine) {
