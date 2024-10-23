@@ -9,6 +9,8 @@
 
 #include <random>
 
+#include "events/EnemyShootEvent.hpp"
+
 namespace rtype::system {
 void PlanesAutoMotion::init(void) {
     subscribeToEvent<gengine::system::event::GameLoop>(&PlanesAutoMotion::onGameLoop);
@@ -23,9 +25,13 @@ void PlanesAutoMotion::onGameLoop(gengine::system::event::GameLoop &e) {
 
     auto &motions = getComponents<gengine::component::Velocity2D>();
     auto &planes = getComponents<component::Plane>();
-
     for (auto [entity, motion, plane] : gengine::Zip(motions, planes))
         if (change_chance_fork(gen) == 0)
             motion.y = motion_fork(gen);
+
+    auto &transforms = getComponents<gengine::component::Transform2D>();
+    for (auto [entity, transform, plane] : gengine::Zip(transforms, planes))
+        if (transform.pos.x < 500 && transform.pos.x > 490)
+            publishEvent(event::EnemyShootEvent(entity));
 }
 } // namespace rtype::system

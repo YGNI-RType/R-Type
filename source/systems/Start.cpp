@@ -5,6 +5,8 @@
 ** Start.hpp
 */
 
+#include "Constants.hpp"
+
 #include "systems/Start.hpp"
 
 #include "GEngine/libdev/components/HitBoxs.hpp"
@@ -18,6 +20,8 @@
 #include "GEngine/libdev/components/driver/output/Text.hpp"
 
 #include "components/Background.hpp"
+#include "components/Barriers.hpp"
+#include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
@@ -55,12 +59,30 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
                     gengine::component::driver::output::Drawable(1),
                     gengine::component::driver::output::Sprite("r-typesheet42.gif", Rectangle{66, 0, 33, 17}, WHITE));
     }
+
+    float scale = 7;
+    float width = 45;
+    float height = 23;
+    spawnEntity(
+        component::Barriers(), gengine::component::Transform2D({1800, height * scale}, {scale, scale}, 180),
+        gengine::component::Velocity2D(-1, 0), gengine::component::driver::output::Drawable(2),
+        gengine::component::driver::output::Sprite("background.png", Rectangle{419, 225, width, height}, WHITE));
+
+    scale = 7;
+    width = 279;
+    height = 8;
+    spawnEntity(
+        component::Barriers(), component::Monster(), gengine::component::HitBoxSquare2D(width, height),
+        gengine::component::Transform2D({1000, WINDOW_HEIGHT - height * scale}, {scale, scale}, 0),
+        gengine::component::Velocity2D(-1, 0), gengine::component::driver::output::Drawable(2),
+        gengine::component::driver::output::Sprite("background.png", Rectangle{417, 284, width, height}, WHITE));
 }
 
 void system::Start::onNewRemoteDriver(gengine::interface::event::NewRemoteDriver &e) {
     spawnEntity(
-        component::Player(), gengine::component::Transform2D({0, float(rand() % 500)}, {3, 3}, 0),
-        gengine::component::Velocity2D(0, 0), gengine::component::driver::output::Drawable(1),
+        component::Player(), component::Invincible(3),
+        gengine::component::Transform2D({0, float(rand() % 500)}, {3, 3}, 0), gengine::component::Velocity2D(0, 0),
+        gengine::component::driver::output::Drawable(1),
         gengine::component::driver::output::Sprite("r-typesheet42.gif", Rectangle{66, 17.f * (m_nbPlayer % 5), 33, 17},
                                                    WHITE),
         gengine::component::HitBoxSquare2D(33, 17), gengine::interface::component::RemoteDriver(e.remote),

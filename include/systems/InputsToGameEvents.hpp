@@ -11,6 +11,7 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/Systems.hpp"
 
+#include "events/BecomeInvincible.hpp"
 #include "events/Movement.hpp"
 #include "events/Shoot.hpp"
 
@@ -27,6 +28,8 @@ public:
     void moveRight(geg::event::io::KeyRightEvent &e);
 
     void shoot(geg::event::io::KeySpaceEvent &e);
+
+    void becomeInvincible(geg::event::io::KeyPEvent &e);
 
 private:
     event::Shoot::State m_shootState;
