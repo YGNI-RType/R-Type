@@ -13,7 +13,7 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 
-#include "GEngine/interface/events/RemoteEvent.hpp"
+#include "GEngine/interface/components/RemoteLocal.hpp"
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
 #include "events/Shoot.hpp"
 
@@ -26,11 +26,11 @@
 namespace rtype::system {
 
 class EnemyShoot : public gengine::System<EnemyShoot, component::Monster, component::BulletEnemy, component::Plane,
-                                          gengine::interface::component::RemoteDriver, gengine::component::Transform2D,
-                                          gengine::component::HitBoxSquare2D> {
+                                          gengine::interface::component::RemoteLocal, gengine::component::Transform2D,
+                                          gengine::component::HitBoxSquare2D>, public gengine::RemoteSystem {
 public:
     void init(void) override;
     void shoot(event::EnemyShootEvent &);
-    void rotateBullets(gengine::system::event::GameLoop &);
+    // void rotateBullets(gengine::system::event::GameLoop &);
 };
 } // namespace rtype::system

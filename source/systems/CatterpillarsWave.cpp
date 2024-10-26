@@ -41,11 +41,11 @@ void CaterpillarsWave::spawnWave(void) {
     int direction = (firstY < 360) ? 1 : -1;
 
     for (std::size_t i = 0; i < 5; i++) {
-        spawnEntity(gengine::component::Transform2D({x, y}, {2, 2}, 0),
-                    gengine::component::Velocity2D(-CATERPILLAR_DEFAULT_SPEED, CATERPILLAR_DEFAULT_SPEED * direction),
-                    gengine::component::driver::output::Sprite("r-typesheet8.gif", rec, WHITE),
-                    gengine::component::driver::output::Drawable(1), component::Caterpillar(), component::Monster(),
-                    gengine::component::HitBoxSquare2D(rec.width, rec.height), component::Score(100));
+        spawnEntity(geg::component::Transform2D({x, y}, {2, 2}, 0),
+                    geg::component::Velocity2D(-CATERPILLAR_DEFAULT_SPEED, CATERPILLAR_DEFAULT_SPEED * direction),
+                    geg::component::io::Sprite("r-typesheet8.gif", rec, WHITE),
+                    geg::component::io::Drawable(1), component::Caterpillar(), component::Monster(),
+                    geg::component::HitBoxSquare2D(rec.width, rec.height), component::Score(100), geg::component::network::NetSend());
         x += 50;
         y += 50 * -direction;
     }

@@ -23,11 +23,14 @@ void PlanesAutoMotion::onGameLoop(gengine::system::event::GameLoop &e) {
     std::uniform_int_distribution<> change_chance_fork(0, 10);
     std::uniform_int_distribution<> motion_fork(-1, 1);
 
-    auto &motions = getComponents<gengine::component::Velocity2D>();
+    auto &motions = getComponents<geg::component::Velocity2D>();
     auto &planes = getComponents<component::Plane>();
-    for (auto [entity, motion, plane] : gengine::Zip(motions, planes))
-        if (change_chance_fork(gen) == 0)
+    auto &netsends = getComponents<geg::component::network::NetSend>();
+    for (auto [entity, motion, plane, netsend] : gengine::Zip(motions, planes, netsends))
+        if (change_chance_fork(gen) == 0) {
             motion.y = motion_fork(gen);
+            netsend.update();
+        }
 
     auto &transforms = getComponents<gengine::component::Transform2D>();
     for (auto [entity, transform, plane] : gengine::Zip(transforms, planes))

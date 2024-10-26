@@ -16,7 +16,7 @@ void UpdateScoreText::init(void) {
 
 void UpdateScoreText::onGameLoop(gengine::system::event::GameLoop &e) {
     auto &scores = getComponents<component::Score>();
-    auto &players = getComponents<gengine::interface::component::RemoteDriver>();
+    auto &players = getComponents<gengine::interface::component::RemoteLocal>();
 
     int totalScore = 0;
 

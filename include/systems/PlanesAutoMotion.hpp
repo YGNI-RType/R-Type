@@ -8,15 +8,14 @@
 #pragma once
 
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/components/Transforms.hpp"
-#include "GEngine/libdev/components/Velocities.hpp"
+#include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 
 #include "components/Plane.hpp"
 
 namespace rtype::system {
-class PlanesAutoMotion : public gengine::System<PlanesAutoMotion, gengine::component::Velocity2D,
-                                                gengine::component::Transform2D, component::Plane> {
+class PlanesAutoMotion : public gengine::System<PlanesAutoMotion, geg::component::Velocity2D,
+                                                geg::component::Transform2D, component::Plane, geg::component::network::NetSend> {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);

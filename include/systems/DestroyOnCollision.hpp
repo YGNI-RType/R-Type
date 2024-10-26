@@ -9,7 +9,7 @@
 
 #include "ecs/entity/Entity.hpp"
 
-#include "GEngine/interface/components/RemoteDriver.hpp"
+#include "GEngine/interface/components/RemoteLocal.hpp"
 #include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/Events.hpp"
 #include "GEngine/libdev/System.hpp"
@@ -30,7 +30,7 @@ namespace rtype::system {
 class DestroyOnCollision
     : public gengine::System<DestroyOnCollision, component::Bullet, component::BulletEnemy, component::Monster,
                              component::Barriers, component::Life, component::Player, component::Invincible,
-                             gengine::interface::component::RemoteDriver, gengine::component::Transform2D,
+                             gengine::interface::component::RemoteLocal, gengine::component::Transform2D,
                              component::Score, gengine::component::driver::output::Drawable,
                              gengine::component::driver::output::Text> {
 public:

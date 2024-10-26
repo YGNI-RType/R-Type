@@ -18,15 +18,15 @@
 
 namespace rtype::system {
 void PlayerAnimation::init(void) {
-    subscribeToEvent<gengine::interface::network::event::RemoteEvent<event::Movement>>(&PlayerAnimation::animatePlayer);
+    subscribeToEvent<gengine::interface::event::SharedEvent<event::Movement>>(&PlayerAnimation::animatePlayer);
 }
 
-void PlayerAnimation::animatePlayer(gengine::interface::network::event::RemoteEvent<event::Movement> &e) {
-    auto &remotes = getComponents<gengine::interface::component::RemoteDriver>();
+void PlayerAnimation::animatePlayer(gengine::interface::event::SharedEvent<event::Movement> &e) {
+    auto &remotes = getComponents<gengine::interface::component::RemoteLocal>();
     auto &animations = getComponents<gengine::component::driver::output::Animation>();
 
     for (auto [entity, remote, anim] : gengine::Zip(remotes, animations)) {
-        if (remote != e.remote) // check if its the same remote (zip)
+        if (remote.getUUIDBytes() != e.remoteUUID) // check if its the same remote (zip)
             continue;
         if (e->state == event::Movement::DOWN || e->state == event::Movement::DOWN_LEFT ||
             e->state == event::Movement::DOWN_RIGHT) {

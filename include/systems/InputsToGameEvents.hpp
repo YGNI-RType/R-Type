@@ -17,7 +17,7 @@
 
 namespace rtype::system {
 class InputsToGameEvents
-    : public gengine::System<InputsToGameEvents, gengine::system::driver::output::KeyboardCatcher> {
+    : public gengine::System<InputsToGameEvents, geg::system::io::KeyboardCatcher> {
 public:
     void init(void) override;
     void sendEvents(geg::event::GameLoop &e);
