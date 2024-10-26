@@ -70,7 +70,7 @@ void PlayerShoot::shootBullet(const uuids::uuid &from) {
         spawnEntity(component::Bullet(player.getUUIDString()),
                     geg::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
                     geg::component::Velocity2D(BULLET_SPEED, 0),
-                    geg::component::io::Sprite("r-typesheet1.gif", Rectangle{248, 85, 17, 12}, WHITE),
+                    geg::component::io::Sprite("effects.gif", Rectangle{248, 85, 17, 12}, WHITE),
                     geg::component::io::Drawable(1), gengine::component::HitBoxSquare2D(17, 12),
                     geg::component::network::NetSend());
         return;

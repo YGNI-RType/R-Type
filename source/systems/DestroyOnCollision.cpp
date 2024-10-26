@@ -91,8 +91,8 @@ void DestroyOnCollision::destroyPlayer(geg::event::Collision &e) {
 void DestroyOnCollision::playerHit(ecs::entity::Entity entity, component::Player &player,
                                    gengine::component::Transform2D &transform) {
     spawnEntity(gengine::component::Transform2D(transform.pos, {3, 3}), gengine::component::driver::output::Drawable(3),
-                gengine::component::driver::output::Sprite("r-typesheet1.gif", {67, 342, 33, 30}),
-                gengine::component::driver::output::Animation("r-typesheet1.json/playerdeath", 0.06f),
+                gengine::component::driver::output::Sprite("effects.gif", {67, 342, 33, 30}),
+                gengine::component::driver::output::Animation("effects.json/playerdeath", 0.06f),
                 gengine::component::SpanLife(0.42));
     player.life--;
 
