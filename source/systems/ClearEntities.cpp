@@ -32,9 +32,10 @@ void ClearEntities::clearMonsters(void) {
     auto &monsters = getComponents<component::Monster>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
     auto &barriers = getComponents<component::Barriers>();
+    auto &sprites = getComponents<geg::component::io::Sprite>();
 
-    for (auto [entity, monster, transform] : gengine::Zip(monsters, transforms))
-        if (transform.pos.x < (barriers.contains(entity) ? -WINDOW_WIDTH : -100))
+    for (auto [entity, monster, transform, sprite] : gengine::Zip(monsters, transforms, sprites))
+        if (transform.pos.x < -(sprite.src.width * transform.scale.x))
             killEntity(entity);
 }
 } // namespace rtype::system
