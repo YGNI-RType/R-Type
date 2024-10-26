@@ -24,7 +24,7 @@ void DestroyOnCollision::init(void) {
 
 void DestroyOnCollision::claimScore(ecs::entity::Entity entity_monster, const char *forPlayerUuid) {
     auto &scores = getComponents<component::Score>();
-    auto &players = getComponents<gengine::interface::component::RemoteDriver>();
+    auto &players = getComponents<gengine::interface::component::RemoteLocal>();
 
     if (scores.contains(entity_monster)) {
         for (auto [entity_player, player] : players)

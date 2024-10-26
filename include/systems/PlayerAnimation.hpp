@@ -14,15 +14,15 @@
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "GEngine/libdev/systems/events/driver/input/Keyboard.hpp"
 
-#include "GEngine/interface/events/RemoteDriver.hpp"
-#include "GEngine/interface/events/RemoteEvent.hpp"
+#include "GEngine/interface/events/RemoteLocal.hpp"
+#include "GEngine/interface/events/SharedEvent.hpp"
 #include "events/Movement.hpp"
 
 namespace rtype::system {
-class PlayerAnimation : public gengine::System<PlayerAnimation, gengine::interface::component::RemoteDriver,
-                                               gengine::component::driver::output::Animation> {
+class PlayerAnimation : public gengine::System<PlayerAnimation, gengine::interface::component::RemoteLocal,
+                                               gengine::component::driver::output::Animation>, public gengine::LocalSystem {
 public:
     void init(void) override;
-    void animatePlayer(gengine::interface::network::event::RemoteEvent<event::Movement> &e);
+    void animatePlayer(gengine::interface::event::SharedEvent<event::Movement> &e);
 };
 } // namespace rtype::system

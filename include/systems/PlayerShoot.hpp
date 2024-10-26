@@ -7,35 +7,35 @@
 
 #pragma once
 
-#include "GEngine/interface/components/RemoteDriver.hpp"
+#include "GEngine/interface/components/RemoteLocal.hpp"
 
 #include "GEngine/libdev/Events.hpp"
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/Systems.hpp"
 
-#include "GEngine/interface/events/RemoteDriver.hpp"
-#include "GEngine/interface/events/RemoteEvent.hpp"
+#include "GEngine/interface/events/RemoteLocal.hpp"
+#include "GEngine/interface/events/SharedEvent.hpp"
 
 #include "events/Shoot.hpp"
 
 namespace rtype::system {
 class PlayerShoot
-    : public gengine::System<PlayerShoot, gengine::interface::component::RemoteDriver, gengine::component::Transform2D,
+    : public gengine::System<PlayerShoot, gengine::interface::component::RemoteLocal, gengine::component::Transform2D,
                              gengine::system::driver::output::SoundManager> {
 public:
     void init(void) override;
-    void newShooter(gengine::interface::event::NewRemoteDriver &e);
-    void deleteShooter(gengine::interface::event::DeleteRemoteDriver &e);
-    void shoot(gengine::interface::network::event::RemoteEvent<event::Shoot> &);
+    void newShooter(gengine::interface::event::NewRemoteLocal &e);
+    void deleteShooter(gengine::interface::event::DeleteRemoteLocal &e);
+    void shoot(gengine::interface::event::SharedEvent<event::Shoot> &);
     void bulletSound(geg::event::io::KeySpaceEvent &e);
 
 private:
-    void shootBullet(const gengine::interface::component::RemoteDriver &from);
-    void shootBeam(const gengine::interface::component::RemoteDriver &from, int bulletScale);
+    void shootBullet(const uuids::uuid &from);
+    void shootBeam(const uuids::uuid &from, int bulletScale);
     void spawnBeam(const gengine::component::Transform2D &tr, const std::string &from, int bulletScale);
     long getChargeDuration(const std::chrono::time_point<std::chrono::system_clock> &lastCharge);
 
     using shoot_infos_t = std::pair<event::Shoot::State, std::chrono::time_point<std::chrono::system_clock>>;
-    std::unordered_map<gengine::interface::component::RemoteDriver, shoot_infos_t> m_shooterMap;
+    std::unordered_map<uuids::uuid, shoot_infos_t> m_shooterMap;
 };
 } // namespace rtype::system

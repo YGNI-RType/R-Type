@@ -10,8 +10,8 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 
-#include "GEngine/interface/events/RemoteDriver.hpp"
-#include "GEngine/interface/events/RemoteEvent.hpp"
+#include "GEngine/interface/events/SharedEvent.hpp"
+#include "GEngine/interface/events/RemoteLocal.hpp"
 
 #include "components/Invincible.hpp"
 
@@ -20,10 +20,10 @@
 namespace rtype::system {
 
 class Invincibility
-    : public gengine::System<Invincibility, component::Invincible, gengine::interface::component::RemoteDriver> {
+    : public gengine::System<Invincibility, component::Invincible, gengine::interface::component::RemoteLocal> {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);
-    void becomeInvincible(gengine::interface::network::event::RemoteEvent<event::BecomeInvincible> &e);
+    void becomeInvincible(gengine::interface::event::SharedEvent<event::BecomeInvincible> &e);
 };
 } // namespace rtype::system

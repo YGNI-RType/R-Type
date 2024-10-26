@@ -8,14 +8,14 @@
 #pragma once
 
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/components/Transforms.hpp"
+#include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "components/Barriers.hpp"
 #include "components/Bullet.hpp"
 #include "components/Monster.hpp"
 
 namespace rtype::system {
-class ClearEntities : public gengine::System<ClearEntities, gengine::component::Transform2D, component::Bullet,
+class ClearEntities : public gengine::System<ClearEntities, geg::component::Transform2D, geg::component::io::Sprite, component::Bullet,
                                              component::Monster, component::Barriers> {
 public:
     void init(void) override;
