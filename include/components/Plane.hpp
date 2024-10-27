@@ -9,14 +9,9 @@
 
 #include "GEngine/libdev/Component.hpp"
 
-#define PLANE_DEFAULT_SPEED 5
-
 namespace rtype::component {
 struct Plane : public gengine::Component<Plane> {
-    float speed;
-
-    Plane(float newSpeed = PLANE_DEFAULT_SPEED)
-        : speed(newSpeed) {
+    Plane() {
     }
 };
 } // namespace rtype::component
