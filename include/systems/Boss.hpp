@@ -16,9 +16,9 @@
 
 namespace rtype::system {
 class Boss : public gengine::System<Boss, geg::component::Velocity2D, geg::component::Transform2D,
-                                          gengine::interface::component::RemoteLocal, component::Boss,
-                                          geg::component::network::NetSend>,
-                   public gengine::RemoteSystem {
+                                    gengine::interface::component::RemoteLocal, component::Boss,
+                                    geg::component::network::NetSend>,
+             public gengine::RemoteSystem {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);

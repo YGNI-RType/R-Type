@@ -20,7 +20,8 @@
 
 namespace rtype::system {
 class PlayerAnimation : public gengine::System<PlayerAnimation, gengine::interface::component::RemoteLocal,
-                                               gengine::component::driver::output::Animation>, public gengine::LocalSystem {
+                                               gengine::component::driver::output::Animation>,
+                        public gengine::LocalSystem {
 public:
     void init(void) override;
     void animatePlayer(gengine::interface::event::SharedEvent<event::Movement> &e);

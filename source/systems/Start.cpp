@@ -72,13 +72,12 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
     scale = 2;
     width = 55;
     height = 57;
-    spawnEntity(component::Boss(6, 10, 150, 5, 10), component::Monster(100), geg::component::HitBoxSquare2D(width,
-    height),
+    spawnEntity(component::Boss(6, 10, 150, 5, 10), component::Monster(100),
+                geg::component::HitBoxSquare2D(width, height),
                 geg::component::Transform2D({WINDOW_WIDTH - 100 * scale, -200}, {scale, scale}, 0),
                 geg::component::Velocity2D(0, 1), geg::component::io::Drawable(2),
                 geg::component::io::Sprite("boss.png", Rectangle{0, 0, width, height}, WHITE),
-                geg::component::io::Animation("boss.json/idle", 0.5f),
-                geg::component::network::NetSend());
+                geg::component::io::Animation("boss.json/idle", 0.5f), geg::component::network::NetSend());
 }
 
 void system::Start::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {

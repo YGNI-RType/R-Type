@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/Entity.hpp"
+#include "GEngine/libdev/System.hpp"
 
 namespace rtype::event {
 struct EnemyShootEvent : public gengine::Event {

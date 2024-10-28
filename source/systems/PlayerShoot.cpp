@@ -71,7 +71,8 @@ void PlayerShoot::shootBullet(const uuids::uuid &from) {
                     geg::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
                     geg::component::Velocity2D(BULLET_SPEED, 0),
                     geg::component::io::Sprite("r-typesheet1.gif", Rectangle{248, 85, 17, 12}, WHITE),
-                    geg::component::io::Drawable(1), gengine::component::HitBoxSquare2D(17, 12), geg::component::network::NetSend());
+                    geg::component::io::Drawable(1), gengine::component::HitBoxSquare2D(17, 12),
+                    geg::component::network::NetSend());
         return;
     }
 }
@@ -115,8 +116,8 @@ void PlayerShoot::spawnBeam(const geg::component::Transform2D &tr, const std::st
                 geg::component::Velocity2D(BULLET_SPEED * 2, 0),
                 geg::component::HitBoxSquare2D(rect.width, rect.height),
                 geg::component::io::Sprite("r-typesheet1.gif", rect),
-                geg::component::io::Animation("r-typesheet1.json/beam", 0.06f),
-                geg::component::io::Drawable(1), geg::component::network::NetSend());
+                geg::component::io::Animation("r-typesheet1.json/beam", 0.06f), geg::component::io::Drawable(1),
+                geg::component::network::NetSend());
 }
 
 long PlayerShoot::getChargeDuration(const std::chrono::time_point<std::chrono::system_clock> &lastCharge) {
