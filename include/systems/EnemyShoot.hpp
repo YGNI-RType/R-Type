@@ -17,6 +17,7 @@
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
 #include "events/Shoot.hpp"
 
+#include "components/Boss.hpp"
 #include "components/BulletEnemy.hpp"
 #include "components/Monster.hpp"
 #include "components/Plane.hpp"
@@ -26,8 +27,9 @@
 namespace rtype::system {
 
 class EnemyShoot : public gengine::System<EnemyShoot, component::Monster, component::BulletEnemy, component::Plane,
-                                          gengine::interface::component::RemoteLocal, gengine::component::Transform2D,
-                                          gengine::component::HitBoxSquare2D>, public gengine::RemoteSystem {
+                                          component::Boss, gengine::interface::component::RemoteLocal,
+                                          gengine::component::Transform2D, gengine::component::HitBoxSquare2D>,
+                   public gengine::RemoteSystem {
 public:
     void init(void) override;
     void shoot(event::EnemyShootEvent &);

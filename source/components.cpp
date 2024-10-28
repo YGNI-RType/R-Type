@@ -10,7 +10,7 @@
 #include "GEngine/libdev/Systems.hpp"
 
 #include "components/Background.hpp"
-#include "components/Barriers.hpp"
+#include "components/Boss.hpp"
 #include "components/Bullet.hpp"
 #include "components/BulletEnemy.hpp"
 #include "components/Caterpillar.hpp"
@@ -46,8 +46,8 @@ void GEngineDeclareComponents(Registry *r) {
     r->registerComponent<rtype::component::Score>();
     r->registerComponent<rtype::component::ScoreText>();
     r->registerComponent<rtype::component::Life>();
-    r->registerComponent<rtype::component::Barriers>();
     r->registerComponent<rtype::component::Invincible>();
+    r->registerComponent<rtype::component::Boss>();
 
     r->registerComponent<gengine::interface::component::RemoteLocal>();
     r->registerComponent<geg::component::network::NetSend>();

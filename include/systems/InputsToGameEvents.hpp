@@ -16,8 +16,8 @@
 #include "events/Shoot.hpp"
 
 namespace rtype::system {
-class InputsToGameEvents
-    : public gengine::System<InputsToGameEvents, geg::system::io::KeyboardCatcher> {
+class InputsToGameEvents : public gengine::System<InputsToGameEvents, geg::system::io::KeyboardCatcher>,
+                           public gengine::LocalSystem {
 public:
     void init(void) override;
     void sendEvents(geg::event::GameLoop &e);

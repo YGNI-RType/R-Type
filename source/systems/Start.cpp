@@ -12,7 +12,7 @@
 #include "GEngine/libdev/Components.hpp"
 
 #include "components/Background.hpp"
-#include "components/Barriers.hpp"
+#include "components/Boss.hpp"
 #include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
@@ -55,19 +55,29 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
     float scale = 7;
     float width = 45;
     float height = 23;
-    spawnEntity(component::Barriers(), geg::component::Transform2D({1800, height * scale}, {scale, scale}, 180),
-                geg::component::Velocity2D(-1, 0), geg::component::io::Drawable(2),
-                geg::component::io::Sprite("background.png", Rectangle{419, 225, width, height}, WHITE),
-                geg::component::network::NetSend());
+    spawnEntity(component::Monster(1000), geg::component::Transform2D({1400, 0}, {scale, scale}, 0),
+                geg::component::Velocity2D(-1, 0), geg::component::io::Drawable(3),
+                geg::component::io::Sprite("background.png", Rectangle{465, 225, width, height}, WHITE),
+                geg::component::HitBoxSquare2D(width, height - 10), geg::component::network::NetSend());
 
     scale = 7;
     width = 279;
     height = 8;
-    spawnEntity(component::Barriers(), component::Monster(), geg::component::HitBoxSquare2D(width, height),
+    spawnEntity(component::Monster(1000), geg::component::HitBoxSquare2D(width, height),
                 geg::component::Transform2D({1000, WINDOW_HEIGHT - height * scale}, {scale, scale}, 0),
-                geg::component::Velocity2D(-1, 0), geg::component::io::Drawable(2),
+                geg::component::Velocity2D(-1, 0), geg::component::io::Drawable(3),
                 geg::component::io::Sprite("background.png", Rectangle{417, 284, width, height}, WHITE),
                 geg::component::network::NetSend());
+
+    scale = 2;
+    width = 55;
+    height = 57;
+    spawnEntity(component::Boss(6, 10, 150, 5, 10), component::Monster(100),
+                geg::component::HitBoxSquare2D(width, height),
+                geg::component::Transform2D({WINDOW_WIDTH - 100 * scale, -200}, {scale, scale}, 0),
+                geg::component::Velocity2D(0, 1), geg::component::io::Drawable(2),
+                geg::component::io::Sprite("boss.png", Rectangle{0, 0, width, height}, WHITE),
+                geg::component::io::Animation("boss.json/idle", 0.5f), geg::component::network::NetSend());
 }
 
 void system::Start::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {

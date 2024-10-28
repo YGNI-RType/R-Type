@@ -14,7 +14,8 @@
 
 namespace rtype::system {
 class Start : public gengine::System<Start, gengine::system::driver::output::TextureManager,
-                                     gengine::interface::component::RemoteLocal>, public gengine::RemoteSystem {
+                                     gengine::interface::component::RemoteLocal>,
+              public gengine::RemoteSystem {
 public:
     void init(void) override;
     void onStartEngine(gengine::system::event::StartEngine &);

@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** B-CPP-500-LYN-5-1-rtype-basile.fouquet
 ** File description:
-** EnemyShootEvent.hpp
+** BossSpawnWaveEvent.hpp
 */
 
 #pragma once
@@ -11,11 +11,13 @@
 #include "GEngine/libdev/System.hpp"
 
 namespace rtype::event {
-struct EnemyShootEvent : public gengine::Event {
+struct BossSpawnWaveEvent : public gengine::Event {
     gengine::Entity from;
+    size_t planeCount;
 
-    EnemyShootEvent(size_t from)
-        : from(from) {
+    BossSpawnWaveEvent(size_t from, size_t planeCount)
+        : from(from)
+        , planeCount(planeCount) {
     }
 };
 } // namespace rtype::event

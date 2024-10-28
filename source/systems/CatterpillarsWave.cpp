@@ -11,7 +11,7 @@
 
 namespace rtype::system {
 void CaterpillarsWave::init(void) {
-    subscribeToEvent<gengine::system::event::GameLoop>(&CaterpillarsWave::onGameLoop);
+    // subscribeToEvent<gengine::system::event::GameLoop>(&CaterpillarsWave::onGameLoop);
 }
 
 void CaterpillarsWave::onGameLoop(gengine::system::event::GameLoop &e) {
@@ -43,9 +43,10 @@ void CaterpillarsWave::spawnWave(void) {
     for (std::size_t i = 0; i < 5; i++) {
         spawnEntity(geg::component::Transform2D({x, y}, {2, 2}, 0),
                     geg::component::Velocity2D(-CATERPILLAR_DEFAULT_SPEED, CATERPILLAR_DEFAULT_SPEED * direction),
-                    geg::component::io::Sprite("r-typesheet8.gif", rec, WHITE),
-                    geg::component::io::Drawable(1), component::Caterpillar(), component::Monster(),
-                    geg::component::HitBoxSquare2D(rec.width, rec.height), component::Score(100), geg::component::network::NetSend());
+                    geg::component::io::Sprite("r-typesheet8.gif", rec, WHITE), geg::component::io::Drawable(1),
+                    component::Caterpillar(), component::Monster(),
+                    geg::component::HitBoxSquare2D(rec.width, rec.height), component::Score(100),
+                    geg::component::network::NetSend());
         x += 50;
         y += 50 * -direction;
     }

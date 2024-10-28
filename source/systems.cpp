@@ -18,6 +18,7 @@
 
 #include "Constants.hpp"
 #include "systems/BackgroundMotion.hpp"
+#include "systems/Boss.hpp"
 #include "systems/CaterpillarsBound.hpp"
 #include "systems/CaterpillarsWave.hpp"
 #include "systems/ClearEntities.hpp"
@@ -73,13 +74,13 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<rtype::system::UpdateScoreText>();
     r->registerSystem<rtype::system::EnemyShoot>();
     r->registerSystem<rtype::system::Invincibility>();
+    r->registerSystem<rtype::system::Boss>();
 
     r->registerSystem<gengine::interface::system::HandleRemoteLocal>();
     r->registerSystem<gengine::interface::system::HandleLocal>();
 
     r->registerSystem<gengine::interface::network::system::ClientEventPublisher<
-        rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm,
-        rtype::event::BecomeInvincible>>();
+        rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm>>();
     r->registerSystem<gengine::interface::network::system::ServerEventReceiver<
         rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm>>();
 

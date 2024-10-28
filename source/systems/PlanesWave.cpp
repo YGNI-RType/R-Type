@@ -11,20 +11,10 @@
 
 namespace rtype::system {
 void PlanesWave::init(void) {
-    subscribeToEvent<gengine::system::event::GameLoop>(&PlanesWave::onGameLoop);
+    subscribeToEvent<event::BossSpawnWaveEvent>(&PlanesWave::spawnWave);
 }
 
-void PlanesWave::onGameLoop(gengine::system::event::GameLoop &e) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    std::uniform_int_distribution<> change_spawn_vawe(0, 80);
-
-    if (change_spawn_vawe(gen) == 0)
-        spawnWave();
-}
-
-void PlanesWave::spawnWave(void) {
+void PlanesWave::spawnWave(event::BossSpawnWaveEvent &e) {
     std::random_device rd;
     std::mt19937 gen(rd());
 
@@ -35,7 +25,7 @@ void PlanesWave::spawnWave(void) {
     float x = initX(gen);
     float y = initY(gen);
 
-    for (std::size_t i = 0; i < 4; i++) {
+    for (std::size_t i = 0; i < e.planeCount; i++) {
         spawnEntity(geg::component::Transform2D({x, y + randomY(gen)}, {2, 2}, 0),
                     geg::component::Velocity2D(-PLANE_DEFAULT_SPEED, 0),
                     geg::component::io::Sprite("r-typesheet5.gif", Rectangle{0, 0, 33, 36}, WHITE),
