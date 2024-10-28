@@ -109,8 +109,13 @@ void DestroyOnCollision::playerHit(ecs::entity::Entity entity, component::Player
                 gengine::component::SpanLife(0.42));
     player.life--;
 
+    auto &sprites = getComponents<geg::component::io::Sprite>();
+
     if (player.life > 0) {
         setComponent(entity, component::Invincible(3));
+        if (sprites.contains(entity))
+            sprites.get(entity).tint.a = 128;
+
         transform.pos = {0, static_cast<float>(rand() % 500)};
         removeLife();
     } else {
