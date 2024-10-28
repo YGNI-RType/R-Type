@@ -38,8 +38,9 @@ public:
     void destroyPlayer(geg::event::Collision &);
 
 private:
-    void claimScore(ecs::entity::Entity entity, const char *forPlayerUuid);
-    void playerHit(ecs::entity::Entity, component::Player &, gengine::component::Transform2D &);
+    void spawnExplosion(gengine::Entity entity);
+    void claimScore(gengine::Entity entity, const char *forPlayerUuid);
+    void playerHit(gengine::Entity, component::Player &, gengine::component::Transform2D &);
     void removeLife(void);
 };
 } // namespace rtype::system

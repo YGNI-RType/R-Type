@@ -15,9 +15,8 @@
 #include "components/Monster.hpp"
 
 namespace rtype::system {
-class ClearEntities
-    : public gengine::System<ClearEntities, geg::component::Transform2D, geg::component::io::Sprite, component::Bullet,
-                             component::BulletEnemy, component::Monster> {
+class ClearEntities : public gengine::System<ClearEntities, geg::component::Transform2D, geg::component::io::Sprite,
+                                             component::Bullet, component::BulletEnemy, component::Monster> {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);

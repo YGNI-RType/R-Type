@@ -32,10 +32,13 @@ void ClearEntities::clearBullets(void) {
 void ClearEntities::clearBulletsEnemy(void) {
     auto &bulletsEnemy = getComponents<component::BulletEnemy>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
+    auto &sprites = getComponents<geg::component::io::Sprite>();
 
-    for (auto [entity, bullet, transform] : gengine::Zip(bulletsEnemy, transforms))
-        if (transform.pos.x < 0 || transform.pos.x > WINDOW_WIDTH || transform.pos.y < 0 ||
-            transform.pos.y > WINDOW_HEIGHT)
+    for (auto [entity, bullet, sprite, transform] : gengine::Zip(bulletsEnemy, sprites, transforms))
+        if (transform.pos.x < -(sprite.src.width * transform.scale.x) ||
+            transform.pos.x > WINDOW_WIDTH + sprite.src.width * transform.scale.x ||
+            transform.pos.y < -(sprite.src.height * transform.scale.y) ||
+            transform.pos.y > WINDOW_HEIGHT + sprite.src.height * transform.scale.y)
             killEntity(entity);
 }
 

@@ -22,7 +22,7 @@ void DestroyOnCollision::init(void) {
     subscribeToEvent<geg::event::Collision>(&DestroyOnCollision::destroyPlayer);
 }
 
-void DestroyOnCollision::claimScore(ecs::entity::Entity entity_monster, const char *forPlayerUuid) {
+void DestroyOnCollision::claimScore(gengine::Entity entity_monster, const char *forPlayerUuid) {
     auto &scores = getComponents<component::Score>();
     auto &players = getComponents<gengine::interface::component::RemoteLocal>();
 
@@ -37,30 +37,14 @@ void DestroyOnCollision::destroyMonster(geg::event::Collision &e) {
     auto &monsters = getComponents<component::Monster>();
     auto &bullets = getComponents<component::Bullet>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
-    auto &hitboxes = getComponents<gengine::component::HitBoxSquare2D>();
 
     for (auto &[entity_monster, monster] : monsters) {
         for (auto &[entity_bullet, bullet] : bullets) {
             if (e.entity1 == entity_monster && e.entity2 == entity_bullet) {
                 if (!bullet.isBeam)
                     killEntity(entity_bullet);
-                if (transforms.contains(entity_monster)) {
-                    gengine::Vect2 &monster_pos = transforms.get(entity_monster).pos;
-                    gengine::Vect2 &monster_scale = transforms.get(entity_monster).scale;
-                    float explosion_width = 33;
-                    float bullet_scale = 2;
-                    float bullet_center = explosion_width / 2 * bullet_scale;
-                    gengine::Vect2 center = {
-                        monster_pos.x - bullet_center + hitboxes.get(entity_monster).width * monster_scale.x / 2,
-                        monster_pos.y - bullet_center + hitboxes.get(entity_monster).height * monster_scale.y / 2};
-
-                    spawnEntity(gengine::component::Transform2D(center, {bullet_scale, bullet_scale}),
-                                gengine::component::driver::output::Drawable(3),
-                                gengine::component::driver::output::Sprite("r-typesheet44.gif",
-                                                                           {129, 0, explosion_width, explosion_width}),
-                                gengine::component::driver::output::Animation("r-typesheet44.json/small", 0.06f),
-                                gengine::component::SpanLife(0.42));
-                }
+                if (transforms.contains(entity_monster))
+                    spawnExplosion(entity_monster);
                 if (monster.lives > 1) {
                     monster.lives--;
                     return;
@@ -72,6 +56,26 @@ void DestroyOnCollision::destroyMonster(geg::event::Collision &e) {
             }
         }
     }
+}
+
+void DestroyOnCollision::spawnExplosion(gengine::Entity entity) {
+    auto &transforms = getComponents<gengine::component::Transform2D>();
+    auto &hitboxes = getComponents<gengine::component::HitBoxSquare2D>();
+
+    gengine::Vect2 &monster_pos = transforms.get(entity).pos;
+    gengine::Vect2 &monster_scale = transforms.get(entity).scale;
+    float explosion_width = 33;
+    float bullet_scale = 2;
+    float bullet_center = explosion_width / 2 * bullet_scale;
+    gengine::Vect2 center = {monster_pos.x - bullet_center + hitboxes.get(entity).width * monster_scale.x / 2,
+                             monster_pos.y - bullet_center + hitboxes.get(entity).height * monster_scale.y / 2};
+
+    spawnEntity(
+        gengine::component::Transform2D(center, {bullet_scale, bullet_scale}),
+        gengine::component::driver::output::Drawable(3),
+        gengine::component::driver::output::Sprite("r-typesheet44.gif", {129, 0, explosion_width, explosion_width}),
+        gengine::component::driver::output::Animation("r-typesheet44.json/small", 0.06f),
+        gengine::component::SpanLife(0.42));
 }
 
 void DestroyOnCollision::destroyPlayer(geg::event::Collision &e) {
@@ -101,7 +105,7 @@ void DestroyOnCollision::destroyPlayer(geg::event::Collision &e) {
     }
 }
 
-void DestroyOnCollision::playerHit(ecs::entity::Entity entity, component::Player &player,
+void DestroyOnCollision::playerHit(gengine::Entity entity, component::Player &player,
                                    gengine::component::Transform2D &transform) {
     spawnEntity(gengine::component::Transform2D(transform.pos, {3, 3}), gengine::component::driver::output::Drawable(3),
                 gengine::component::driver::output::Sprite("r-typesheet1.gif", {67, 342, 33, 30}),
