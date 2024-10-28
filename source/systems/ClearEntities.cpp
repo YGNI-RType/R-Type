@@ -42,7 +42,6 @@ void ClearEntities::clearBulletsEnemy(void) {
 void ClearEntities::clearMonsters(void) {
     auto &monsters = getComponents<component::Monster>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
-    auto &barriers = getComponents<component::Barriers>();
     auto &sprites = getComponents<geg::component::io::Sprite>();
 
     for (auto [entity, monster, transform, sprite] : gengine::Zip(monsters, transforms, sprites))

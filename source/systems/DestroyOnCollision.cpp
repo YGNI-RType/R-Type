@@ -38,11 +38,8 @@ void DestroyOnCollision::destroyMonster(geg::event::Collision &e) {
     auto &bullets = getComponents<component::Bullet>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
     auto &hitboxes = getComponents<gengine::component::HitBoxSquare2D>();
-    auto &barriers = getComponents<component::Barriers>();
 
     for (auto &[entity_monster, monster] : monsters) {
-        if (barriers.contains(entity_monster))
-            continue;
         for (auto &[entity_bullet, bullet] : bullets) {
             if (e.entity1 == entity_monster && e.entity2 == entity_bullet) {
                 if (!bullet.isBeam)
