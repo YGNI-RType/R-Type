@@ -55,10 +55,10 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
     float scale = 7;
     float width = 45;
     float height = 23;
-    spawnEntity(component::Monster(1000), geg::component::Transform2D({1800, height * scale}, {scale, scale}, 180),
+    spawnEntity(component::Monster(1000), geg::component::Transform2D({1400, 0}, {scale, scale}, 0),
                 geg::component::Velocity2D(-1, 0), geg::component::io::Drawable(2),
-                geg::component::io::Sprite("background.png", Rectangle{419, 225, width, height}, WHITE),
-                geg::component::HitBoxSquare2D(width, height), geg::component::network::NetSend());
+                geg::component::io::Sprite("background.png", Rectangle{465, 225, width, height}, WHITE),
+                geg::component::HitBoxSquare2D(width, height - 10), geg::component::network::NetSend());
 
     scale = 7;
     width = 279;
