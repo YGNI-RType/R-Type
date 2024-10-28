@@ -11,7 +11,7 @@
 
 namespace rtype::system {
 void CaterpillarsWave::init(void) {
-    subscribeToEvent<gengine::system::event::GameLoop>(&CaterpillarsWave::onGameLoop);
+    // subscribeToEvent<gengine::system::event::GameLoop>(&CaterpillarsWave::onGameLoop);
 }
 
 void CaterpillarsWave::onGameLoop(gengine::system::event::GameLoop &e) {

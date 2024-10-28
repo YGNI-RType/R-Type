@@ -21,6 +21,7 @@
 #include "components/Player.hpp"
 #include "components/Score.hpp"
 #include "components/ScoreText.hpp"
+#include "components/Boss.hpp"
 
 #include "GEngine/interface/components/RemoteLocal.hpp"
 
@@ -48,6 +49,7 @@ void GEngineDeclareComponents(Registry *r) {
     r->registerComponent<rtype::component::Life>();
     r->registerComponent<rtype::component::Barriers>();
     r->registerComponent<rtype::component::Invincible>();
+    r->registerComponent<rtype::component::Boss>();
 
     r->registerComponent<gengine::interface::component::RemoteLocal>();
     r->registerComponent<geg::component::network::NetSend>();

@@ -10,18 +10,15 @@
 #include "GEngine/libdev/Component.hpp"
 #include <string>
 
-#define DEFAULT_MONSTER_SPEED 0.05     // Speed multiplicator (default = 1)
-#define DEFAULT_MONSTER_ATTACK_SPEED 3 // Shoot per second
+#define DEFAULT_MONSTER_LIVES 1
 
 namespace rtype::component {
 struct Monster : public gengine::Component<Monster> {
-    float speed;
-    float attackSpeed;
-
-    Monster(float newSpeed = DEFAULT_MONSTER_SPEED, float newAttackSpeed = DEFAULT_MONSTER_ATTACK_SPEED)
-        : speed(newSpeed)
-        , attackSpeed(newAttackSpeed) {
+    Monster(int lives = DEFAULT_MONSTER_LIVES)
+        : lives(lives) {
     }
+
+    int lives;
 };
 
 } // namespace rtype::component
