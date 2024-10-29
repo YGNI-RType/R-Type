@@ -17,19 +17,21 @@
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 
 #include "Constants.hpp"
+#include "RTypeManager.hpp"
 #include "systems/BackgroundMotion.hpp"
-#include "systems/CaterpillarsBound.hpp"
-#include "systems/CaterpillarsWave.hpp"
+#include "systems/BossManager.hpp"
+#include "systems/BoundingMotion.hpp"
 #include "systems/ClearEntities.hpp"
 #include "systems/DestroyOnCollision.hpp"
 #include "systems/EnemyShoot.hpp"
+#include "systems/FlappingMotion.hpp"
 #include "systems/InputsToGameEvents.hpp"
 #include "systems/Invincibility.hpp"
-#include "systems/PlanesAutoMotion.hpp"
-#include "systems/PlanesWave.hpp"
+#include "systems/MobManager.hpp"
 #include "systems/PlayerAnimation.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
+#include "systems/StageManager.hpp"
 #include "systems/Start.hpp"
 #include "systems/UpdateScoreText.hpp"
 
@@ -41,6 +43,8 @@
 #include "events/BecomeInvincible.hpp"
 
 void GEngineDeclareSystems(Registry *r) {
+    rtype::RTypeManager rm("../r-type.json"); // TODO enlever ..
+
     r->registerSystem<gengine::system::driver::output::RenderWindow>(WINDOW_WIDTH, WINDOW_TOTAL_HEIGHT, "R-Type");
     r->registerSystem<gengine::system::driver::output::Draw2D>(BLACK);
     r->registerSystem<gengine::system::driver::output::DrawSprite>();
@@ -63,10 +67,8 @@ void GEngineDeclareSystems(Registry *r) {
 
     r->registerSystem<rtype::system::InputsToGameEvents>();
     r->registerSystem<rtype::system::Start>();
-    r->registerSystem<rtype::system::CaterpillarsBound>();
-    r->registerSystem<rtype::system::CaterpillarsWave>();
-    r->registerSystem<rtype::system::PlanesAutoMotion>();
-    r->registerSystem<rtype::system::PlanesWave>();
+    r->registerSystem<rtype::system::BoundingMotion>();
+    r->registerSystem<rtype::system::FlappingMotion>();
     r->registerSystem<rtype::system::PlayerMotion>();
     r->registerSystem<rtype::system::PlayerAnimation>();
     r->registerSystem<rtype::system::PlayerShoot>();
@@ -81,8 +83,7 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::interface::system::HandleLocal>();
 
     r->registerSystem<gengine::interface::network::system::ClientEventPublisher<
-        rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm,
-        rtype::event::BecomeInvincible>>();
+        rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm>>();
     r->registerSystem<gengine::interface::network::system::ServerEventReceiver<
         rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm>>();
 

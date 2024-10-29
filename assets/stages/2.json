@@ -1,0 +1,21 @@
+{
+    "background": {
+        "sprite": {
+            "txtPath": "background2.png",
+            "src": {
+                "width": 1120,
+                "height": 207
+            }
+        },
+        "transform": {
+            "scale": {
+                "x": 3.48,
+                "y": 3.48
+            }
+        },
+        "velocity": {
+            "x": -3
+        }
+    },
+    "monsters": []
+}

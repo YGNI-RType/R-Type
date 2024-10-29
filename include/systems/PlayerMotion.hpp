@@ -9,10 +9,8 @@
 
 #include "GEngine/interface/components/RemoteLocal.hpp"
 #include "GEngine/interface/events/SharedEvent.hpp"
+#include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/components/Transforms.hpp"
-#include "GEngine/libdev/components/Velocities.hpp"
-#include "GEngine/libdev/components/driver/output/Animation.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 
 #include "components/Player.hpp"
