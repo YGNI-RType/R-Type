@@ -9,10 +9,14 @@
 
 #include "GEngine/libdev/Component.hpp"
 
+#define DEFAULT_MONSTER_LIVES 1
+
 namespace rtype::component {
 struct Monster : public gengine::Component<Monster> {
-    Monster() {
+    Monster(int lives = DEFAULT_MONSTER_LIVES)
+        : lives(lives) {
     }
-};
 
+    int lives;
+};
 } // namespace rtype::component

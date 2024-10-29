@@ -10,5 +10,8 @@
 #include "GEngine/libdev/Component.hpp"
 
 namespace rtype::component {
-struct Life : public gengine::Component<Life> {};
+struct Life : public gengine::Component<Life> {
+    Life() {
+    }
+};
 } // namespace rtype::component

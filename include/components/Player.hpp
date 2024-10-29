@@ -9,11 +9,17 @@
 
 #include "GEngine/libdev/Component.hpp"
 
+#define DEFAULT_SPEED 5
+#define DEFAULT_LIFES 3
+
 namespace rtype::component {
 struct Player : public gengine::Component<Player> {
-    int life = 3;
+    float speed;
+    int lifes;
 
-    Player() {
+    Player(float newSpeed = DEFAULT_SPEED, int lifes = DEFAULT_LIFES)
+        : speed(newSpeed)
+        , lifes(lifes) {
     }
 };
 } // namespace rtype::component
