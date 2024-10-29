@@ -35,9 +35,10 @@ struct Boss {
     geg::component::Transform2D transform;
     geg::component::Velocity2D velocity;
     std::vector<std::string> wavesName;
-    float waveCooldown;
-    float ballSpeed;
-    float maxVelocity;
+    int waveCooldown;
+    int ballSpeed;
+    int minVelocity;
+    int maxVelocity;
     float borderMargin;
 };
 

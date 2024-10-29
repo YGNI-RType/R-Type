@@ -33,9 +33,11 @@ void from_json(const nlohmann::json &j, Mob &m) {
 }
 
 void to_json(nlohmann::json &j, const Boss &b) {
-    j = nlohmann::json{{"sprite", b.sprite},       {"animation", b.animation},     {"transform", b.transform},
-                       {"velocity", b.velocity},   {"wavesName", b.wavesName},     {"waveCooldown", b.waveCooldown},
-                       {"ballSpeed", b.ballSpeed}, {"maxVelocity", b.maxVelocity}, {"borderMargin", b.borderMargin}};
+    j = nlohmann::json{{"sprite", b.sprite},           {"animation", b.animation},
+                       {"transform", b.transform},     {"velocity", b.velocity},
+                       {"wavesName", b.wavesName},     {"waveCooldown", b.waveCooldown},
+                       {"ballSpeed", b.ballSpeed},     {"minVelocity", b.minVelocity},
+                       {"maxVelocity", b.maxVelocity}, {"borderMargin", b.borderMargin}};
 }
 
 void from_json(const nlohmann::json &j, Boss &b) {
@@ -44,9 +46,10 @@ void from_json(const nlohmann::json &j, Boss &b) {
     j.contains("transform") ? j.at("transform").get_to(b.transform) : b.transform = geg::component::Transform2D();
     j.contains("velocity") ? j.at("velocity").get_to(b.velocity) : b.velocity = geg::component::Velocity2D();
     j.contains("wavesName") ? j.at("wavesName").get_to(b.wavesName) : b.wavesName = std::vector<std::string>();
-    j.contains("waveCooldown") ? j.at("waveCooldown").get_to(b.waveCooldown) : b.waveCooldown = 5;
+    j.contains("waveCooldown") ? j.at("waveCooldown").get_to(b.waveCooldown) : b.waveCooldown = 10000;
     j.contains("ballSpeed") ? j.at("ballSpeed").get_to(b.ballSpeed) : b.ballSpeed = 6;
-    j.contains("maxVelocity") ? j.at("maxVelocity").get_to(b.maxVelocity) : b.maxVelocity = 10;
+    j.contains("minVelocity") ? j.at("minVelocity").get_to(b.minVelocity) : b.minVelocity = 2;
+    j.contains("maxVelocity") ? j.at("maxVelocity").get_to(b.maxVelocity) : b.maxVelocity = 6;
     j.contains("borderMargin") ? j.at("borderMargin").get_to(b.borderMargin) : b.borderMargin = 0.2;
 }
 

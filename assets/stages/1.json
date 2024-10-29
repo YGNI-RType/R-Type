@@ -105,6 +105,7 @@
             },
             "spawnDelay": 9000,
             "scoreGain": 3000,
+            "numberOfLifes": 20,
             "isBoss": true
         }
     ]
