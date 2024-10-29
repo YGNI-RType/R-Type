@@ -15,7 +15,6 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/Systems.hpp"
 
-#include "components/Barriers.hpp"
 #include "components/Bullet.hpp"
 #include "components/BulletEnemy.hpp"
 #include "components/Invincible.hpp"
@@ -29,18 +28,19 @@
 namespace rtype::system {
 class DestroyOnCollision
     : public gengine::System<DestroyOnCollision, component::Bullet, component::BulletEnemy, component::Monster,
-                             component::Barriers, component::Life, component::Player, component::Invincible,
+                             component::Life, component::Player, component::Invincible, geg::component::io::Sprite,
                              gengine::interface::component::RemoteLocal, gengine::component::Transform2D,
                              component::Score, gengine::component::driver::output::Drawable,
-                             gengine::component::driver::output::Text> {
+                             geg::component::HitBoxSquare2D, gengine::component::driver::output::Text> {
 public:
     void init(void) override;
     void destroyMonster(geg::event::Collision &);
     void destroyPlayer(geg::event::Collision &);
 
 private:
-    void claimScore(ecs::entity::Entity entity, const char *forPlayerUuid);
-    void playerHit(ecs::entity::Entity, component::Player &, gengine::component::Transform2D &);
+    void spawnExplosion(gengine::Entity);
+    void claimScore(gengine::Entity, const char *);
+    void playerHit(gengine::Entity, component::Player &, gengine::component::Transform2D &);
     void removeLife(void);
 };
 } // namespace rtype::system
