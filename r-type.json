@@ -1,0 +1,9 @@
+{
+    "animationManager": "../assets/animations",
+    "bossManager": "../assets/bosses",
+    "fontManager": "../assets/fonts",
+    "mobManager": "../assets/mobs",
+    "soundManager": "../assets/sounds",
+    "stageManager": "../assets/stages",
+    "textureManager": "../assets/textures"
+}

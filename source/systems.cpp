@@ -47,11 +47,14 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::system::driver::output::DrawText>();
     r->registerSystem<gengine::system::driver::output::DrawRectangle>();
 
-    r->registerSystem<gengine::system::driver::output::TextureManager>("../assets/textures");
-    r->registerSystem<gengine::system::driver::output::FontManager>("../assets/fonts");
+    r->registerSystem<gengine::system::driver::output::TextureManager>(rm.getManagerPath("textureManager"));
+    r->registerSystem<gengine::system::driver::output::FontManager>(rm.getManagerPath("fontManager"));
     r->registerSystem<gengine::system::driver::input::KeyboardCatcher>();
-    r->registerSystem<gengine::system::driver::output::SoundManager>("../assets/sounds");
-    r->registerSystem<geg::system::io::AnimationManager>("../assets/animations");
+    r->registerSystem<gengine::system::driver::output::SoundManager>(rm.getManagerPath("soundManager"));
+    r->registerSystem<geg::system::io::AnimationManager>(rm.getManagerPath("animationManager"));
+    r->registerSystem<rtype::system::StageManager>(rm.getManagerPath("stageManager"));
+    r->registerSystem<rtype::system::MobManager>(rm.getManagerPath("mobManager"));
+    r->registerSystem<rtype::system::BossManager>(rm.getManagerPath("bossManager"));
     r->registerSystem<gengine::system::driver::output::Animate>();
 
     r->registerSystem<gengine::system::Motion2D>();
