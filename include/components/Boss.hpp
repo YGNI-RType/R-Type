@@ -17,6 +17,6 @@ struct Boss : public gengine::Component<Boss> {
     }
 
     Network::NetString<32> bossName;
-    float waveSpawnInSec;
+    int waveSpawnInSec;
 };
 } // namespace rtype::component

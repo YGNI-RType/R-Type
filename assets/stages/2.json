@@ -17,5 +17,12 @@
             "x": -3
         }
     },
-    "monsters": []
+    "boss": {
+        "mobName": "red.json",
+        "spawnFactor": {
+            "x": 0.9,
+            "y": 0.5
+        },
+        "spawnDelay": 2000
+    }
 }

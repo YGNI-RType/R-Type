@@ -36,7 +36,7 @@ void BossManager::onGameLoop(gengine::system::event::GameLoop &e) {
 
     for (auto [entity, motion, transform, sprite, bossComp, netsend] :
          gengine::Zip(motions, transforms, sprites, bosses, netsends)) {
-        const auto &boss = getBoss(bossComp.bossName.c_str());
+        const auto &boss = get(bossComp.bossName.c_str());
 
         std::uniform_int_distribution<> randomIndex(0, boss.wavesName.size() - 1);
         bossComp.waveSpawnInSec -= e.deltaTime;
@@ -77,7 +77,37 @@ void BossManager::onStartEngine(gengine::system::event::StartEngine &e) {
     }
 }
 
-const Boss &BossManager::getBoss(const std::string &bossName) const {
+// TODO to delete
+std::size_t BossManager::getLastEntity(void) {
+    auto &entities = getComponents<geg::component::network::NetSend>();
+    auto it = --entities.end();
+    return it->first;
+}
+
+void BossManager::spawn(const Monster &monster) {
+    auto boss = get(monster.mobName);
+
+    boss.transform.scale.x *= monster.scaleFactor;
+    boss.transform.scale.y *= monster.scaleFactor;
+    boss.transform.pos.x = WINDOW_WIDTH * monster.spawnFactor.x -
+                           (boss.sprite.src.width * boss.transform.scale.x) / 2.0f +
+                           WINDOW_WIDTH * boss.transform.pos.x;
+    boss.transform.pos.y = WINDOW_HEIGHT * monster.spawnFactor.y -
+                           (boss.sprite.src.height * boss.transform.scale.y) / 2.0f +
+                           WINDOW_HEIGHT * boss.transform.pos.y;
+    boss.velocity.x *= monster.speedFactor;
+    boss.velocity.y *= monster.speedFactor;
+
+    spawnEntity(component::Boss(monster.mobName), component::Monster(monster.numberOfLifes), boss.transform,
+                boss.velocity, boss.sprite, geg::component::io::Drawable(1),
+                geg::component::HitBoxSquare2D(boss.sprite.src.width, boss.sprite.src.height * 0.2),
+                geg::component::network::NetSend(), component::Score(monster.scoreGain));
+
+    if (!boss.animation.trackName.empty())
+        setComponent(getLastEntity(), boss.animation);
+}
+
+const Boss &BossManager::get(const std::string &bossName) const {
     return m_bosses.at(bossName);
 }
 } // namespace rtype::system

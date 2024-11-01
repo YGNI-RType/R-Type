@@ -19,7 +19,7 @@ MobManager::MobManager(const std::string &folder)
 
 void MobManager::init(void) {
     subscribeToEvent<gengine::system::event::StartEngine>(&MobManager::onStartEngine);
-    subscribeToEvent<event::BossSpawnWave>(&MobManager::spawnMob);
+    subscribeToEvent<event::BossSpawnWave>(&MobManager::spawn);
 }
 
 void MobManager::onStartEngine(gengine::system::event::StartEngine &e) {
@@ -35,13 +35,64 @@ void MobManager::onStartEngine(gengine::system::event::StartEngine &e) {
         nlohmann::json jsonData = nlohmann::json::parse(file);
 
         std::string mobName = entry.path().filename().string();
-        m_mobs[mobName] = jsonData.get<std::vector<Mob>>();
+        std::vector<Mob> mobs = jsonData.get<std::vector<Mob>>();
+        for (auto &mob : mobs)
+            std::sort(mob.ammo.begin(), mob.ammo.end(),
+                      [](const Ammo &a, const Ammo &b) { return a.spawnDelay < b.spawnDelay; });
+
+        m_mobs[mobName] = mobs;
     }
 }
 
-void MobManager::spawnMob(event::BossSpawnWave &e) {
-    auto &stageManager = getSystem<StageManager>();
-    auto mobs = getMob(e.waveName.c_str());
+// TODO to delete
+std::size_t MobManager::getLastEntity(void) {
+    auto &entities = getComponents<geg::component::network::NetSend>();
+    auto it = --entities.end();
+    return it->first;
+}
+
+void MobManager::setMotionComponent(TypeOfMotion type) {
+    switch (type) {
+    case TypeOfMotion::FLAPPING:
+        setComponent(getLastEntity(), component::Flapping());
+        break;
+    case TypeOfMotion::BOUNDING:
+        setComponent(getLastEntity(), component::Bounding());
+        break;
+    default:
+        break;
+    }
+}
+
+void MobManager::spawn(const Monster &monster) {
+    auto mobs = get(monster.mobName);
+
+    for (auto &mob : mobs) {
+        mob.transform.scale.x *= monster.scaleFactor;
+        mob.transform.scale.y *= monster.scaleFactor;
+        mob.transform.pos.x = WINDOW_WIDTH * monster.spawnFactor.x -
+                              (mob.sprite.src.width * mob.transform.scale.x) / 2.0f +
+                              WINDOW_WIDTH * mob.transform.pos.x;
+        mob.transform.pos.y = WINDOW_HEIGHT * monster.spawnFactor.y -
+                              (mob.sprite.src.height * mob.transform.scale.y) / 2.0f +
+                              WINDOW_HEIGHT * mob.transform.pos.y;
+        mob.velocity.x *= monster.speedFactor;
+        mob.velocity.y *= monster.speedFactor;
+
+        spawnEntity(component::Monster(monster.numberOfLifes), mob.transform, mob.velocity, mob.sprite,
+                    geg::component::io::Drawable(1),
+                    geg::component::HitBoxSquare2D(mob.sprite.src.width, mob.sprite.src.height),
+                    geg::component::network::NetSend(), component::Score(monster.scoreGain));
+
+        if (!mob.animation.trackName.empty())
+            setComponent(getLastEntity(), mob.animation);
+
+        setMotionComponent(mob.typeOfMotion);
+    }
+}
+
+void MobManager::spawn(event::BossSpawnWave &e) {
+    auto mobs = get(e.waveName.c_str());
 
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -58,13 +109,14 @@ void MobManager::spawnMob(event::BossSpawnWave &e) {
                     geg::component::HitBoxSquare2D(mob.sprite.src.width, mob.sprite.src.height),
                     geg::component::network::NetSend());
 
-        stageManager.setAnimationComponent(mob.animation);
-        stageManager.setMotionComponent(mob.typeOfMotion);
-        stageManager.setShooterComponent(mob.isShooting);
+        if (!mob.animation.trackName.empty())
+            setComponent(getLastEntity(), mob.animation);
+
+        setMotionComponent(mob.typeOfMotion);
     }
 }
 
-const std::vector<Mob> &MobManager::getMob(const std::string &mobName) const {
+const std::vector<Mob> &MobManager::get(const std::string &mobName) const {
     return m_mobs.at(mobName);
 }
 } // namespace rtype::system

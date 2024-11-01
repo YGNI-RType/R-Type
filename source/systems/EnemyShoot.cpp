@@ -16,6 +16,7 @@ void EnemyShoot::init(void) {
     subscribeToEvent<event::EnemyShootEvent>(&EnemyShoot::shoot);
 }
 
+// TODO remove shooter component
 void EnemyShoot::onGameLoop(gengine::system::event::GameLoop &e) {
     auto &shooters = getComponents<component::Shooter>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
@@ -67,7 +68,7 @@ void EnemyShoot::shoot(event::EnemyShootEvent &e) {
             if (bossEntity != e.from)
                 continue;
             const auto &bossManager = getSystem<BossManager>();
-            const auto &boss = bossManager.getBoss(bossComp.bossName.c_str());
+            const auto &boss = bossManager.get(bossComp.bossName.c_str());
 
             geg::component::Velocity2D velocity = geg::component::Velocity2D(
                 {playerTransform.pos.x + playerHitbox.width / 2 * playerTransform.scale.x - bossTransform.pos.x,

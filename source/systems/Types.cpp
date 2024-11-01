@@ -60,8 +60,7 @@ void to_json(nlohmann::json &j, const Monster &m) {
                        {"scaleFactor", m.scaleFactor},
                        {"speedFactor", m.speedFactor},
                        {"scoreGain", m.scoreGain},
-                       {"numberOfLifes", m.numberOfLifes},
-                       {"isBoss", m.isBoss}};
+                       {"numberOfLifes", m.numberOfLifes}};
 }
 
 void from_json(const nlohmann::json &j, Monster &m) {
@@ -72,27 +71,16 @@ void from_json(const nlohmann::json &j, Monster &m) {
     j.contains("speedFactor") ? j.at("speedFactor").get_to(m.speedFactor) : m.speedFactor = 1;
     j.contains("scoreGain") ? j.at("scoreGain").get_to(m.scoreGain) : m.scoreGain = 0;
     j.contains("numberOfLifes") ? j.at("numberOfLifes").get_to(m.numberOfLifes) : m.numberOfLifes = 1;
-    j.contains("isBoss") ? j.at("isBoss").get_to(m.isBoss) : m.isBoss = false;
-}
-
-void to_json(nlohmann::json &j, const std::vector<Monster> &m) {
-    j = nlohmann::json::array();
-    for (const auto &monster : m)
-        j.push_back(monster);
-}
-
-void from_json(const nlohmann::json &j, std::vector<Monster> &m) {
-    for (const auto &monster : j)
-        m.push_back(monster.get<Monster>());
 }
 
 void to_json(nlohmann::json &j, const Stage &s) {
-    j = nlohmann::json{{"background", s.background}, {"monsters", s.monsters}};
+    j = nlohmann::json{{"background", s.background}, {"monsters", s.monsters}, {"boss", s.boss}};
 }
 
 void from_json(const nlohmann::json &j, Stage &s) {
     j.at("background").get_to(s.background);
-    j.at("monsters").get_to(s.monsters);
+    j.contains("monsters") ? j.at("monsters").get_to(s.monsters) : s.monsters = std::vector<Monster>();
+    j.at("boss").get_to(s.boss);
 }
 } // namespace rtype
 

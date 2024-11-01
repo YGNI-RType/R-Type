@@ -96,17 +96,16 @@
             "spawnDelay": 8000,
             "speedFactor": 3,
             "scoreGain": 300
-        },
-        {
-            "mobName": "red.json",
-            "spawnFactor": {
-                "x": 0.9,
-                "y": 0.5
-            },
-            "spawnDelay": 9000,
-            "scoreGain": 3000,
-            "numberOfLifes": 20,
-            "isBoss": true
         }
-    ]
+    ],
+    "boss": {
+        "mobName": "red.json",
+        "spawnFactor": {
+            "x": 0.9,
+            "y": 0.5
+        },
+        "spawnDelay": 9000,
+        "scoreGain": 3000,
+        "numberOfLifes": 20
+    }
 }

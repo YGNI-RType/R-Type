@@ -50,12 +50,12 @@ struct Monster {
     float speedFactor;
     int scoreGain;
     unsigned int numberOfLifes;
-    bool isBoss;
 };
 
 struct Stage {
     Background background;
     std::vector<Monster> monsters;
+    Monster boss;
 };
 
 void to_json(nlohmann::json &j, const Background &b);
@@ -69,9 +69,6 @@ void from_json(const nlohmann::json &j, Boss &b);
 
 void to_json(nlohmann::json &j, const Monster &m);
 void from_json(const nlohmann::json &j, Monster &m);
-
-void to_json(nlohmann::json &j, const std::vector<Monster> &m);
-void from_json(const nlohmann::json &j, std::vector<Monster> &m);
 
 void to_json(nlohmann::json &j, const Stage &s);
 void from_json(const nlohmann::json &j, Stage &s);
