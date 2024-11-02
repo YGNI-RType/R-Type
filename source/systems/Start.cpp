@@ -61,7 +61,8 @@ void system::Start::onStartEngine(gengine::system::event::StartEngine &e) {
 
 void system::Start::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {
     spawnEntity(
-        component::Player(), component::Invincible(3), geg::component::Transform2D({0, float(rand() % 500)}, {3, 3}, 0),
+        component::Player(), component::Invincible(3),
+        geg::component::Transform2D({0, WINDOW_HEIGHT / 2 - (17 * 3) / 2.0f}, {3, 3}, 0),
         geg::component::Velocity2D(0, 0), geg::component::io::Drawable(1),
         geg::component::io::Sprite("spaceships.gif", Rectangle{66, 17.f * (m_nbPlayer % 5), 33, 17}, WHITE),
         geg::component::HitBoxSquare2D(33, 17), gengine::interface::component::RemoteLocal(e.uuid),
