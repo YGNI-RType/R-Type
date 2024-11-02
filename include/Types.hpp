@@ -124,33 +124,26 @@ void from_json(const nlohmann::json &j, Vect2 &v);
 } // namespace gengine
 
 namespace gengine::component {
-// TODO implemente default constructor at HitBoxSquare2D
 void to_json(nlohmann::json &j, const HitBoxSquare2D &h);
 void from_json(const nlohmann::json &j, HitBoxSquare2D &h);
 
-// TODO implemente default constructor at Transform2D
 void to_json(nlohmann::json &j, const Transform2D &t);
 void from_json(const nlohmann::json &j, Transform2D &t);
 
-// TODO implemente default constructor at Velocity2D
 void to_json(nlohmann::json &j, const Velocity2D &v);
 void from_json(const nlohmann::json &j, Velocity2D &v);
 } // namespace gengine::component
 
 namespace gengine::component::driver::output {
-// TODO implemente default constructor at Rect
 void to_json(nlohmann::json &j, const Rect &r);
 void from_json(const nlohmann::json &j, Rect &r);
 
-// TODO implemente default constructor at Clr
 void to_json(nlohmann::json &j, const Clr &c);
 void from_json(const nlohmann::json &j, Clr &c);
 
-// TODO implemente default constructor at Sprite
 void to_json(nlohmann::json &j, const Sprite &s);
 void from_json(const nlohmann::json &j, Sprite &s);
 
-// TODO implemente default constructor at Animation
 void to_json(nlohmann::json &j, const Animation &a);
 void from_json(const nlohmann::json &j, Animation &a);
 } // namespace gengine::component::driver::output
