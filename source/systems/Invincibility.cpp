@@ -5,9 +5,9 @@
 ** Invincibility.cpp
 */
 
-#include "systems/Invincibility.hpp"
+#include "GEngine/libdev/Component.hpp"
 
-#include "GEngine/libdev/Component.hpp" // gengine::Zip
+#include "systems/Invincibility.hpp"
 
 namespace rtype::system {
 void Invincibility::init(void) {
@@ -21,7 +21,7 @@ void Invincibility::onGameLoop(gengine::system::event::GameLoop &e) {
 
     for (auto &[entity, invincible] : invincibles) {
         if (invincible.duration > 0) {
-            invincible.duration -= e.deltaTime / 1000;
+            invincible.duration -= e.deltaTime;
         } else {
             unsetComponent<component::Invincible>(entity);
             if (sprites.contains(entity))
@@ -34,12 +34,14 @@ void Invincibility::becomeInvincible(gengine::interface::event::SharedEvent<even
     auto &players = getComponents<gengine::interface::component::RemoteLocal>();
     auto &sprites = getComponents<geg::component::io::Sprite>();
 
-    if (e->state) {
-        for (auto &[entity, player] : players) {
-            setComponent(entity, component::Invincible(999999));
-            if (sprites.contains(entity))
-                sprites.get(entity).tint.a = 128;
-        }
+    // TODO tester avec plusieurs joueurs
+    for (auto &[entity, player] : players) {
+        if (e.remoteUUID != player.getUUIDBytes())
+            continue;
+
+        setComponent(entity, component::Invincible(e->state ? -1 : 0));
+        if (sprites.contains(entity))
+            sprites.get(entity).tint.a = 128;
     }
 }
 } // namespace rtype::system

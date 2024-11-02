@@ -116,7 +116,7 @@ void DestroyOnCollision::playerHit(gengine::Entity entity, component::Player &pl
     auto &sprites = getComponents<geg::component::io::Sprite>();
 
     if (player.lifes > 0) {
-        setComponent(entity, component::Invincible(3));
+        setComponent(entity, component::Invincible());
         if (sprites.contains(entity))
             sprites.get(entity).tint.a = 128;
 

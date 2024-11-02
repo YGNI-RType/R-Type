@@ -29,10 +29,11 @@ public:
 
     void shoot(geg::event::io::KeySpaceEvent &e);
 
-    void becomeInvincible(geg::event::io::KeyPEvent &e);
+    void becomeInvincible(geg::event::io::KeyLeftShiftEvent &e);
 
 private:
     event::Shoot::State m_shootState;
+    bool m_isInvincible = false;
 
     char m_directionBitmask = 0;
     static const char UP_MASK = 1 << 0;    // 0b0001

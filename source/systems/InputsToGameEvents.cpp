@@ -15,7 +15,7 @@ void InputsToGameEvents::init(void) {
     subscribeToEvent<geg::event::io::KeyDownEvent>(&InputsToGameEvents::moveDown);
     subscribeToEvent<geg::event::io::KeyRightEvent>(&InputsToGameEvents::moveRight);
     subscribeToEvent<geg::event::io::KeySpaceEvent>(&InputsToGameEvents::shoot);
-    subscribeToEvent<geg::event::io::KeyPEvent>(&InputsToGameEvents::becomeInvincible);
+    subscribeToEvent<geg::event::io::KeyLeftShiftEvent>(&InputsToGameEvents::becomeInvincible);
 }
 
 void InputsToGameEvents::sendEvents(gengine::system::event::GameLoop &e) {
@@ -134,15 +134,14 @@ event::Movement::State InputsToGameEvents::getMovementState(void) {
     }
 }
 
-void InputsToGameEvents::becomeInvincible(geg::event::io::KeyPEvent &e) {
-    // std::cout << "P pressed" << std::endl;
+void InputsToGameEvents::becomeInvincible(geg::event::io::KeyLeftShiftEvent &e) {
     switch (e.state) {
     case geg::event::io::InputState::PRESSED:
         publishEvent(event::BecomeInvincible(true));
         break;
-    // case geg::event::io::InputState::RELEASE:
-    //     publishEvent(event::BecomeInvincible(false));
-    //     break;
+    case geg::event::io::InputState::RELEASE:
+        publishEvent(event::BecomeInvincible(false));
+        break;
     default:
         break;
     }
