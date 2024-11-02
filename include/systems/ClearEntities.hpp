@@ -20,6 +20,8 @@ class ClearEntities : public gengine::System<ClearEntities, geg::component::Tran
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);
+
+private:
     void clearBullets(void);
     void clearBulletsEnemy(void);
     void clearMonsters(void);

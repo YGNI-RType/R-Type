@@ -11,10 +11,10 @@
 
 namespace rtype::component {
 struct Invincible : public gengine::Component<Invincible> {
-    Invincible(float duration = -1)
-        : duration(duration) {
+    Invincible(unsigned int duration_ = 2000)
+        : duration(duration_) {
     }
 
-    float duration;
+    unsigned int duration;
 };
 } // namespace rtype::component

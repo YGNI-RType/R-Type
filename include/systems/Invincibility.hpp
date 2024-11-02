@@ -7,15 +7,13 @@
 
 #pragma once
 
+#include "GEngine/interface/events/RemoteLocal.hpp"
+#include "GEngine/interface/events/SharedEvent.hpp"
+#include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 
-#include "GEngine/interface/events/RemoteLocal.hpp"
-#include "GEngine/interface/events/SharedEvent.hpp"
-
 #include "components/Invincible.hpp"
-
-#include "GEngine/libdev/Components.hpp"
 #include "events/BecomeInvincible.hpp"
 
 namespace rtype::system {

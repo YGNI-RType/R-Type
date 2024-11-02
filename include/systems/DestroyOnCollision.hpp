@@ -38,8 +38,8 @@ public:
     void destroyPlayer(geg::event::Collision &);
 
 private:
-    void spawnExplosion(gengine::Entity entity);
-    void claimScore(gengine::Entity entity, const char *forPlayerUuid);
+    void spawnExplosion(gengine::Entity);
+    void claimScore(gengine::Entity, const char *);
     void playerHit(gengine::Entity, component::Player &, gengine::component::Transform2D &);
     void removeLife(void);
 };
