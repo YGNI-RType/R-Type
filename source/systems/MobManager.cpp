@@ -75,9 +75,8 @@ void MobManager::spawn(const Monster &monster, std::vector<Ammo> &ammo) {
         mob.velocity.y *= monster.speedFactor;
 
         spawnEntity(component::Monster(monster.numberOfLifes), mob.transform, mob.velocity, mob.sprite,
-                    geg::component::io::Drawable(1),
-                    geg::component::HitBoxSquare2D(mob.sprite.src.width, mob.sprite.src.height),
-                    geg::component::network::NetSend(), component::Score(monster.scoreGain));
+                    geg::component::io::Drawable(1), mob.hitbox, geg::component::network::NetSend(),
+                    component::Score(monster.scoreGain));
 
         if (!mob.animation.trackName.empty())
             setComponent(getLastEntity(), mob.animation);
@@ -107,8 +106,7 @@ void MobManager::spawn(event::BossSpawnWave &e) {
                               WINDOW_HEIGHT * mob.transform.pos.y;
 
         spawnEntity(component::Monster(), mob.transform, mob.velocity, mob.sprite, geg::component::io::Drawable(1),
-                    geg::component::HitBoxSquare2D(mob.sprite.src.width, mob.sprite.src.height),
-                    geg::component::network::NetSend());
+                    mob.hitbox, geg::component::network::NetSend());
 
         if (!mob.animation.trackName.empty())
             setComponent(getLastEntity(), mob.animation);

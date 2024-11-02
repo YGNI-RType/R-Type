@@ -44,6 +44,7 @@ struct Mob {
     geg::component::io::Animation animation;
     geg::component::Transform2D transform;
     geg::component::Velocity2D velocity;
+    geg::component::HitBoxSquare2D hitbox;
     TypeOfMotion typeOfMotion;
     std::vector<Ammo> ammo;
 };
@@ -53,6 +54,7 @@ struct Boss {
     geg::component::io::Animation animation;
     geg::component::Transform2D transform;
     geg::component::Velocity2D velocity;
+    geg::component::HitBoxSquare2D hitbox;
     std::vector<std::string> wavesName;
     int waveCooldown;
     std::vector<std::string> ammoName;

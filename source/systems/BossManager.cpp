@@ -100,8 +100,7 @@ void BossManager::spawn(const Monster &monster) {
     boss.velocity.y *= monster.speedFactor;
 
     spawnEntity(component::Boss(monster.mobName), component::Monster(monster.numberOfLifes), boss.transform,
-                boss.velocity, boss.sprite, geg::component::io::Drawable(1),
-                geg::component::HitBoxSquare2D(boss.sprite.src.width, boss.sprite.src.height * 0.2),
+                boss.velocity, boss.sprite, geg::component::io::Drawable(1), boss.hitbox,
                 geg::component::network::NetSend(), component::Score(monster.scoreGain));
 
     if (!boss.animation.trackName.empty())

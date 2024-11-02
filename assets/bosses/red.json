@@ -19,6 +19,10 @@
     "velocity": {
         "y": 2
     },
+    "hitbox": {
+        "width": 55,
+        "height": 12
+    },
     "wavesName": ["planeHorde.json"],
     "waveCooldown": 10000,
     "ammoName": ["boss-ball.json"],

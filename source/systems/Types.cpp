@@ -19,8 +19,13 @@ void from_json(const nlohmann::json &j, Background &b) {
 }
 
 void to_json(nlohmann::json &j, const Bullet &b) {
-    j = nlohmann::json{{"sprite", b.sprite},     {"animation", b.animation},       {"transform", b.transform},
-                       {"velocity", b.velocity}, {"followPlayer", b.followPlayer}, {"isDestroyable", b.isDestroyable}};
+    j = nlohmann::json{{"sprite", b.sprite},
+                       {"animation", b.animation},
+                       {"transform", b.transform},
+                       {"velocity", b.velocity},
+                       {"hitbox", b.hitbox},
+                       {"followPlayer", b.followPlayer},
+                       {"isDestroyable", b.isDestroyable}};
 }
 
 void from_json(const nlohmann::json &j, Bullet &b) {
@@ -49,8 +54,9 @@ void from_json(const nlohmann::json &j, Ammo &a) {
 }
 
 void to_json(nlohmann::json &j, const Mob &m) {
-    j = nlohmann::json{{"sprite", m.sprite},     {"animation", m.animation},       {"transform", m.transform},
-                       {"velocity", m.velocity}, {"typeOfMotion", m.typeOfMotion}, {"ammo", m.ammo}};
+    j = nlohmann::json{{"sprite", m.sprite},     {"animation", m.animation}, {"transform", m.transform},
+                       {"velocity", m.velocity}, {"hitbox", m.hitbox},       {"typeOfMotion", m.typeOfMotion},
+                       {"ammo", m.ammo}};
 }
 
 void from_json(const nlohmann::json &j, Mob &m) {
@@ -58,16 +64,25 @@ void from_json(const nlohmann::json &j, Mob &m) {
     j.contains("animation") ? j.at("animation").get_to(m.animation) : m.animation = geg::component::io::Animation();
     j.contains("transform") ? j.at("transform").get_to(m.transform) : m.transform = geg::component::Transform2D();
     j.contains("velocity") ? j.at("velocity").get_to(m.velocity) : m.velocity = geg::component::Velocity2D();
+    j.contains("hitbox") ? j.at("hitbox").get_to(m.hitbox)
+                         : m.hitbox = geg::component::HitBoxSquare2D(m.sprite.src.width, m.sprite.src.height);
     j.contains("typeOfMotion") ? j.at("typeOfMotion").get_to(m.typeOfMotion) : m.typeOfMotion = TypeOfMotion::LINEAR;
     j.contains("ammo") ? j.at("ammo").get_to(m.ammo) : m.ammo = std::vector<Ammo>();
 }
 
 void to_json(nlohmann::json &j, const Boss &b) {
-    j = nlohmann::json{{"sprite", b.sprite},           {"animation", b.animation},
-                       {"transform", b.transform},     {"velocity", b.velocity},
-                       {"wavesName", b.wavesName},     {"waveCooldown", b.waveCooldown},
-                       {"ballSpeed", b.bulletSpeed},   {"minVelocity", b.minVelocity},
-                       {"maxVelocity", b.maxVelocity}, {"borderMargin", b.borderMargin}};
+    j = nlohmann::json{{"sprite", b.sprite},
+                       {"animation", b.animation},
+                       {"transform", b.transform},
+                       {"velocity", b.velocity},
+                       {"hitbox", b.hitbox},
+                       {"wavesName", b.wavesName},
+                       {"waveCooldown", b.waveCooldown},
+                       {"ammoName", b.ammoName},
+                       {"bulletSpeed", b.bulletSpeed},
+                       {"minVelocity", b.minVelocity},
+                       {"maxVelocity", b.maxVelocity},
+                       {"borderMargin", b.borderMargin}};
 }
 
 void from_json(const nlohmann::json &j, Boss &b) {
@@ -75,6 +90,8 @@ void from_json(const nlohmann::json &j, Boss &b) {
     j.contains("animation") ? j.at("animation").get_to(b.animation) : b.animation = geg::component::io::Animation();
     j.contains("transform") ? j.at("transform").get_to(b.transform) : b.transform = geg::component::Transform2D();
     j.contains("velocity") ? j.at("velocity").get_to(b.velocity) : b.velocity = geg::component::Velocity2D();
+    j.contains("hitbox") ? j.at("hitbox").get_to(b.hitbox)
+                         : b.hitbox = geg::component::HitBoxSquare2D(b.sprite.src.width, b.sprite.src.height);
     j.contains("wavesName") ? j.at("wavesName").get_to(b.wavesName) : b.wavesName = std::vector<std::string>();
     j.contains("waveCooldown") ? j.at("waveCooldown").get_to(b.waveCooldown) : b.waveCooldown = 10000;
     j.contains("ammoName") ? j.at("ammoName").get_to(b.ammoName) : b.ammoName = std::vector<std::string>();
