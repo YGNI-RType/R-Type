@@ -39,20 +39,13 @@ void MobManager::onStartEngine(gengine::system::event::StartEngine &e) {
     }
 }
 
-// TODO to delete
-std::size_t MobManager::getLastEntity(void) {
-    auto &entities = getComponents<geg::component::network::NetSend>();
-    auto it = --entities.end();
-    return it->first;
-}
-
-void MobManager::setMotionComponent(TypeOfMotion type) {
+void MobManager::setMotionComponent(gengine::Entity entity, TypeOfMotion type) {
     switch (type) {
     case TypeOfMotion::FLAPPING:
-        setComponent(getLastEntity(), component::Flapping());
+        setComponent(entity, component::Flapping());
         break;
     case TypeOfMotion::BOUNDING:
-        setComponent(getLastEntity(), component::Bounding());
+        setComponent(entity, component::Bounding());
         break;
     default:
         break;
@@ -74,18 +67,18 @@ void MobManager::spawn(const Monster &monster, std::vector<Ammo> &ammo) {
         mob.velocity.x *= monster.speedFactor;
         mob.velocity.y *= monster.speedFactor;
 
-        spawnEntity(component::Monster(monster.numberOfLifes), mob.transform, mob.velocity, mob.sprite,
-                    geg::component::io::Drawable(1), mob.hitbox, geg::component::network::NetSend(),
-                    component::Score(monster.scoreGain));
+        gengine::Entity entity = spawnEntity(component::Monster(monster.numberOfLifes), mob.transform, mob.velocity,
+                                             mob.sprite, geg::component::io::Drawable(1), mob.hitbox,
+                                             geg::component::network::NetSend(), component::Score(monster.scoreGain));
 
         if (!mob.animation.trackName.empty())
-            setComponent(getLastEntity(), mob.animation);
+            setComponent(entity, mob.animation);
 
-        setMotionComponent(mob.typeOfMotion);
+        setMotionComponent(entity, mob.typeOfMotion);
 
         for (auto &a : mob.ammo) {
             a.spawnDelay += monster.spawnDelay;
-            a.mobId = getLastEntity();
+            a.mobId = entity;
             ammo.push_back(a);
         }
     }
@@ -105,13 +98,14 @@ void MobManager::spawn(event::BossSpawnWave &e) {
         mob.transform.pos.y = WINDOW_HEIGHT * y - (mob.sprite.src.height * mob.transform.scale.y) / 2.0f +
                               WINDOW_HEIGHT * mob.transform.pos.y;
 
-        spawnEntity(component::Monster(), mob.transform, mob.velocity, mob.sprite, geg::component::io::Drawable(1),
-                    mob.hitbox, geg::component::network::NetSend());
+        gengine::Entity entity =
+            spawnEntity(component::Monster(), mob.transform, mob.velocity, mob.sprite, geg::component::io::Drawable(1),
+                        mob.hitbox, geg::component::network::NetSend());
 
         if (!mob.animation.trackName.empty())
-            setComponent(getLastEntity(), mob.animation);
+            setComponent(entity, mob.animation);
 
-        setMotionComponent(mob.typeOfMotion);
+        setMotionComponent(entity, mob.typeOfMotion);
     }
 }
 

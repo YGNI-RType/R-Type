@@ -32,7 +32,6 @@ public:
 
     void onStartEngine(gengine::system::event::StartEngine &);
 
-    std::size_t getLastEntity(void); // TODO to delete
     void determineVelocity(const geg::component::Transform2D &, const geg::component::io::Sprite &,
                            geg::component::Velocity2D &);
     void spawn(const Ammo &);

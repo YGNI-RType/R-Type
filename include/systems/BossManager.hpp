@@ -33,7 +33,6 @@ public:
     void onStartEngine(gengine::system::event::StartEngine &);
     void onGameLoop(gengine::system::event::GameLoop &);
 
-    std::size_t getLastEntity(void); // TODO to delete
     void spawn(const Monster &);
     const Boss &get(const std::string &) const;
 

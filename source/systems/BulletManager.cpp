@@ -22,13 +22,6 @@ void BulletManager::init(void) {
     subscribeToEvent<event::EnemyShootEvent>(&BulletManager::spawn);
 }
 
-// TODO to delete
-std::size_t BulletManager::getLastEntity(void) {
-    auto &entities = getComponents<geg::component::network::NetSend>();
-    auto it = --entities.end();
-    return it->first;
-}
-
 void BulletManager::determineVelocity(const geg::component::Transform2D &mobTransform,
                                       const geg::component::io::Sprite &mobSprite,
                                       geg::component::Velocity2D &bulletVelocity) {
@@ -90,14 +83,15 @@ void BulletManager::spawn(const Ammo &ammo) {
         bullet.velocity.x *= ammo.speedFactor;
         bullet.velocity.y *= ammo.speedFactor;
 
-        spawnEntity(component::BulletEnemy(), bullet.transform, bullet.velocity, bullet.sprite,
-                    geg::component::io::Drawable(1), bullet.hitbox, geg::component::network::NetSend());
+        gengine::Entity entity =
+            spawnEntity(component::BulletEnemy(), bullet.transform, bullet.velocity, bullet.sprite,
+                        geg::component::io::Drawable(1), bullet.hitbox, geg::component::network::NetSend());
 
         if (!bullet.animation.trackName.empty())
-            setComponent(getLastEntity(), bullet.animation);
+            setComponent(entity, bullet.animation);
 
         if (bullet.isDestroyable)
-            setComponent(getLastEntity(), component::Monster());
+            setComponent(entity, component::Monster());
     }
 }
 
@@ -124,14 +118,15 @@ void BulletManager::spawn(event::EnemyShootEvent &e) {
         bullet.velocity.x *= e.bulletSpeed;
         bullet.velocity.y *= e.bulletSpeed;
 
-        spawnEntity(component::BulletEnemy(), bullet.transform, bullet.velocity, bullet.sprite,
-                    geg::component::io::Drawable(1), bullet.hitbox, geg::component::network::NetSend());
+        gengine::Entity entity =
+            spawnEntity(component::BulletEnemy(), bullet.transform, bullet.velocity, bullet.sprite,
+                        geg::component::io::Drawable(1), bullet.hitbox, geg::component::network::NetSend());
 
         if (!bullet.animation.trackName.empty())
-            setComponent(getLastEntity(), bullet.animation);
+            setComponent(entity, bullet.animation);
 
         if (bullet.isDestroyable)
-            setComponent(getLastEntity(), component::Monster());
+            setComponent(entity, component::Monster());
     }
 }
 

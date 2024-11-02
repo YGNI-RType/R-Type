@@ -78,13 +78,6 @@ void BossManager::onStartEngine(gengine::system::event::StartEngine &e) {
     }
 }
 
-// TODO to delete
-std::size_t BossManager::getLastEntity(void) {
-    auto &entities = getComponents<geg::component::network::NetSend>();
-    auto it = --entities.end();
-    return it->first;
-}
-
 void BossManager::spawn(const Monster &monster) {
     auto boss = get(monster.mobName);
 
@@ -99,12 +92,13 @@ void BossManager::spawn(const Monster &monster) {
     boss.velocity.x *= monster.speedFactor;
     boss.velocity.y *= monster.speedFactor;
 
-    spawnEntity(component::Boss(monster.mobName), component::Monster(monster.numberOfLifes), boss.transform,
-                boss.velocity, boss.sprite, geg::component::io::Drawable(1), boss.hitbox,
-                geg::component::network::NetSend(), component::Score(monster.scoreGain));
+    gengine::Entity entity =
+        spawnEntity(component::Boss(monster.mobName), component::Monster(monster.numberOfLifes), boss.transform,
+                    boss.velocity, boss.sprite, geg::component::io::Drawable(1), boss.hitbox,
+                    geg::component::network::NetSend(), component::Score(monster.scoreGain));
 
     if (!boss.animation.trackName.empty())
-        setComponent(getLastEntity(), boss.animation);
+        setComponent(entity, boss.animation);
 }
 
 const Boss &BossManager::get(const std::string &bossName) const {

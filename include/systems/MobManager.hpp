@@ -33,8 +33,7 @@ public:
 
     void onStartEngine(gengine::system::event::StartEngine &);
 
-    std::size_t getLastEntity(void); // TODO to delete
-    void setMotionComponent(TypeOfMotion type);
+    void setMotionComponent(gengine::Entity entity, TypeOfMotion type);
     void spawn(const Monster &, std::vector<Ammo> &);
     void spawn(event::BossSpawnWave &);
     const std::vector<Mob> &get(const std::string &) const;

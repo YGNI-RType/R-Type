@@ -8,6 +8,7 @@
 #include "GEngine/libdev/Systems.hpp"
 #include "GEngine/GEngine.hpp"
 
+#include "GEngine/interface/network/systems/ClientServer.hpp"
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
 #include "GEngine/libdev/systems/driver/output/Animate.hpp"
 #include "GEngine/libdev/systems/driver/output/Draw.hpp"
@@ -46,7 +47,7 @@ void GEngineDeclareSystems(Registry *r) {
     rtype::RTypeManager rm("../r-type.json"); // TODO enlever ..
 
     r->registerSystem<gengine::system::driver::output::RenderWindow>(WINDOW_WIDTH, WINDOW_TOTAL_HEIGHT, "R-Type");
-    r->registerSystem<gengine::system::driver::output::Draw2D>(BLACK);
+    r->registerSystem<gengine::system::driver::output::Draw>(BLACK);
     r->registerSystem<gengine::system::driver::output::DrawSprite>();
     r->registerSystem<gengine::system::driver::output::DrawText>();
     r->registerSystem<gengine::system::driver::output::DrawRectangle>();
