@@ -9,14 +9,9 @@
 
 #include "GEngine/libdev/Component.hpp"
 
-#define DEFAULT_BACKGROUND_SPEED 3
-
 namespace rtype::component {
 struct Background : public gengine::Component<Background> {
-    float speed;
-
-    Background(float newSpeed = DEFAULT_BACKGROUND_SPEED)
-        : speed(newSpeed) {
+    Background() {
     }
 };
 } // namespace rtype::component

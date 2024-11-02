@@ -11,20 +11,12 @@
 
 namespace rtype::component {
 struct Boss : public gengine::Component<Boss> {
-    Boss(float ballSpeed = 6, float maxVelocity = 10, float borderMargin = 150, float waveSpawnCooldown = 5,
-         size_t wavePlanesCount = 10)
-        : ballSpeed(ballSpeed)
-        , maxVelocity(maxVelocity)
-        , borderMargin(borderMargin)
-        , waveSpawnCooldown(waveSpawnCooldown)
-        , wavePlanesCount(wavePlanesCount) {
+    Boss(const std::string &bossName_)
+        : bossName(bossName_)
+        , waveSpawnInSec(0) {
     }
-    float ballSpeed;
-    float maxVelocity;
-    float borderMargin;
 
-    float waveSpawnInSec;
-    float waveSpawnCooldown;
-    size_t wavePlanesCount;
+    Network::NetString<32> bossName;
+    int waveSpawnInSec;
 };
 } // namespace rtype::component

@@ -8,7 +8,6 @@
 #pragma once
 
 #include "GEngine/libdev/Component.hpp"
-#include <string>
 
 #define DEFAULT_MONSTER_LIVES 1
 
@@ -20,5 +19,4 @@ struct Monster : public gengine::Component<Monster> {
 
     int lives;
 };
-
 } // namespace rtype::component

@@ -8,26 +8,24 @@
 #pragma once
 
 #include "GEngine/interface/components/RemoteLocal.hpp"
-
+#include "GEngine/interface/events/RemoteLocal.hpp"
+#include "GEngine/interface/events/SharedEvent.hpp"
+#include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/Events.hpp"
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/Systems.hpp"
 
-#include "GEngine/interface/events/RemoteLocal.hpp"
-#include "GEngine/interface/events/SharedEvent.hpp"
-
 #include "events/Shoot.hpp"
 
 namespace rtype::system {
-class PlayerShoot
-    : public gengine::System<PlayerShoot, gengine::interface::component::RemoteLocal, gengine::component::Transform2D,
-                             gengine::system::driver::output::SoundManager> {
+class PlayerShoot : public gengine::System<PlayerShoot, gengine::interface::component::RemoteLocal,
+                                           geg::component::Transform2D, geg::system::io::SoundManager> {
 public:
     void init(void) override;
-    void newShooter(gengine::interface::event::NewRemoteLocal &e);
-    void deleteShooter(gengine::interface::event::DeleteRemoteLocal &e);
+    void newShooter(gengine::interface::event::NewRemoteLocal &);
+    void deleteShooter(gengine::interface::event::DeleteRemoteLocal &);
     void shoot(gengine::interface::event::SharedEvent<event::Shoot> &);
-    void bulletSound(geg::event::io::KeySpaceEvent &e);
+    void bulletSound(geg::event::io::KeySpaceEvent &);
 
 private:
     void shootBullet(const uuids::uuid &from);

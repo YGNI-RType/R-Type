@@ -11,13 +11,13 @@
 
 #include "components/Background.hpp"
 #include "components/Boss.hpp"
+#include "components/Bounding.hpp"
 #include "components/Bullet.hpp"
 #include "components/BulletEnemy.hpp"
-#include "components/Caterpillar.hpp"
+#include "components/Flapping.hpp"
 #include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
-#include "components/Plane.hpp"
 #include "components/Player.hpp"
 #include "components/Score.hpp"
 #include "components/ScoreText.hpp"
@@ -50,8 +50,8 @@ void GEngineDeclareComponents(Registry *r) {
     r->registerComponent<rtype::component::Background>();
     r->registerComponent<rtype::component::Bullet>();
     r->registerComponent<rtype::component::BulletEnemy>();
-    r->registerComponent<rtype::component::Plane>();
-    r->registerComponent<rtype::component::Caterpillar>();
+    r->registerComponent<rtype::component::Flapping>();
+    r->registerComponent<rtype::component::Bounding>();
     r->registerComponent<rtype::component::Score>();
     r->registerComponent<rtype::component::ScoreText>();
     r->registerComponent<rtype::component::Life>();
