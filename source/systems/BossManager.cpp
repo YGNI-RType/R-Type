@@ -38,24 +38,25 @@ void BossManager::onGameLoop(gengine::system::event::GameLoop &e) {
          gengine::Zip(motions, transforms, sprites, bosses, netsends)) {
         const auto &boss = get(bossComp.bossName.c_str());
 
-        std::uniform_int_distribution<> randomIndex(0, boss.wavesName.size() - 1);
+        std::uniform_int_distribution<> randomIndexMob(0, boss.wavesName.size() - 1);
         bossComp.waveSpawnInSec -= e.deltaTime;
         if (bossComp.waveSpawnInSec < 0) {
             bossComp.waveSpawnInSec = boss.waveCooldown;
-            publishEvent(event::BossSpawnWave(boss.wavesName[randomIndex(gen)]));
+            publishEvent(event::BossSpawnWave(boss.wavesName[randomIndexMob(gen)]));
         }
 
         std::uniform_int_distribution<> speed(boss.minVelocity, boss.maxVelocity);
+        std::uniform_int_distribution<> randomIndexBullet(0, boss.ammoName.size() - 1);
         if (transform.pos.y < boss.borderMargin * WINDOW_HEIGHT - (sprite.src.height * transform.scale.y) / 2.0f) {
             motion.y = speed(gen);
             netsend.update();
-            publishEvent(event::EnemyShootEvent(entity));
+            publishEvent(event::EnemyShootEvent(entity, boss.ammoName[randomIndexBullet(gen)], boss.bulletSpeed));
         }
         if (transform.pos.y >
             WINDOW_HEIGHT - boss.borderMargin * WINDOW_HEIGHT - (sprite.src.height * transform.scale.y) / 2.0f) {
             motion.y = -speed(gen);
             netsend.update();
-            publishEvent(event::EnemyShootEvent(entity));
+            publishEvent(event::EnemyShootEvent(entity, boss.ammoName[randomIndexBullet(gen)], boss.bulletSpeed));
         }
     }
 }

@@ -21,6 +21,21 @@
             "x": -5
         },
         "typeOfMotion": 0,
-        "isShooting": true
+        "ammo": [
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 500,
+                "speedFactor": 1.5
+            },
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 1000
+            },
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 1500,
+                "scaleFactor": 2
+            }
+        ]
     }
 ]

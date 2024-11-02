@@ -35,12 +35,7 @@ void MobManager::onStartEngine(gengine::system::event::StartEngine &e) {
         nlohmann::json jsonData = nlohmann::json::parse(file);
 
         std::string mobName = entry.path().filename().string();
-        std::vector<Mob> mobs = jsonData.get<std::vector<Mob>>();
-        for (auto &mob : mobs)
-            std::sort(mob.ammo.begin(), mob.ammo.end(),
-                      [](const Ammo &a, const Ammo &b) { return a.spawnDelay < b.spawnDelay; });
-
-        m_mobs[mobName] = mobs;
+        m_mobs[mobName] = jsonData.get<std::vector<Mob>>();
     }
 }
 
@@ -64,7 +59,7 @@ void MobManager::setMotionComponent(TypeOfMotion type) {
     }
 }
 
-void MobManager::spawn(const Monster &monster) {
+void MobManager::spawn(const Monster &monster, std::vector<Ammo> &ammo) {
     auto mobs = get(monster.mobName);
 
     for (auto &mob : mobs) {
@@ -88,6 +83,12 @@ void MobManager::spawn(const Monster &monster) {
             setComponent(getLastEntity(), mob.animation);
 
         setMotionComponent(mob.typeOfMotion);
+
+        for (auto &a : mob.ammo) {
+            a.spawnDelay += monster.spawnDelay;
+            a.mobId = getLastEntity();
+            ammo.push_back(a);
+        }
     }
 }
 

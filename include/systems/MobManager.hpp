@@ -35,7 +35,7 @@ public:
 
     std::size_t getLastEntity(void); // TODO to delete
     void setMotionComponent(TypeOfMotion type);
-    void spawn(const Monster &);
+    void spawn(const Monster &, std::vector<Ammo> &);
     void spawn(event::BossSpawnWave &);
     const std::vector<Mob> &get(const std::string &) const;
 

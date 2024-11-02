@@ -23,6 +23,17 @@ void StageManager::init(void) {
     subscribeToEvent<event::NextStage>(&StageManager::goToNextStage);
 }
 
+void StageManager::updateAmmoSpawn(void) {
+    for (auto &ammo : m_stages[m_currentStage].ammo) {
+        if (m_clock < ammo.spawnDelay)
+            continue;
+
+        auto &bulletManager = getSystem<BulletManager>();
+        bulletManager.spawn(ammo);
+        ammo.spawnDelay = -1;
+    }
+}
+
 void StageManager::updateMonstersSpawn(void) {
     for (auto &monster : m_stages[m_currentStage].monsters) {
         if (monster.spawnDelay == -1)
@@ -31,7 +42,7 @@ void StageManager::updateMonstersSpawn(void) {
             break;
 
         auto &mobManager = getSystem<MobManager>();
-        mobManager.spawn(monster);
+        mobManager.spawn(monster, m_stages[m_currentStage].ammo);
         monster.spawnDelay = -1;
     }
 }
@@ -51,6 +62,7 @@ void StageManager::onGameLoop(gengine::system::event::GameLoop &e) {
 
     updateMonstersSpawn();
     updateBossSpawn();
+    updateAmmoSpawn();
 }
 
 void StageManager::loadStages(void) {

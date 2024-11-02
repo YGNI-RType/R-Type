@@ -21,9 +21,9 @@
 #include "systems/BackgroundMotion.hpp"
 #include "systems/BossManager.hpp"
 #include "systems/BoundingMotion.hpp"
+#include "systems/BulletManager.hpp"
 #include "systems/ClearEntities.hpp"
 #include "systems/DestroyOnCollision.hpp"
-#include "systems/EnemyShoot.hpp"
 #include "systems/FlappingMotion.hpp"
 #include "systems/InputsToGameEvents.hpp"
 #include "systems/Invincibility.hpp"
@@ -56,9 +56,10 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::system::driver::input::KeyboardCatcher>();
     r->registerSystem<gengine::system::driver::output::SoundManager>(rm.getManagerPath("soundManager"));
     r->registerSystem<geg::system::io::AnimationManager>(rm.getManagerPath("animationManager"));
-    r->registerSystem<rtype::system::StageManager>(rm.getManagerPath("stageManager"));
     r->registerSystem<rtype::system::MobManager>(rm.getManagerPath("mobManager"));
     r->registerSystem<rtype::system::BossManager>(rm.getManagerPath("bossManager"));
+    r->registerSystem<rtype::system::BulletManager>(rm.getManagerPath("bulletManager"));
+    r->registerSystem<rtype::system::StageManager>(rm.getManagerPath("stageManager"));
     r->registerSystem<gengine::system::driver::output::Animate>();
 
     r->registerSystem<gengine::system::Motion2D>();
@@ -76,7 +77,6 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<rtype::system::ClearEntities>();
     r->registerSystem<rtype::system::DestroyOnCollision>();
     r->registerSystem<rtype::system::UpdateScoreText>();
-    r->registerSystem<rtype::system::EnemyShoot>();
     r->registerSystem<rtype::system::Invincibility>();
 
     r->registerSystem<gengine::interface::system::HandleRemoteLocal>();

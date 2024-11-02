@@ -18,9 +18,39 @@ void from_json(const nlohmann::json &j, Background &b) {
     j.contains("velocity") ? j.at("velocity").get_to(b.velocity) : b.velocity = geg::component::Velocity2D();
 }
 
+void to_json(nlohmann::json &j, const Bullet &b) {
+    j = nlohmann::json{{"sprite", b.sprite},     {"animation", b.animation},       {"transform", b.transform},
+                       {"velocity", b.velocity}, {"followPlayer", b.followPlayer}, {"isDestroyable", b.isDestroyable}};
+}
+
+void from_json(const nlohmann::json &j, Bullet &b) {
+    j.at("sprite").get_to(b.sprite);
+    j.contains("animation") ? j.at("animation").get_to(b.animation) : b.animation = geg::component::io::Animation();
+    j.contains("transform") ? j.at("transform").get_to(b.transform) : b.transform = geg::component::Transform2D();
+    j.contains("velocity") ? j.at("velocity").get_to(b.velocity) : b.velocity = geg::component::Velocity2D();
+    j.contains("hitbox") ? j.at("hitbox").get_to(b.hitbox)
+                         : b.hitbox = geg::component::HitBoxSquare2D(b.sprite.src.width, b.sprite.src.height);
+    j.contains("followPlayer") ? j.at("followPlayer").get_to(b.followPlayer) : b.followPlayer = false;
+    j.contains("isDestroyable") ? j.at("isDestroyable").get_to(b.isDestroyable) : b.isDestroyable = false;
+}
+
+void to_json(nlohmann::json &j, const Ammo &a) {
+    j = nlohmann::json{{"bulletName", a.bulletName},
+                       {"spawnDelay", a.spawnDelay},
+                       {"scaleFactor", a.scaleFactor},
+                       {"speedFactor", a.speedFactor}};
+}
+
+void from_json(const nlohmann::json &j, Ammo &a) {
+    j.at("bulletName").get_to(a.bulletName);
+    j.at("spawnDelay").get_to(a.spawnDelay);
+    j.contains("scaleFactor") ? j.at("scaleFactor").get_to(a.scaleFactor) : a.scaleFactor = 1;
+    j.contains("speedFactor") ? j.at("speedFactor").get_to(a.speedFactor) : a.speedFactor = 1;
+}
+
 void to_json(nlohmann::json &j, const Mob &m) {
     j = nlohmann::json{{"sprite", m.sprite},     {"animation", m.animation},       {"transform", m.transform},
-                       {"velocity", m.velocity}, {"typeOfMotion", m.typeOfMotion}, {"isShooting", m.isShooting}};
+                       {"velocity", m.velocity}, {"typeOfMotion", m.typeOfMotion}, {"ammo", m.ammo}};
 }
 
 void from_json(const nlohmann::json &j, Mob &m) {
@@ -29,14 +59,14 @@ void from_json(const nlohmann::json &j, Mob &m) {
     j.contains("transform") ? j.at("transform").get_to(m.transform) : m.transform = geg::component::Transform2D();
     j.contains("velocity") ? j.at("velocity").get_to(m.velocity) : m.velocity = geg::component::Velocity2D();
     j.contains("typeOfMotion") ? j.at("typeOfMotion").get_to(m.typeOfMotion) : m.typeOfMotion = TypeOfMotion::LINEAR;
-    j.contains("isShooting") ? j.at("isShooting").get_to(m.isShooting) : m.isShooting = false;
+    j.contains("ammo") ? j.at("ammo").get_to(m.ammo) : m.ammo = std::vector<Ammo>();
 }
 
 void to_json(nlohmann::json &j, const Boss &b) {
     j = nlohmann::json{{"sprite", b.sprite},           {"animation", b.animation},
                        {"transform", b.transform},     {"velocity", b.velocity},
                        {"wavesName", b.wavesName},     {"waveCooldown", b.waveCooldown},
-                       {"ballSpeed", b.ballSpeed},     {"minVelocity", b.minVelocity},
+                       {"ballSpeed", b.bulletSpeed},   {"minVelocity", b.minVelocity},
                        {"maxVelocity", b.maxVelocity}, {"borderMargin", b.borderMargin}};
 }
 
@@ -47,7 +77,8 @@ void from_json(const nlohmann::json &j, Boss &b) {
     j.contains("velocity") ? j.at("velocity").get_to(b.velocity) : b.velocity = geg::component::Velocity2D();
     j.contains("wavesName") ? j.at("wavesName").get_to(b.wavesName) : b.wavesName = std::vector<std::string>();
     j.contains("waveCooldown") ? j.at("waveCooldown").get_to(b.waveCooldown) : b.waveCooldown = 10000;
-    j.contains("ballSpeed") ? j.at("ballSpeed").get_to(b.ballSpeed) : b.ballSpeed = 6;
+    j.contains("ammoName") ? j.at("ammoName").get_to(b.ammoName) : b.ammoName = std::vector<std::string>();
+    j.contains("bulletSpeed") ? j.at("bulletSpeed").get_to(b.bulletSpeed) : b.bulletSpeed = 2;
     j.contains("minVelocity") ? j.at("minVelocity").get_to(b.minVelocity) : b.minVelocity = 2;
     j.contains("maxVelocity") ? j.at("maxVelocity").get_to(b.maxVelocity) : b.maxVelocity = 6;
     j.contains("borderMargin") ? j.at("borderMargin").get_to(b.borderMargin) : b.borderMargin = 0.2;
@@ -96,6 +127,15 @@ void from_json(const nlohmann::json &j, Vect2 &v) {
 } // namespace gengine
 
 namespace gengine::component {
+void to_json(nlohmann::json &j, const HitBoxSquare2D &h) {
+    j = nlohmann::json{{"width", h.width}, {"height", h.height}};
+}
+
+void from_json(const nlohmann::json &j, HitBoxSquare2D &h) {
+    j.at("width").get_to(h.width);
+    j.at("height").get_to(h.height);
+}
+
 void to_json(nlohmann::json &j, const Transform2D &t) {
     j = nlohmann::json{{"position", t.pos}, {"scale", t.scale}, {"rotation", t.rotation}};
 }

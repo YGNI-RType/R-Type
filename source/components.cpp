@@ -21,7 +21,6 @@
 #include "components/Player.hpp"
 #include "components/Score.hpp"
 #include "components/ScoreText.hpp"
-#include "components/Shooter.hpp"
 
 #include "GEngine/interface/components/RemoteLocal.hpp"
 
@@ -42,7 +41,6 @@ void GEngineDeclareComponents(Registry *r) {
     r->registerComponent<rtype::component::Background>();
     r->registerComponent<rtype::component::Bullet>();
     r->registerComponent<rtype::component::BulletEnemy>();
-    r->registerComponent<rtype::component::Shooter>();
     r->registerComponent<rtype::component::Flapping>();
     r->registerComponent<rtype::component::Bounding>();
     r->registerComponent<rtype::component::Score>();

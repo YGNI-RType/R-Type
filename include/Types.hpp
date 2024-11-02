@@ -8,6 +8,7 @@
 #pragma once
 
 #include "GEngine/libdev/Components.hpp"
+#include "GEngine/libdev/Entity.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -20,13 +21,31 @@ struct Background {
 
 enum TypeOfMotion { FLAPPING, BOUNDING, LINEAR };
 
+struct Bullet {
+    geg::component::io::Sprite sprite;
+    geg::component::io::Animation animation;
+    geg::component::Transform2D transform;
+    geg::component::Velocity2D velocity;
+    geg::component::HitBoxSquare2D hitbox;
+    bool followPlayer;
+    bool isDestroyable;
+};
+
+struct Ammo {
+    std::string bulletName;
+    unsigned int spawnDelay;
+    float scaleFactor;
+    float speedFactor;
+    gengine::Entity mobId;
+};
+
 struct Mob {
     geg::component::io::Sprite sprite;
     geg::component::io::Animation animation;
     geg::component::Transform2D transform;
     geg::component::Velocity2D velocity;
     TypeOfMotion typeOfMotion;
-    bool isShooting;
+    std::vector<Ammo> ammo;
 };
 
 struct Boss {
@@ -36,7 +55,8 @@ struct Boss {
     geg::component::Velocity2D velocity;
     std::vector<std::string> wavesName;
     int waveCooldown;
-    int ballSpeed;
+    std::vector<std::string> ammoName;
+    int bulletSpeed;
     int minVelocity;
     int maxVelocity;
     float borderMargin;
@@ -56,10 +76,17 @@ struct Stage {
     Background background;
     std::vector<Monster> monsters;
     Monster boss;
+    std::vector<Ammo> ammo;
 };
 
 void to_json(nlohmann::json &j, const Background &b);
 void from_json(const nlohmann::json &j, Background &b);
+
+void to_json(nlohmann::json &j, const Bullet &b);
+void from_json(const nlohmann::json &j, Bullet &b);
+
+void to_json(nlohmann::json &j, const Ammo &a);
+void from_json(const nlohmann::json &j, Ammo &a);
 
 void to_json(nlohmann::json &j, const Mob &m);
 void from_json(const nlohmann::json &j, Mob &m);
@@ -95,6 +122,10 @@ void from_json(const nlohmann::json &j, Vect2 &v);
 } // namespace gengine
 
 namespace gengine::component {
+// TODO implemente default constructor at HitBoxSquare2D
+void to_json(nlohmann::json &j, const HitBoxSquare2D &h);
+void from_json(const nlohmann::json &j, HitBoxSquare2D &h);
+
 // TODO implemente default constructor at Transform2D
 void to_json(nlohmann::json &j, const Transform2D &t);
 void from_json(const nlohmann::json &j, Transform2D &t);

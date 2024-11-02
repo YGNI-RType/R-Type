@@ -21,7 +21,8 @@
     },
     "wavesName": ["planeHorde.json"],
     "waveCooldown": 10000,
-    "ballSpeed": 6,
+    "ammoName": ["boss-ball.json"],
+    "bulletSpeed": 2,
     "minVelocity": 2,
     "maxVelocity": 6,
     "borderMargin": 0.2
