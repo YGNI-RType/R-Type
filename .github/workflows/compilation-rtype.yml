@@ -46,9 +46,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install cmake on Ubuntu
+      - name: Install build essential on Ubuntu
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt update && sudo apt install -y cmake
+        run: sudo apt update && sudo apt install -y build-essential
 
       - name: Install ubuntu packages necessary for glfw3
         if: matrix.os == 'ubuntu-latest'
