@@ -15,6 +15,8 @@
 #include "Types.hpp"
 #include "components/Background.hpp"
 #include "events/NextStage.hpp"
+#include "events/StartGame.hpp"
+#include "events/GameOver.hpp"
 #include "systems/BossManager.hpp"
 #include "systems/BulletManager.hpp"
 #include "systems/MobManager.hpp"
@@ -31,12 +33,14 @@ public:
 
     void onGameLoop(gengine::system::event::GameLoop &);
     void onStartEngine(gengine::system::event::StartEngine &);
+    void onStartGame(event::StartGame &);
+    void onGameOver(event::GameOver &);
 
     void goToNextStage(event::NextStage &);
 
 private:
     void loadStages(void);
-    void start(std::size_t);
+    void initStage(std::size_t);
 
     void updateMonstersSpawn(void);
     void updateBossSpawn(void);
@@ -46,5 +50,7 @@ private:
     std::vector<Stage> m_stages;
     std::size_t m_currentStage;
     unsigned int m_clock;
+
+    bool m_started = false;
 };
 } // namespace rtype::system

@@ -41,6 +41,5 @@ private:
     void spawnExplosion(gengine::Entity);
     void claimScore(gengine::Entity, const char *);
     void playerHit(gengine::Entity, component::Player &, gengine::component::Transform2D &);
-    void removeLife(void);
 };
 } // namespace rtype::system

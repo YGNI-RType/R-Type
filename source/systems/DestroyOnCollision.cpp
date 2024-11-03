@@ -14,6 +14,7 @@
 #include "Constants.hpp"
 #include "components/Invincible.hpp"
 #include "events/NextStage.hpp"
+#include "events/GameOver.hpp"
 #include "systems/DestroyOnCollision.hpp"
 
 namespace rtype::system {
@@ -103,6 +104,8 @@ void DestroyOnCollision::destroyPlayer(geg::event::Collision &e) {
             }
         }
     }
+    if (!players.size())
+        publishEvent(event::GameOver());
 }
 
 void DestroyOnCollision::playerHit(gengine::Entity entity, component::Player &player,
@@ -117,25 +120,9 @@ void DestroyOnCollision::playerHit(gengine::Entity entity, component::Player &pl
 
     if (player.lifes > 0) {
         setComponent(entity, component::Invincible());
-        if (sprites.contains(entity))
-            sprites.get(entity).tint.a = 128;
-
-        transform.pos = {0, WINDOW_HEIGHT / 2 - (sprites.get(entity).src.height * transform.scale.y) / 2.0f};
-        removeLife();
+        transform.pos = {0, static_cast<float>(rand() % 500)};
     } else {
         killEntity(entity);
-        spawnEntity(gengine::component::Transform2D({1280 / 2 - 350, 720 / 2 - 100}, {8, 8}),
-                    gengine::component::driver::output::Drawable(2),
-                    gengine::component::driver::output::Text("arcade.ttf", "GAME OVER", YELLOW));
-    }
-}
-
-void DestroyOnCollision::removeLife(void) {
-    auto &lifes = getComponents<component::Life>();
-
-    for (auto [entity, life] : lifes) {
-        killEntity(entity);
-        return;
     }
 }
 } // namespace rtype::system

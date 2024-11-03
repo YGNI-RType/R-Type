@@ -35,7 +35,9 @@
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
 #include "systems/StageManager.hpp"
-#include "systems/Start.hpp"
+#include "systems/PlayerGui.hpp"
+#include "systems/Scenes.hpp"
+#include "systems/Lobby.hpp"
 #include "systems/UpdateScoreText.hpp"
 #include "systems/Scenes.hpp"
 
@@ -84,7 +86,7 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::system::AutoKiller>();
 
     r->registerSystem<rtype::system::InputsToGameEvents>();
-    r->registerSystem<rtype::system::Start>();
+    r->registerSystem<rtype::system::Lobby>();
     r->registerSystem<rtype::system::BoundingMotion>();
     r->registerSystem<rtype::system::FlappingMotion>();
     r->registerSystem<rtype::system::PlayerMotion>();
@@ -100,10 +102,10 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::interface::system::HandleLocal>();
 
     r->registerSystem<gengine::interface::network::system::ClientEventPublisher<
-        rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm,
+        rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm,
         rtype::event::BecomeInvincible>>();
     r->registerSystem<gengine::interface::network::system::ServerEventReceiver<
-        rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm,
+        rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm,
         rtype::event::BecomeInvincible>>();
 
     // TODO auto register ↓

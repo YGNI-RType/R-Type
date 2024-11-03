@@ -19,6 +19,8 @@ StageManager::StageManager(const std::string &folder)
 
 void StageManager::init(void) {
     subscribeToEvent<gengine::system::event::StartEngine>(&StageManager::onStartEngine);
+    subscribeToEvent<event::StartGame>(&StageManager::onStartGame);
+    subscribeToEvent<event::GameOver>(&StageManager::onGameOver);
     subscribeToEvent<gengine::system::event::GameLoop>(&StageManager::onGameLoop);
     subscribeToEvent<event::NextStage>(&StageManager::goToNextStage);
 }
@@ -57,12 +59,23 @@ void StageManager::updateBossSpawn(void) {
     boss.spawnDelay = -1;
 }
 
+void StageManager::onStartGame(event::StartGame &) {
+    m_started = true;
+    m_clock = 0;
+}
+
 void StageManager::onGameLoop(gengine::system::event::GameLoop &e) {
+    if (!m_started)
+        return;
     m_clock += e.deltaTime;
 
     updateMonstersSpawn();
     updateBossSpawn();
     updateAmmoSpawn();
+}
+
+void StageManager::onGameOver(event::GameOver &) {
+    m_started = false;
 }
 
 void StageManager::loadStages(void) {
@@ -85,7 +98,7 @@ void StageManager::loadStages(void) {
     }
 }
 
-void StageManager::start(std::size_t stageNbr) {
+void StageManager::initStage(std::size_t stageNbr) {
     if (m_stages.size() <= stageNbr)
         throw std::runtime_error("Stage " + std::to_string(stageNbr + 1) + " not found");
 
@@ -106,10 +119,10 @@ void StageManager::start(std::size_t stageNbr) {
 
 void StageManager::onStartEngine(gengine::system::event::StartEngine &e) {
     loadStages();
-    start(m_currentStage);
+    initStage(m_currentStage);
 }
 
 void StageManager::goToNextStage(event::NextStage &e) {
-    start(++m_currentStage);
+    initStage(++m_currentStage);
 }
 } // namespace rtype::system
