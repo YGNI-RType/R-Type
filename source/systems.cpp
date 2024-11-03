@@ -39,7 +39,6 @@
 #include "systems/Scenes.hpp"
 #include "systems/Lobby.hpp"
 #include "systems/UpdateScoreText.hpp"
-#include "systems/Scenes.hpp"
 
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
 #include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
@@ -92,6 +91,7 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<rtype::system::PlayerMotion>();
     r->registerSystem<rtype::system::PlayerAnimation>();
     r->registerSystem<rtype::system::PlayerShoot>();
+    r->registerSystem<rtype::system::PlayerGui>();
     r->registerSystem<rtype::system::BackgroundMotion>();
     r->registerSystem<rtype::system::ClearEntities>();
     r->registerSystem<rtype::system::DestroyOnCollision>();
