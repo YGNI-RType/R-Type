@@ -76,18 +76,16 @@ void Settings::onSpawn(gengine::system::event::gui::SpawnScene &e) {
                     component::InputBoxMapper(input));
     }
     spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
-                        geg::component::io::Text("arcade.ttf", "Font Size", PURPLE), geg::component::io::Drawable(11),
-                        geg::component::Transform2D({775, 300}, {4, 4}));
-    spawnEntity(
-        gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/Up.png"),
-        geg::component::io::Drawable(10), geg::component::Transform2D({800, 375}, {0.5, 0.5}),
-        gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(RAYWHITE, YELLOW, GRAY),
-        gengine::component::gui::onClick([this] { publishEvent(event::ChangeTextSize(1)); }));
-    spawnEntity(
-        gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/Down.png"),
-        geg::component::io::Drawable(10), geg::component::Transform2D({1000, 375}, {0.5, 0.5}),
-        gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(RAYWHITE, YELLOW, GRAY),
-        gengine::component::gui::onClick([this] { publishEvent(event::ChangeTextSize(-1)); }));
+                geg::component::io::Text("arcade.ttf", "Font Size", PURPLE), geg::component::io::Drawable(11),
+                geg::component::Transform2D({775, 300}, {4, 4}));
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/Up.png"),
+                geg::component::io::Drawable(10), geg::component::Transform2D({800, 375}, {0.5, 0.5}),
+                gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(RAYWHITE, YELLOW, GRAY),
+                gengine::component::gui::onClick([this] { publishEvent(event::ChangeTextSize(1)); }));
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/Down.png"),
+                geg::component::io::Drawable(10), geg::component::Transform2D({1000, 375}, {0.5, 0.5}),
+                gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(RAYWHITE, YELLOW, GRAY),
+                gengine::component::gui::onClick([this] { publishEvent(event::ChangeTextSize(-1)); }));
 }
 
 void Servers::init(void) {
@@ -335,8 +333,7 @@ void GameStateHandler::onEvent(geg::event::GameLoop &e) {
 void TextSizeModifier::onEvent(event::ChangeTextSize &e) {
     auto &texts = getComponents<geg::component::io::Text>();
 
-    for (auto &[entity, text] : texts) {
+    for (auto &[entity, text] : texts)
         text.fontSize += e.diff;
-    }
 }
 } // namespace rtype::system::gui

@@ -56,7 +56,8 @@ struct ChangeInputKey : gengine::Event {
     Input input;
     int newKey;
     ChangeInputKey(Input input, int newKey)
-        : input(input), newKey(newKey) {
+        : input(input)
+        , newKey(newKey) {
     }
 };
 } // namespace rtype::event::in

@@ -14,9 +14,9 @@
 
 #include "Types.hpp"
 #include "components/Background.hpp"
+#include "events/GameOver.hpp"
 #include "events/NextStage.hpp"
 #include "events/StartGame.hpp"
-#include "events/GameOver.hpp"
 #include "systems/BossManager.hpp"
 #include "systems/BulletManager.hpp"
 #include "systems/MobManager.hpp"

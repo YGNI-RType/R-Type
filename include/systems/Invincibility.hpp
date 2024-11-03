@@ -18,8 +18,9 @@
 
 namespace rtype::system {
 
-class Invincibility : public gengine::System<Invincibility, component::Invincible,
-                                             gengine::interface::component::RemoteLocal>, public gengine::RemoteSystem {
+class Invincibility
+    : public gengine::System<Invincibility, component::Invincible, gengine::interface::component::RemoteLocal>,
+      public gengine::RemoteSystem {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);

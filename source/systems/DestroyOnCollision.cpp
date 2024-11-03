@@ -13,8 +13,8 @@
 
 #include "Constants.hpp"
 #include "components/Invincible.hpp"
-#include "events/NextStage.hpp"
 #include "events/GameOver.hpp"
+#include "events/NextStage.hpp"
 #include "systems/DestroyOnCollision.hpp"
 
 namespace rtype::system {

@@ -22,23 +22,23 @@
 #include "Constants.hpp"
 #include "RTypeManager.hpp"
 #include "systems/BackgroundMotion.hpp"
-#include "systems/InputsMapper.hpp"
 #include "systems/BossManager.hpp"
 #include "systems/BoundingMotion.hpp"
 #include "systems/BulletManager.hpp"
 #include "systems/ClearEntities.hpp"
 #include "systems/DestroyOnCollision.hpp"
 #include "systems/FlappingMotion.hpp"
+#include "systems/InputsMapper.hpp"
 #include "systems/InputsToGameEvents.hpp"
 #include "systems/Invincibility.hpp"
+#include "systems/Lobby.hpp"
 #include "systems/MobManager.hpp"
 #include "systems/PlayerAnimation.hpp"
+#include "systems/PlayerGui.hpp"
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
-#include "systems/StageManager.hpp"
-#include "systems/PlayerGui.hpp"
 #include "systems/Scenes.hpp"
-#include "systems/Lobby.hpp"
+#include "systems/StageManager.hpp"
 #include "systems/UpdateScoreText.hpp"
 
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
@@ -107,11 +107,11 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::interface::system::HandleLocal>();
 
     r->registerSystem<gengine::interface::network::system::ClientEventPublisher<
-        rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm,
-        rtype::event::BecomeInvincible>>();
+        rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot,
+        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible>>();
     r->registerSystem<gengine::interface::network::system::ServerEventReceiver<
-        rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot, gengine::interface::event::GetRemoteLocalWhoIAm,
-        rtype::event::BecomeInvincible>>();
+        rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot,
+        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible>>();
 
     // TODO auto register ↓
 }

@@ -12,9 +12,9 @@
 #include "GEngine/libdev/Systems.hpp"
 
 #include "events/BecomeInvincible.hpp"
+#include "events/GameInputs.hpp"
 #include "events/Movement.hpp"
 #include "events/Shoot.hpp"
-#include "events/GameInputs.hpp"
 
 namespace rtype::system {
 class InputsToGameEvents : public gengine::System<InputsToGameEvents, geg::system::io::KeyboardCatcher>,

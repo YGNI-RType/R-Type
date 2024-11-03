@@ -16,8 +16,8 @@
 #include "GEngine/libdev/systems/gui/BaseScene.hpp"
 
 #include "GEngine/interface/components/RemoteLocal.hpp"
-#include "components/Player.hpp"
 #include "components/GameState.hpp"
+#include "components/Player.hpp"
 #include "events/TextSize.hpp"
 
 namespace rtype::system::gui {
@@ -73,7 +73,7 @@ private:
 };
 
 class GameOver : public gengine::System<GameOver, gengine::component::gui::SceneMember,
-                                         geg::component::gui::SelectButton, component::GameState> {
+                                        geg::component::gui::SelectButton, component::GameState> {
 public:
     void init(void) override;
 
@@ -89,8 +89,9 @@ private:
     bool m_update = false;
 };
 
-class GameStateHandler : public gengine::OnEventSystem<GameStateHandler, geg::event::GameLoop, gengine::component::gui::SceneMember,
-                                         geg::component::gui::SelectButton, component::GameState> {
+class GameStateHandler
+    : public gengine::OnEventSystem<GameStateHandler, geg::event::GameLoop, gengine::component::gui::SceneMember,
+                                    geg::component::gui::SelectButton, component::GameState> {
 public:
     void onEvent(geg::event::GameLoop &) final;
 
@@ -98,7 +99,8 @@ private:
     component::GameState::State m_currentState = component::GameState::State::LOBBY;
 };
 
-class TextSizeModifier : public gengine::OnEventSystem<TextSizeModifier, event::ChangeTextSize, geg::component::io::Text> {
+class TextSizeModifier
+    : public gengine::OnEventSystem<TextSizeModifier, event::ChangeTextSize, geg::component::io::Text> {
 public:
     void onEvent(event::ChangeTextSize &) final;
 };
