@@ -20,7 +20,7 @@ void Invincibility::onGameLoop(gengine::system::event::GameLoop &e) {
 
     for (auto &[entity, invincible] : invincibles)
         if (invincible.duration > 0)
-            invincible.duration -= static_cast<int>(e.deltaTime);
+            invincible.duration -= e.deltaTime;
         else
             unsetComponent<component::Invincible>(entity);
 }

@@ -120,7 +120,7 @@ void DestroyOnCollision::playerHit(gengine::Entity entity, component::Player &pl
 
     if (player.lifes > 0) {
         setComponent(entity, component::Invincible());
-        transform.pos = {0, static_cast<float>(rand() % 500)};
+        transform.pos = {0, WINDOW_HEIGHT / 2 - (sprites.get(entity).src.height * transform.scale.y) / 2.0f};
     } else {
         killEntity(entity);
     }
