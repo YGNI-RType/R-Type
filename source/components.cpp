@@ -18,6 +18,7 @@
 #include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
+#include "components/GameState.hpp"
 #include "components/Player.hpp"
 #include "components/Score.hpp"
 #include "components/ScoreText.hpp"
@@ -45,6 +46,7 @@ void GEngineDeclareComponents(Registry *r) {
     r->registerComponent<gengine::component::gui::ButtonSpriteTint>();
     r->registerComponent<gengine::component::gui::onClick>();
 
+    r->registerComponent<rtype::component::GameState>();
     r->registerComponent<rtype::component::Player>();
     r->registerComponent<rtype::component::Monster>();
     r->registerComponent<rtype::component::Background>();

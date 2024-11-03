@@ -75,6 +75,9 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<rtype::system::gui::MainMenu>();
     r->registerSystem<rtype::system::gui::Servers>();
     r->registerSystem<rtype::system::gui::Settings>();
+    r->registerSystem<rtype::system::gui::GameLobby>();
+    r->registerSystem<rtype::system::gui::GameOver>();
+    r->registerSystem<rtype::system::gui::GameStateHandler>();
 
     r->registerSystem<gengine::system::Motion2D>();
     r->registerSystem<gengine::system::Collision2D>();
