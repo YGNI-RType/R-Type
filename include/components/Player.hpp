@@ -21,5 +21,7 @@ struct Player : public gengine::Component<Player> {
         : speed(newSpeed)
         , lifes(lifes) {
     }
+
+    bool operator==(const Player &) const = default;
 };
 } // namespace rtype::component

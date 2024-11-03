@@ -18,5 +18,6 @@ struct Monster : public gengine::Component<Monster> {
     }
 
     int lives;
+    bool operator==(const Monster &) const = default;
 };
 } // namespace rtype::component

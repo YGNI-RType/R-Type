@@ -12,6 +12,7 @@
 #include "GEngine/libdev/Systems.hpp"
 
 #include "events/BecomeInvincible.hpp"
+#include "events/GameInputs.hpp"
 #include "events/Movement.hpp"
 #include "events/Shoot.hpp"
 
@@ -22,14 +23,14 @@ public:
     void init(void) override;
     void sendEvents(geg::event::GameLoop &e);
 
-    void moveUp(geg::event::io::KeyUpEvent &e);
-    void moveLeft(geg::event::io::KeyLeftEvent &e);
-    void moveDown(geg::event::io::KeyDownEvent &e);
-    void moveRight(geg::event::io::KeyRightEvent &e);
+    void moveUp(event::in::Up &e);
+    void moveLeft(event::in::Left &e);
+    void moveDown(event::in::Down &e);
+    void moveRight(event::in::Right &e);
 
-    void shoot(geg::event::io::KeySpaceEvent &e);
+    void shoot(event::in::Shoot &e);
 
-    void becomeInvincible(geg::event::io::KeyLeftShiftEvent &e);
+    void becomeInvincible(event::in::Cheat &e);
 
 private:
     event::Shoot::State m_shootState;

@@ -15,6 +15,8 @@
 #include "components/Bullet.hpp"
 #include "components/BulletEnemy.hpp"
 #include "components/Flapping.hpp"
+#include "components/GameState.hpp"
+#include "components/InputBoxMapper.hpp"
 #include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
@@ -31,11 +33,23 @@ void GEngineDeclareComponents(Registry *r) {
     r->registerComponent<geg::component::io::Animation>();
     r->registerComponent<geg::component::Velocity2D>();
     r->registerComponent<geg::component::Transform2D>();
+    r->registerComponent<geg::component::Box<1>>();
     r->registerComponent<geg::component::io::Drawable>();
     r->registerComponent<geg::component::io::Sprite>();
     r->registerComponent<geg::component::io::Text>();
     r->registerComponent<geg::component::io::Rectangle>();
 
+    r->registerComponent<gengine::component::gui::SceneMember>();
+    r->registerComponent<gengine::component::gui::Button>();
+    r->registerComponent<gengine::component::gui::ToggleButton>();
+    r->registerComponent<gengine::component::gui::SelectButton>();
+    r->registerComponent<gengine::component::gui::InputBox>();
+    r->registerComponent<gengine::component::gui::ButtonSpriteTint>();
+    r->registerComponent<gengine::component::gui::onClick>();
+
+    r->registerComponent<rtype::component::InputBoxMapper>();
+
+    r->registerComponent<rtype::component::GameState>();
     r->registerComponent<rtype::component::Player>();
     r->registerComponent<rtype::component::Monster>();
     r->registerComponent<rtype::component::Background>();

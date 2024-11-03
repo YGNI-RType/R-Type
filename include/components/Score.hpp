@@ -16,5 +16,7 @@ struct Score : public gengine::Component<Score> {
     Score(int score)
         : score(score) {
     }
+
+    bool operator==(const Score &) const = default;
 };
 } // namespace rtype::component

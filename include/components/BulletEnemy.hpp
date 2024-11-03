@@ -13,5 +13,6 @@ namespace rtype::component {
 struct BulletEnemy : public gengine::Component<BulletEnemy> {
     BulletEnemy() {
     }
+    bool operator==(const BulletEnemy &) const = default;
 };
 } // namespace rtype::component
