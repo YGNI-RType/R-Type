@@ -9,6 +9,7 @@
 #include "GEngine/GEngine.hpp"
 #include "GEngine/libdev/Systems.hpp"
 
+#include "components/InputBoxMapper.hpp"
 #include "components/Background.hpp"
 #include "components/Boss.hpp"
 #include "components/Bounding.hpp"
@@ -45,6 +46,8 @@ void GEngineDeclareComponents(Registry *r) {
     r->registerComponent<gengine::component::gui::InputBox>();
     r->registerComponent<gengine::component::gui::ButtonSpriteTint>();
     r->registerComponent<gengine::component::gui::onClick>();
+
+    r->registerComponent<rtype::component::InputBoxMapper>();
 
     r->registerComponent<rtype::component::GameState>();
     r->registerComponent<rtype::component::Player>();

@@ -10,12 +10,12 @@
 namespace rtype::system {
 void InputsToGameEvents::init(void) {
     subscribeToEvent<gengine::system::event::GameLoop>(&InputsToGameEvents::sendEvents);
-    subscribeToEvent<geg::event::io::KeyUpEvent>(&InputsToGameEvents::moveUp);
-    subscribeToEvent<geg::event::io::KeyLeftEvent>(&InputsToGameEvents::moveLeft);
-    subscribeToEvent<geg::event::io::KeyDownEvent>(&InputsToGameEvents::moveDown);
-    subscribeToEvent<geg::event::io::KeyRightEvent>(&InputsToGameEvents::moveRight);
-    subscribeToEvent<geg::event::io::KeySpaceEvent>(&InputsToGameEvents::shoot);
-    subscribeToEvent<geg::event::io::KeyLeftShiftEvent>(&InputsToGameEvents::becomeInvincible);
+    subscribeToEvent<event::in::Up>(&InputsToGameEvents::moveUp);
+    subscribeToEvent<event::in::Left>(&InputsToGameEvents::moveLeft);
+    subscribeToEvent<event::in::Down>(&InputsToGameEvents::moveDown);
+    subscribeToEvent<event::in::Right>(&InputsToGameEvents::moveRight);
+    subscribeToEvent<event::in::Shoot>(&InputsToGameEvents::shoot);
+    subscribeToEvent<event::in::Cheat>(&InputsToGameEvents::becomeInvincible);
 }
 
 void InputsToGameEvents::sendEvents(gengine::system::event::GameLoop &e) {
@@ -23,7 +23,7 @@ void InputsToGameEvents::sendEvents(gengine::system::event::GameLoop &e) {
     publishEvent<event::Shoot>(m_shootState);
 }
 
-void InputsToGameEvents::moveUp(geg::event::io::KeyUpEvent &e) {
+void InputsToGameEvents::moveUp(event::in::Up &e) {
     switch (e.state) {
     case geg::event::io::InputState::PRESSED:
         updateDirectionBitmask(event::Movement::UP, true);
@@ -35,7 +35,7 @@ void InputsToGameEvents::moveUp(geg::event::io::KeyUpEvent &e) {
         break;
     }
 }
-void InputsToGameEvents::moveLeft(geg::event::io::KeyLeftEvent &e) {
+void InputsToGameEvents::moveLeft(event::in::Left &e) {
     switch (e.state) {
     case geg::event::io::InputState::PRESSED:
         updateDirectionBitmask(event::Movement::LEFT, true);
@@ -47,7 +47,7 @@ void InputsToGameEvents::moveLeft(geg::event::io::KeyLeftEvent &e) {
         break;
     }
 }
-void InputsToGameEvents::moveDown(geg::event::io::KeyDownEvent &e) {
+void InputsToGameEvents::moveDown(event::in::Down &e) {
     switch (e.state) {
     case geg::event::io::InputState::PRESSED:
         updateDirectionBitmask(event::Movement::DOWN, true);
@@ -59,7 +59,7 @@ void InputsToGameEvents::moveDown(geg::event::io::KeyDownEvent &e) {
         break;
     }
 }
-void InputsToGameEvents::moveRight(geg::event::io::KeyRightEvent &e) {
+void InputsToGameEvents::moveRight(event::in::Right &e) {
     switch (e.state) {
     case geg::event::io::InputState::PRESSED:
         updateDirectionBitmask(event::Movement::RIGHT, true);
@@ -72,7 +72,7 @@ void InputsToGameEvents::moveRight(geg::event::io::KeyRightEvent &e) {
     }
 }
 
-void InputsToGameEvents::shoot(geg::event::io::KeySpaceEvent &e) {
+void InputsToGameEvents::shoot(event::in::Shoot &e) {
     switch (e.state) {
     case geg::event::io::InputState::PRESSED:
         m_shootState = event::Shoot::CHARGING;
@@ -134,7 +134,7 @@ event::Movement::State InputsToGameEvents::getMovementState(void) {
     }
 }
 
-void InputsToGameEvents::becomeInvincible(geg::event::io::KeyLeftShiftEvent &e) {
+void InputsToGameEvents::becomeInvincible(event::in::Cheat &e) {
     switch (e.state) {
     case geg::event::io::InputState::PRESSED:
         publishEvent(event::BecomeInvincible(true));

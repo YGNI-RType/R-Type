@@ -22,6 +22,7 @@
 #include "Constants.hpp"
 #include "RTypeManager.hpp"
 #include "systems/BackgroundMotion.hpp"
+#include "systems/InputsMapper.hpp"
 #include "systems/BossManager.hpp"
 #include "systems/BoundingMotion.hpp"
 #include "systems/BulletManager.hpp"
@@ -67,6 +68,10 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<rtype::system::BulletManager>(rm.getManagerPath("bulletManager"));
     r->registerSystem<rtype::system::StageManager>(rm.getManagerPath("stageManager"));
     r->registerSystem<gengine::system::driver::output::Animate>();
+
+    r->registerSystem<rtype::system::InputsMapper>();
+    r->registerSystem<rtype::system::InputBoxMapperHandler>();
+    r->registerSystem<rtype::system::gui::TextSizeModifier>();
 
     r->registerSystem<gengine::system::gui::SceneManager>(rtype::system::gui::MAINMENU);
     r->registerSystem<gengine::system::gui::ButtonHandler>();
