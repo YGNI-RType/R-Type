@@ -13,5 +13,6 @@ namespace rtype::component {
 struct Life : public gengine::Component<Life> {
     Life() {
     }
+    bool operator==(const Life &) const = default;
 };
 } // namespace rtype::component

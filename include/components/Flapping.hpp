@@ -13,5 +13,6 @@ namespace rtype::component {
 struct Flapping : public gengine::Component<Flapping> {
     Flapping() {
     }
+    bool operator==(const Flapping &) const = default;
 };
 } // namespace rtype::component

@@ -21,5 +21,7 @@ struct Bullet : public gengine::Component<Bullet> {
 
     Network::NetString<37> from;
     bool isBeam = false;
+
+    bool operator==(const Bullet &) const = default;
 };
 } // namespace rtype::component

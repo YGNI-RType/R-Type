@@ -18,5 +18,7 @@ struct Boss : public gengine::Component<Boss> {
 
     Network::NetString<32> bossName;
     int waveSpawnInSec;
+
+    bool operator==(const Boss &) const = default;
 };
 } // namespace rtype::component

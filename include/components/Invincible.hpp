@@ -15,6 +15,7 @@ struct Invincible : public gengine::Component<Invincible> {
         : duration(duration_) {
     }
 
-    unsigned int duration;
+    int duration;
+    bool operator==(const Invincible &) const = default;
 };
 } // namespace rtype::component

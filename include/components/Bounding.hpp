@@ -13,5 +13,7 @@ namespace rtype::component {
 struct Bounding : public gengine::Component<Bounding> {
     Bounding() {
     }
+
+    bool operator==(const Bounding &) const = default;
 };
 } // namespace rtype::component
