@@ -143,8 +143,8 @@ void StageManager::initStage(std::size_t stageNbr) {
     geg::component::Transform2D transform2 = m_currentStage.background.transform;
     transform2.pos.x += (m_currentStage.background.sprite.src.width - 1) * transform2.scale.x;
 
-    spawnEntity(component::Background(), transform2, m_currentStage.background.velocity, geg::component::io::Drawable(0),
-                m_currentStage.background.sprite, geg::component::network::NetSend());
+    spawnEntity(component::Background(), transform2, m_currentStage.background.velocity,
+                geg::component::io::Drawable(0), m_currentStage.background.sprite, geg::component::network::NetSend());
 }
 
 void StageManager::onStartEngine(gengine::system::event::StartEngine &e) {

@@ -52,12 +52,11 @@ void PlayerGui::displayInvincibility(gengine::system::event::GameLoop &e) {
     auto &sprites = getComponents<geg::component::io::Sprite>();
     auto &remotes = getComponents<gengine::interface::component::RemoteLocal>();
 
-    for (auto [entity, sprite, remote] : gengine::Zip(sprites, remotes)) {
+    for (auto [entity, sprite, remote] : gengine::Zip(sprites, remotes))
         if (invincibles.contains(entity))
             sprite.tint.a = 128;
         else
             sprite.tint.a = 255;
-    }
 }
 void PlayerGui::setMe(gengine::interface::event::ItsMe &e) {
     m_me = e.myUUID;
