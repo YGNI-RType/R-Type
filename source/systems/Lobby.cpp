@@ -44,16 +44,16 @@ void Lobby::setPlayersReady(gengine::interface::event::SharedEvent<event::IAmRea
     if (m_started)
         return;
 
-    auto &[uuid, ready] = *m_playersInLobby.find(e.remoteUUID);
-    ready = e->ready;
+    auto &[uuid, infos] = *m_playersInLobby.find(e.remoteUUID);
+    infos.second = e->ready;
 }
 
 void Lobby::checkPlayersReady(gengine::system::event::GameLoop &e) {
     if (m_started || !m_playersInLobby.size())
         return;
 
-    for (auto &[uuid, ready] : m_playersInLobby)
-        if (!ready)
+    for (auto &[uuid, infos] : m_playersInLobby)
+        if (!infos.second)
             return;
     publishEvent(event::StartGame());
     auto &states = getComponents<component::GameState>();
@@ -67,8 +67,8 @@ void Lobby::checkPlayersReady(gengine::system::event::GameLoop &e) {
 
 void Lobby::onGameOver(event::GameOver &) {
     m_started = false;
-    for (auto &[uuid, ready] : m_playersInLobby)
-        ready = false;
+    for (auto &[uuid, infos] : m_playersInLobby)
+        infos.second = false;
     auto &states = getComponents<component::GameState>();
     auto &netsends = getComponents<geg::component::network::NetSend>();
     for (auto [e, state, netsend] : gengine::Zip(states, netsends)) {
@@ -78,10 +78,11 @@ void Lobby::onGameOver(event::GameOver &) {
 }
 
 void Lobby::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {
-    m_playersInLobby.emplace(e.uuid, false);
+    size_t playerNb = m_playersInLobby.size();
+    m_playersInLobby.emplace(e.uuid, std::make_pair(playerNb, false));
     if (m_started)
         return;
-    spawnPlayer(e.uuid, m_playersInLobby.size() - 1, 3);
+    spawnPlayer(e.uuid, playerNb, 3);
 }
 
 void Lobby::spawnPlayer(const uuids::uuid &remoteUUID, size_t playerNb, size_t lifes) {
@@ -97,14 +98,12 @@ void Lobby::spawnPlayer(const uuids::uuid &remoteUUID, size_t playerNb, size_t l
 void Lobby::onDeleteRemoteLocal(gengine::interface::event::DeleteRemoteLocal &e) {
     auto &remotes = getComponents<gengine::interface::component::RemoteLocal>();
 
-    auto it = m_playersInLobby.begin();
     for (auto &[entity, remote] : remotes) {
         if (remote.getUUIDBytes() == e.uuid) {
             killEntity(entity);
-            m_playersInLobby.erase(it);
+            m_playersInLobby.erase(e.uuid);
             return;
         }
-        it++;
     }
 }
 
@@ -119,8 +118,8 @@ void Lobby::onNextStage(event::NextStage &) {
 void Lobby::respawnPlayers(size_t playerLife) {
     auto &remotes = getComponents<gengine::interface::component::RemoteLocal>();
 
-    size_t playerNb = 0;
-    for (auto &[uuid, ready] : m_playersInLobby) {
+    for (auto &[uuid, infos] : m_playersInLobby) {
+        auto &[playerNb, ready] = infos;
         bool found = false;
         for (auto &[entity, remote] : remotes) {
             if (uuid == remote.getUUIDBytes()) {
@@ -130,7 +129,6 @@ void Lobby::respawnPlayers(size_t playerLife) {
         }
         if (!found)
             spawnPlayer(uuid, playerNb, playerLife);
-        playerNb++;
     }
 }
 } // namespace rtype::system
