@@ -53,8 +53,6 @@ void PlayerGui::displayInvincibility(gengine::system::event::GameLoop &e) {
     auto &remotes = getComponents<gengine::interface::component::RemoteLocal>();
 
     for (auto [entity, sprite, remote] : gengine::Zip(sprites, remotes)) {
-        if (m_me != remote.getUUIDBytes())
-            continue;
         if (invincibles.contains(entity))
             sprite.tint.a = 128;
         else
