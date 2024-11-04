@@ -53,8 +53,9 @@ private:
     void updateAmmoSpawn(void);
 
     std::string m_folder;
+    Stage m_currentStage;
     std::vector<Stage> m_stages;
-    std::size_t m_currentStage;
+    std::size_t m_currentStageIdx;
     unsigned int m_clock;
 
     bool m_started;

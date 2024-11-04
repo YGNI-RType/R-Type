@@ -14,7 +14,7 @@
 namespace rtype::system {
 StageManager::StageManager(const std::string &folder)
     : m_folder(folder)
-    , m_currentStage(0)
+    , m_currentStageIdx(0)
     , m_clock(0)
     , m_started(false) {
 }
@@ -28,7 +28,7 @@ void StageManager::init(void) {
 }
 
 void StageManager::updateAmmoSpawn(void) {
-    for (auto &ammo : m_stages[m_currentStage].ammo) {
+    for (auto &ammo : m_currentStage.ammo) {
         if (m_clock < ammo.spawnDelay)
             continue;
 
@@ -39,20 +39,20 @@ void StageManager::updateAmmoSpawn(void) {
 }
 
 void StageManager::updateMonstersSpawn(void) {
-    for (auto &monster : m_stages[m_currentStage].monsters) {
+    for (auto &monster : m_currentStage.monsters) {
         if (monster.spawnDelay == -1)
             continue;
         if (m_clock < monster.spawnDelay)
             break;
 
         auto &mobManager = getSystem<MobManager>();
-        mobManager.spawn(monster, m_stages[m_currentStage].ammo);
+        mobManager.spawn(monster, m_currentStage.ammo);
         monster.spawnDelay = -1;
     }
 }
 
 void StageManager::updateBossSpawn(void) {
-    auto &boss = m_stages[m_currentStage].boss;
+    auto &boss = m_currentStage.boss;
     if (m_clock < boss.spawnDelay)
         return;
 
@@ -63,10 +63,9 @@ void StageManager::updateBossSpawn(void) {
 
 void StageManager::onStartGame(event::StartGame &) {
     m_started = true;
-    m_clock = 0;
 
-    m_currentStage = 0;
-    initStage(m_currentStage);
+    m_currentStageIdx = 0;
+    initStage(m_currentStageIdx);
 }
 
 void StageManager::onGameLoop(gengine::system::event::GameLoop &e) {
@@ -137,23 +136,23 @@ void StageManager::initStage(std::size_t stageNbr) {
     m_clock = 0;
     clearEntities();
 
-    const auto &stage = m_stages[stageNbr];
-    spawnEntity(component::Background(), stage.background.transform, stage.background.velocity,
-                geg::component::io::Drawable(0), stage.background.sprite, geg::component::network::NetSend());
+    m_currentStage = m_stages[stageNbr];
+    spawnEntity(component::Background(), m_currentStage.background.transform, m_currentStage.background.velocity,
+                geg::component::io::Drawable(0), m_currentStage.background.sprite, geg::component::network::NetSend());
 
-    geg::component::Transform2D transform2 = stage.background.transform;
-    transform2.pos.x += (stage.background.sprite.src.width - 1) * transform2.scale.x;
+    geg::component::Transform2D transform2 = m_currentStage.background.transform;
+    transform2.pos.x += (m_currentStage.background.sprite.src.width - 1) * transform2.scale.x;
 
-    spawnEntity(component::Background(), transform2, stage.background.velocity, geg::component::io::Drawable(0),
-                stage.background.sprite, geg::component::network::NetSend());
+    spawnEntity(component::Background(), transform2, m_currentStage.background.velocity, geg::component::io::Drawable(0),
+                m_currentStage.background.sprite, geg::component::network::NetSend());
 }
 
 void StageManager::onStartEngine(gengine::system::event::StartEngine &e) {
     loadStages();
-    initStage(m_currentStage);
+    initStage(m_currentStageIdx);
 }
 
 void StageManager::goToNextStage(event::NextStage &e) {
-    initStage(++m_currentStage);
+    initStage(++m_currentStageIdx);
 }
 } // namespace rtype::system
