@@ -19,7 +19,6 @@ void PlayerShoot::init(void) {
     subscribeToEvent<gengine::interface::event::SharedEvent<event::Shoot>>(&PlayerShoot::shoot);
     subscribeToEvent<gengine::interface::event::NewRemoteLocal>(&PlayerShoot::newShooter);
     subscribeToEvent<gengine::interface::event::DeleteRemoteLocal>(&PlayerShoot::deleteShooter);
-    subscribeToEvent<geg::event::io::KeySpaceEvent>(&PlayerShoot::bulletSound);
 }
 
 void PlayerShoot::newShooter(gengine::interface::event::NewRemoteLocal &e) {
@@ -48,12 +47,6 @@ void PlayerShoot::shoot(gengine::interface::event::SharedEvent<event::Shoot> &e)
     }
 }
 
-void PlayerShoot::bulletSound(geg::event::io::KeySpaceEvent &e) {
-    auto &soundMan = getSystem<geg::system::io::SoundManager>();
-    if (e.state == geg::event::io::InputState::PRESSED)
-        PlaySound(soundMan.get("shoot.mp3"));
-}
-
 void PlayerShoot::shootBullet(const uuids::uuid &from) {
     auto &players = getComponents<gengine::interface::component::RemoteLocal>();
     auto &transforms = getComponents<geg::component::Transform2D>();
@@ -61,6 +54,7 @@ void PlayerShoot::shootBullet(const uuids::uuid &from) {
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
         if (player.getUUIDBytes() != from)
             continue;
+        publishEvent(gengine::system::event::driver::output::Sound("shoot.wav"));
         spawnEntity(component::Bullet(player.getUUIDString()),
                     geg::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
                     geg::component::Velocity2D(BULLET_SPEED, 0),
@@ -78,6 +72,7 @@ void PlayerShoot::shootBeam(const uuids::uuid &from, int bulletScale) {
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
         if (player.getUUIDBytes() != from)
             continue;
+        publishEvent(gengine::system::event::driver::output::Sound("beam.wav"));
         spawnBeam(transform.pos, player.getUUIDString(), bulletScale);
         return;
     }

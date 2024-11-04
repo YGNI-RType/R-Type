@@ -63,7 +63,8 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::system::driver::output::FontManager>(rm.getManagerPath("fontManager"));
     r->registerSystem<gengine::system::driver::input::MouseCatcher>();
     r->registerSystem<gengine::system::driver::input::KeyboardCatcher>();
-    r->registerSystem<gengine::system::driver::output::SoundManager>(rm.getManagerPath("soundManager"));
+    r->registerSystem<gengine::system::driver::output::SoundManagerLocal>(rm.getManagerPath("soundManager"));
+    r->registerSystem<gengine::system ::driver::output::SoundManagerRemote>(rm.getManagerPath("soundManager"));
     r->registerSystem<geg::system::io::AnimationManager>(rm.getManagerPath("animationManager"));
     r->registerSystem<rtype::system::MobManager>(rm.getManagerPath("mobManager"));
     r->registerSystem<rtype::system::BossManager>(rm.getManagerPath("bossManager"));
@@ -111,10 +112,10 @@ void GEngineDeclareSystems(Registry *r) {
 
     r->registerSystem<gengine::interface::network::system::ClientEventPublisher<
         rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot,
-        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible>>();
+        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible,
+        gengine::system::event::driver::output::SoundPlayed>>();
     r->registerSystem<gengine::interface::network::system::ServerEventReceiver<
         rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot,
-        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible>>();
-
-    // TODO auto register ↓
+        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible,
+        gengine::system::event::driver::output::SoundPlayed>>();
 }
