@@ -113,20 +113,33 @@ void Servers::onSpawn(gengine::system::event::gui::SpawnScene &e) {
     gengine::Entity text = spawnEntity(
         gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Text("arcade.ttf", m_ip, WHITE),
         geg::component::io::Drawable(11), geg::component::Transform2D({WINDOW_WIDTH / 2 - 480 + 10, 215}, {3, 3}));
-    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/InputBox.png"),
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/InputBoxBig.png"),
                 geg::component::io::Drawable(10), geg::component::Transform2D({WINDOW_WIDTH / 2 - 480, 200}, {3, 3}),
                 gengine::component::gui::SelectButton(),
                 gengine::component::gui::ButtonSpriteTint(RAYWHITE, WHITE, GRAY), geg::component::Box<1>({text}),
-                gengine::component::gui::InputBox(m_ip));
+                gengine::component::gui::InputBox(m_ip, 16));
+
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
+                geg::component::io::Text("arcade.ttf", "Port", WHITE), geg::component::io::Drawable(10),
+                geg::component::Transform2D({WINDOW_WIDTH / 2, 180}, {2, 2}));
+    text = spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
+                       geg::component::io::Text("arcade.ttf", m_port, WHITE),
+                       geg::component::io::Drawable(11),
+                       geg::component::Transform2D({WINDOW_WIDTH / 2 + 10, 215}, {3, 3}));
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/InputBoxSmall.png"),
+                geg::component::io::Drawable(10), geg::component::Transform2D({WINDOW_WIDTH / 2, 200}, {3, 3}),
+                gengine::component::gui::SelectButton(),
+                gengine::component::gui::ButtonSpriteTint(RAYWHITE, WHITE, GRAY), geg::component::Box<1>({text}),
+                gengine::component::gui::InputBox(m_port, 6));
 
     spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/Play.png"),
                 geg::component::io::Drawable(10),
-                geg::component::Transform2D({WINDOW_WIDTH / 2 + 140, 200}, {0.3, 0.3}),
+                geg::component::Transform2D({WINDOW_WIDTH / 2 + 200, 200}, {0.3, 0.3}),
                 gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(WHITE, GRAY, RED),
                 gengine::component::gui::onClick([this] {
                     if (m_ip.empty())
                         return;
-                    publishEvent(gengine::interface::network::event::ConnectToServer(m_ip, 4243));
+                    publishEvent(gengine::interface::network::event::ConnectToServer(m_ip, std::atoi(m_port.c_str())));
                     publishEvent(gengine::system::event::gui::SwitchScene(GAMELOBBY));
                 }));
     spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
@@ -181,10 +194,8 @@ void Servers::onUpdate(geg::event::GameLoop &e) {
                         geg::component::Transform2D(
                             {330.f + 380.f * (m_servers.size() % 3), 470.f + m_servers.size() / 3 * 180.f}, {0.3, 0.3}),
                         gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(WHITE, GRAY, RED),
-                        gengine::component::gui::onClick([this] {
-                            if (m_ip.empty())
-                                return;
-                            publishEvent(gengine::interface::network::event::ConnectToServer(m_ip, 4243));
+                        gengine::component::gui::onClick([this, info] {
+                            publishEvent(gengine::interface::network::event::ConnectToServer(info.ip, info.port));
                             publishEvent(gengine::system::event::gui::SwitchScene(GAMELOBBY));
                         }));
         std::vector<gengine::Entity> entities = {bg, text, play};

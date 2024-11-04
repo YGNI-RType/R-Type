@@ -48,6 +48,7 @@ private:
     short m_sceneId = SERVERS;
 
     std::string m_ip = "127.0.0.1";
+    std::string m_port = "4242";
 
     std::unordered_map<std::string, std::vector<gengine::Entity>> m_servers;
 
