@@ -7,17 +7,19 @@
 
 #pragma once
 
-#include "GEngine/interface/network/events/Connection.hpp"
-#include "GEngine/interface/network/systems/ClientServer.hpp"
 #include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/Events.hpp"
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/Systems.hpp"
 #include "GEngine/libdev/systems/gui/BaseScene.hpp"
 
-#include "GEngine/interface/components/RemoteLocal.hpp"
 #include "components/GameState.hpp"
 #include "components/Player.hpp"
+
+#include "GEngine/interface/components/RemoteLocal.hpp"
+
+#include "GEngine/interface/network/events/Connection.hpp"
+#include "GEngine/interface/network/systems/ClientServer.hpp"
 
 namespace rtype::system::gui {
 enum Scenes { MAINMENU, SERVERS, SETTINGS, GAMELOBBY, RTYPE, GAMEOVER, WIN };
