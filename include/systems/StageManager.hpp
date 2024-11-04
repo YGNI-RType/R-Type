@@ -14,6 +14,10 @@
 
 #include "Types.hpp"
 #include "components/Background.hpp"
+#include "components/Boss.hpp"
+#include "components/Bullet.hpp"
+#include "components/BulletEnemy.hpp"
+#include "components/Monster.hpp"
 #include "events/GameOver.hpp"
 #include "events/NextStage.hpp"
 #include "events/StartGame.hpp"
@@ -24,6 +28,7 @@
 namespace rtype::system {
 class StageManager
     : public gengine::System<StageManager, MobManager, BulletManager, BossManager, component::Background,
+                             component::Boss, component::Monster, component::Bullet, component::BulletEnemy,
                              geg::component::io::Sprite, geg::component::Velocity2D, geg::component::io::Drawable,
                              geg::component::Transform2D, geg::component::network::NetSend>,
       public gengine::RemoteSystem {
@@ -40,6 +45,7 @@ public:
 
 private:
     void loadStages(void);
+    void clearEntities(void);
     void initStage(std::size_t);
 
     void updateMonstersSpawn(void);
@@ -51,6 +57,6 @@ private:
     std::size_t m_currentStage;
     unsigned int m_clock;
 
-    bool m_started = false;
+    bool m_started;
 };
 } // namespace rtype::system

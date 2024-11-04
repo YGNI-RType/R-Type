@@ -1,0 +1,33 @@
+{
+    "sprite": {
+        "txtPath": "boss-orange.png",
+        "src": {
+            "width": 54,
+            "height": 61
+        }
+    },
+    "animation": {
+        "trackName": "boss.json/idle",
+        "frameDuration": 0.25
+    },
+    "transform": {
+        "scale": {
+            "x": 2,
+            "y": 2
+        }
+    },
+    "velocity": {
+        "y": 7
+    },
+    "hitbox": {
+        "width": 54,
+        "height": 13
+    },
+    "wavesName": ["planeHorde.json", "caterpillarDHorde.json", "caterpillarUHorde.json", "robotHorde.json"],
+    "waveCooldown": 1500,
+    "ammoName": ["boss-ball.json"],
+    "bulletSpeed": 4,
+    "minVelocity": 7,
+    "maxVelocity": 10,
+    "borderMargin": 0.4
+}

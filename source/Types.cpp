@@ -93,10 +93,10 @@ void from_json(const nlohmann::json &j, Boss &b) {
     j.contains("hitbox") ? j.at("hitbox").get_to(b.hitbox)
                          : b.hitbox = geg::component::HitBoxSquare2D(b.sprite.src.width, b.sprite.src.height);
     j.contains("wavesName") ? j.at("wavesName").get_to(b.wavesName) : b.wavesName = std::vector<std::string>();
-    j.contains("waveCooldown") ? j.at("waveCooldown").get_to(b.waveCooldown) : b.waveCooldown = 10000;
+    j.contains("waveCooldown") ? j.at("waveCooldown").get_to(b.waveCooldown) : b.waveCooldown = 5000;
     j.contains("ammoName") ? j.at("ammoName").get_to(b.ammoName) : b.ammoName = std::vector<std::string>();
     j.contains("bulletSpeed") ? j.at("bulletSpeed").get_to(b.bulletSpeed) : b.bulletSpeed = 2;
-    j.contains("minVelocity") ? j.at("minVelocity").get_to(b.minVelocity) : b.minVelocity = 2;
+    j.contains("minVelocity") ? j.at("minVelocity").get_to(b.minVelocity) : b.minVelocity = 3;
     j.contains("maxVelocity") ? j.at("maxVelocity").get_to(b.maxVelocity) : b.maxVelocity = 6;
     j.contains("borderMargin") ? j.at("borderMargin").get_to(b.borderMargin) : b.borderMargin = 0.2;
 }
@@ -108,7 +108,7 @@ void to_json(nlohmann::json &j, const Monster &m) {
                        {"scaleFactor", m.scaleFactor},
                        {"speedFactor", m.speedFactor},
                        {"scoreGain", m.scoreGain},
-                       {"numberOfLifes", m.numberOfLifes}};
+                       {"numberOfLives", m.numberOfLives}};
 }
 
 void from_json(const nlohmann::json &j, Monster &m) {
@@ -118,7 +118,7 @@ void from_json(const nlohmann::json &j, Monster &m) {
     j.contains("scaleFactor") ? j.at("scaleFactor").get_to(m.scaleFactor) : m.scaleFactor = 1;
     j.contains("speedFactor") ? j.at("speedFactor").get_to(m.speedFactor) : m.speedFactor = 1;
     j.contains("scoreGain") ? j.at("scoreGain").get_to(m.scoreGain) : m.scoreGain = 0;
-    j.contains("numberOfLifes") ? j.at("numberOfLifes").get_to(m.numberOfLifes) : m.numberOfLifes = 1;
+    j.contains("numberOfLives") ? j.at("numberOfLives").get_to(m.numberOfLives) : m.numberOfLives = 1;
 }
 
 void to_json(nlohmann::json &j, const Stage &s) {

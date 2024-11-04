@@ -14,7 +14,9 @@
 namespace rtype::system {
 StageManager::StageManager(const std::string &folder)
     : m_folder(folder)
-    , m_currentStage(0) {
+    , m_currentStage(0)
+    , m_clock(0)
+    , m_started(false) {
 }
 
 void StageManager::init(void) {
@@ -62,6 +64,9 @@ void StageManager::updateBossSpawn(void) {
 void StageManager::onStartGame(event::StartGame &) {
     m_started = true;
     m_clock = 0;
+
+    m_currentStage = 0;
+    initStage(m_currentStage);
 }
 
 void StageManager::onGameLoop(gengine::system::event::GameLoop &e) {
@@ -98,13 +103,39 @@ void StageManager::loadStages(void) {
     }
 }
 
+void StageManager::clearEntities(void) {
+    std::vector<gengine::Entity> entities;
+
+    auto &backgrounds = getComponents<component::Background>();
+    for (auto [entity, background] : backgrounds)
+        entities.push_back(entity);
+
+    auto &monsters = getComponents<component::Monster>();
+    for (auto [entity, monster] : monsters)
+        entities.push_back(entity);
+
+    auto &bosses = getComponents<component::Boss>();
+    for (auto [entity, boss] : bosses)
+        entities.push_back(entity);
+
+    auto &bullets = getComponents<component::Bullet>();
+    for (auto [entity, bullet] : bullets)
+        entities.push_back(entity);
+
+    auto &bulletsEnnemy = getComponents<component::BulletEnemy>();
+    for (auto [entity, bulletEnnemy] : bulletsEnnemy)
+        entities.push_back(entity);
+
+    for (auto &entity : entities)
+        killEntity(entity);
+}
+
 void StageManager::initStage(std::size_t stageNbr) {
     if (m_stages.size() <= stageNbr)
         throw std::runtime_error("Stage " + std::to_string(stageNbr + 1) + " not found");
 
-    auto &backgrounds = getComponents<component::Background>();
-    for (auto [entity, background] : backgrounds)
-        killEntity(entity);
+    m_clock = 0;
+    clearEntities();
 
     const auto &stage = m_stages[stageNbr];
     spawnEntity(component::Background(), stage.background.transform, stage.background.velocity,

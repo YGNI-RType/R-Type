@@ -13,11 +13,12 @@ void BackgroundMotion::init(void) {
 }
 
 void BackgroundMotion::onGameLoop(gengine::system::event::GameLoop &e) {
-    auto &transforms = getComponents<gengine::component::Transform2D>();
     auto &backgrounds = getComponents<component::Background>();
+    auto &transforms = getComponents<gengine::component::Transform2D>();
+    auto &sprites = getComponents<gengine::component::driver::output::Sprite>();
 
-    for (auto [entity, transform, background] : gengine::Zip(transforms, backgrounds))
-        if (transform.pos.x < -1119 * 3.48 - 1)
-            transform.pos.x = 1119 * 3.48;
+    for (auto [entity, background, transform, sprite] : gengine::Zip(backgrounds, transforms, sprites))
+        if (transform.pos.x < -(sprite.src.width - 1) * transform.scale.x - 1)
+            transform.pos.x = (sprite.src.width - 1) * transform.scale.x;
 }
 } // namespace rtype::system
