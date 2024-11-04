@@ -39,6 +39,7 @@
 #include "systems/PlayerShoot.hpp"
 #include "systems/Scenes.hpp"
 #include "systems/StageManager.hpp"
+#include "systems/TextSizeModifier.hpp"
 #include "systems/UpdateScoreText.hpp"
 
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"

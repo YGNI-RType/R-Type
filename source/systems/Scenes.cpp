@@ -10,6 +10,7 @@
 #include "components/InputBoxMapper.hpp"
 #include "events/GameInputs.hpp"
 #include "events/StartGame.hpp"
+#include "events/TextSize.hpp"
 
 namespace rtype::system::gui {
 MainMenu::MainMenu()
@@ -328,12 +329,5 @@ void GameStateHandler::onEvent(geg::event::GameLoop &e) {
         }
         m_currentState = state.state;
     }
-}
-
-void TextSizeModifier::onEvent(event::ChangeTextSize &e) {
-    auto &texts = getComponents<geg::component::io::Text>();
-
-    for (auto &[entity, text] : texts)
-        text.fontSize += e.diff;
 }
 } // namespace rtype::system::gui

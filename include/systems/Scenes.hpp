@@ -18,7 +18,6 @@
 #include "GEngine/interface/components/RemoteLocal.hpp"
 #include "components/GameState.hpp"
 #include "components/Player.hpp"
-#include "events/TextSize.hpp"
 
 namespace rtype::system::gui {
 enum Scenes { MAINMENU, SERVERS, SETTINGS, GAMELOBBY, RTYPE, GAMEOVER };
@@ -97,11 +96,5 @@ public:
 
 private:
     component::GameState::State m_currentState = component::GameState::State::LOBBY;
-};
-
-class TextSizeModifier
-    : public gengine::OnEventSystem<TextSizeModifier, event::ChangeTextSize, geg::component::io::Text> {
-public:
-    void onEvent(event::ChangeTextSize &) final;
 };
 } // namespace rtype::system::gui
