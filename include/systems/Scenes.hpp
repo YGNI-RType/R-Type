@@ -20,7 +20,7 @@
 #include "components/Player.hpp"
 
 namespace rtype::system::gui {
-enum Scenes { MAINMENU, SERVERS, SETTINGS, GAMELOBBY, RTYPE, GAMEOVER };
+enum Scenes { MAINMENU, SERVERS, SETTINGS, GAMELOBBY, RTYPE, GAMEOVER, WIN };
 class MainMenu : public gengine::system::gui::BaseScene {
 public:
     MainMenu();
@@ -67,23 +67,6 @@ private:
     short m_sceneId = GAMELOBBY;
 
     gengine::Entity m_startButton;
-
-    bool m_update = false;
-};
-
-class GameOver : public gengine::System<GameOver, gengine::component::gui::SceneMember,
-                                        geg::component::gui::SelectButton, component::GameState> {
-public:
-    void init(void) override;
-
-    void onUpdate(geg::event::GameLoop &);
-    void onSpawn(gengine::system::event::gui::SpawnScene &);
-    void onClear(gengine::system::event::gui::ClearScene &);
-
-private:
-    short m_sceneId = GAMEOVER;
-
-    gengine::Entity m_restartButton;
 
     bool m_update = false;
 };

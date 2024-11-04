@@ -65,14 +65,14 @@ void Lobby::checkPlayersReady(gengine::system::event::GameLoop &e) {
     m_started = true;
 }
 
-void Lobby::onGameOver(event::GameOver &) {
+void Lobby::onGameOver(event::GameOver &e) {
     m_started = false;
     for (auto &[uuid, infos] : m_playersInLobby)
         infos.second = false;
     auto &states = getComponents<component::GameState>();
     auto &netsends = getComponents<geg::component::network::NetSend>();
-    for (auto [e, state, netsend] : gengine::Zip(states, netsends)) {
-        state = component::GameState::GAMEOVER;
+    for (auto [entity, state, netsend] : gengine::Zip(states, netsends)) {
+        state = e.win ? component::GameState::WIN : component::GameState::GAMEOVER;
         netsend.update();
     }
 }

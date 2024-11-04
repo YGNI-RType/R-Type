@@ -12,6 +12,9 @@
 
 namespace rtype::event {
 struct GameOver : public gengine::Event {
-    GameOver() = default;
+    bool win;
+    GameOver(bool win)
+        : win(win) {
+    }
 };
 } // namespace rtype::event

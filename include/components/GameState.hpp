@@ -11,7 +11,7 @@
 
 namespace rtype::component {
 struct GameState : public gengine::Component<GameState> {
-    enum State { LOBBY, GAME, GAMEOVER };
+    enum State { LOBBY, GAME, GAMEOVER, WIN };
     State state;
     GameState(State state)
         : state(state) {

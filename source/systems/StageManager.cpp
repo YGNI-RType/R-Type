@@ -130,9 +130,10 @@ void StageManager::clearEntities(void) {
 }
 
 void StageManager::initStage(std::size_t stageNbr) {
-    if (m_stages.size() <= stageNbr)
-        throw std::runtime_error("Stage " + std::to_string(stageNbr + 1) + " not found");
-
+    if (m_stages.size() <= stageNbr) {
+        publishEvent(event::GameOver(true));
+        return;
+    }
     m_clock = 0;
     clearEntities();
 
