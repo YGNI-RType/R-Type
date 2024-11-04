@@ -37,19 +37,13 @@ void PlayerShoot::shoot(gengine::interface::event::SharedEvent<event::Shoot> &e)
     auto &[state, lastCharge] = it->second;
     if (e->state == event::Shoot::REST && state == event::Shoot::CHARGING) {
         state = event::Shoot::REST;
-        if (getChargeDuration(lastCharge) > 500)
-            shootBeam(e.remoteUUID, (getChargeDuration(lastCharge) - 500) / 100);
+        if (getChargeDuration(lastCharge) > 300)
+            shootBeam(e.remoteUUID, (getChargeDuration(lastCharge) - 500) / 200);
         return;
     }
     if (e->state == event::Shoot::CHARGING && state == event::Shoot::REST) {
         lastCharge = std::chrono::system_clock::now();
         state = event::Shoot::CHARGING;
-        // spawnEntity(
-        //     gengine::component::Transform2D({0, 0}, {2, 2}), gengine::component::Velocity2D(0, 0),
-        //     gengine::component::io::Drawable(2),
-        //     gengine::component::io::Sprite("r-typesheet1.gif", Rectangle{0, 51, 32, 32}, WHITE),
-        //     gengine::component::io::Animation(
-        //         "r-typesheet1.json/charging", 0.1f, gengine::component::io::AnimationTrack::Forward, 2));
         shootBullet(e.remoteUUID);
     }
 }
