@@ -19,7 +19,7 @@ struct Background {
     geg::component::Velocity2D velocity;
 };
 
-enum TypeOfMotion { FLAPPING, BOUNDING, LINEAR };
+enum TypeOfMotion { FLAPPING, BOUNDING, FOLLOWING, LINEAR };
 
 struct Bullet {
     geg::component::io::Sprite sprite;
@@ -71,7 +71,7 @@ struct Monster {
     float scaleFactor;
     float speedFactor;
     int scoreGain;
-    unsigned int numberOfLifes;
+    unsigned int numberOfLives;
 };
 
 struct Stage {

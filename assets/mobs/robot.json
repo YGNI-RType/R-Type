@@ -1,15 +1,15 @@
 [
     {
         "sprite": {
-            "txtPath": "plane.gif",
+            "txtPath": "robot.gif",
             "src": {
                 "width": 33,
-                "height": 36
+                "height": 34
             }
         },
         "animation": {
-            "trackName": "plane.json/fly",
-            "frameDuration": 0.075
+            "trackName": "robot.json/moove",
+            "frameDuration": 0.15
         },
         "transform": {
             "scale": {
@@ -18,13 +18,18 @@
             }
         },
         "velocity": {
-            "x": -5
+            "x": 6,
+            "y": 6
         },
-        "typeOfMotion": 0,
+        "typeOfMotion": 2,
         "ammo": [
             {
                 "bulletName": "small.json",
-                "spawnDelay": 1500
+                "spawnDelay": 500
+            },
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 2000
             }
         ]
     }

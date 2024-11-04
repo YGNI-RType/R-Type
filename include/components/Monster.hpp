@@ -13,11 +13,11 @@
 
 namespace rtype::component {
 struct Monster : public gengine::Component<Monster> {
-    Monster(int lives = DEFAULT_MONSTER_LIVES)
+    Monster(unsigned int lives = DEFAULT_MONSTER_LIVES)
         : lives(lives) {
     }
 
-    int lives;
+    unsigned int lives;
     bool operator==(const Monster &) const = default;
 };
 } // namespace rtype::component

@@ -8,7 +8,7 @@
     },
     "animation": {
         "trackName": "boss.json/idle",
-        "frameDuration": 0.05
+        "frameDuration": 0.25
     },
     "transform": {
         "scale": {
@@ -17,17 +17,17 @@
         }
     },
     "velocity": {
-        "y": 2
+        "y": 3
     },
     "hitbox": {
         "width": 55,
         "height": 12
     },
     "wavesName": ["planeHorde.json"],
-    "waveCooldown": 10000,
+    "waveCooldown": 5000,
     "ammoName": ["boss-ball.json"],
     "bulletSpeed": 2,
-    "minVelocity": 2,
+    "minVelocity": 3,
     "maxVelocity": 6,
     "borderMargin": 0.2
 }

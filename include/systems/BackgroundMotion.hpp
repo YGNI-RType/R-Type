@@ -7,16 +7,16 @@
 
 #pragma once
 
+#include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/components/Transforms.hpp"
-#include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 
 #include "components/Background.hpp"
 
 namespace rtype::system {
-class BackgroundMotion : public gengine::System<BackgroundMotion, gengine::component::Velocity2D,
-                                                gengine::component::Transform2D, component::Background> {
+class BackgroundMotion
+    : public gengine::System<BackgroundMotion, geg::component::Velocity2D, geg::component::io::Sprite,
+                             geg::component::Transform2D, component::Background> {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);
