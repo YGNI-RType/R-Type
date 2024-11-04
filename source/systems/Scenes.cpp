@@ -119,12 +119,10 @@ void Servers::onSpawn(gengine::system::event::gui::SpawnScene &e) {
                 gengine::component::gui::ButtonSpriteTint(RAYWHITE, WHITE, GRAY), geg::component::Box<1>({text}),
                 gengine::component::gui::InputBox(m_ip, 16));
 
-    spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
-                geg::component::io::Text("arcade.ttf", "Port", WHITE), geg::component::io::Drawable(10),
-                geg::component::Transform2D({WINDOW_WIDTH / 2, 180}, {2, 2}));
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Text("arcade.ttf", "Port", WHITE),
+                geg::component::io::Drawable(10), geg::component::Transform2D({WINDOW_WIDTH / 2, 180}, {2, 2}));
     text = spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
-                       geg::component::io::Text("arcade.ttf", m_port, WHITE),
-                       geg::component::io::Drawable(11),
+                       geg::component::io::Text("arcade.ttf", m_port, WHITE), geg::component::io::Drawable(11),
                        geg::component::Transform2D({WINDOW_WIDTH / 2 + 10, 215}, {3, 3}));
     spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/InputBoxSmall.png"),
                 geg::component::io::Drawable(10), geg::component::Transform2D({WINDOW_WIDTH / 2, 200}, {3, 3}),

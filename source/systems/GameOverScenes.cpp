@@ -7,8 +7,8 @@
 
 #include "systems/GameOverScenes.hpp"
 
-#include "events/StartGame.hpp"
 #include "Constants.hpp"
+#include "events/StartGame.hpp"
 
 namespace rtype::system::gui {
 void GameOver::init(void) {

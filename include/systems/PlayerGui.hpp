@@ -11,19 +11,20 @@
 #include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Player.hpp"
-#include "events/Shoot.hpp"
 #include "events/GameInputs.hpp"
+#include "events/Shoot.hpp"
 
+#include "GEngine/interface/network/events/Connection.hpp"
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
-#include "GEngine/interface/network/events/Connection.hpp"
 
 #include "GEngine/interface/events/RemoteLocal.hpp"
 
 namespace rtype::system {
-class PlayerGui : public gengine::System<PlayerGui, gengine::interface::component::RemoteLocal, component::Player,
-                                         component::Life, component::Invincible, geg::component::io::Sprite, geg::component::io::Rectangle>,
-                  public gengine::LocalSystem {
+class PlayerGui
+    : public gengine::System<PlayerGui, gengine::interface::component::RemoteLocal, component::Player, component::Life,
+                             component::Invincible, geg::component::io::Sprite, geg::component::io::Rectangle>,
+      public gengine::LocalSystem {
 public:
     void init(void) override;
 
