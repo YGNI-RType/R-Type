@@ -15,6 +15,7 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/Systems.hpp"
 
+#include "components/Boss.hpp"
 #include "components/Bullet.hpp"
 #include "components/BulletEnemy.hpp"
 #include "components/Invincible.hpp"
@@ -23,15 +24,13 @@
 #include "components/Player.hpp"
 #include "components/Score.hpp"
 
-#include "ecs/entity/Entity.hpp"
-
 namespace rtype::system {
 class DestroyOnCollision
     : public gengine::System<DestroyOnCollision, component::Bullet, component::BulletEnemy, component::Monster,
-                             component::Life, component::Player, component::Invincible, geg::component::io::Sprite,
-                             gengine::interface::component::RemoteLocal, gengine::component::Transform2D,
-                             component::Score, gengine::component::driver::output::Drawable,
-                             geg::component::HitBoxSquare2D, gengine::component::driver::output::Text> {
+                             component::Boss, component::Score, component::Life, component::Player,
+                             component::Invincible, geg::component::io::Sprite,
+                             gengine::interface::component::RemoteLocal, geg::component::Transform2D,
+                             geg::component::io::Drawable, geg::component::HitBoxSquare2D, geg::component::io::Text> {
 public:
     void init(void) override;
     void destroyMonster(geg::event::Collision &);
@@ -40,6 +39,7 @@ public:
 private:
     void spawnExplosion(gengine::Entity);
     void claimScore(gengine::Entity, const char *);
+    void updateBossSprite(gengine::Entity, unsigned int);
     void playerHit(gengine::Entity, component::Player &, gengine::component::Transform2D &);
 };
 } // namespace rtype::system

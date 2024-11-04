@@ -6,16 +6,10 @@
 ** DestroyOnCollision.cpp
 */
 
-#include "GEngine/libdev/components/SpanLife.hpp"
-#include "GEngine/libdev/components/driver/output/Animation.hpp"
-#include "GEngine/libdev/components/driver/output/Drawable.hpp"
-#include "GEngine/libdev/components/driver/output/Sprite.hpp"
-
+#include "systems/DestroyOnCollision.hpp"
 #include "Constants.hpp"
-#include "components/Invincible.hpp"
 #include "events/GameOver.hpp"
 #include "events/NextStage.hpp"
-#include "systems/DestroyOnCollision.hpp"
 
 namespace rtype::system {
 void DestroyOnCollision::init(void) {
@@ -34,8 +28,23 @@ void DestroyOnCollision::claimScore(gengine::Entity entity_monster, const char *
     }
 }
 
+void DestroyOnCollision::updateBossSprite(gengine::Entity entity_monster, unsigned int currentLives) {
+    auto &sprites = getComponents<geg::component::io::Sprite>();
+    auto &bosses = getComponents<component::Boss>();
+
+    if (!bosses.contains(entity_monster) || !sprites.contains(entity_monster))
+        return;
+
+    auto &boss = bosses.get(entity_monster);
+    auto &sprite = sprites.get(entity_monster);
+
+    if (currentLives == boss.startLives / 2 || currentLives == boss.startLives / 4)
+        sprite.src.x += sprite.src.width * 2;
+}
+
 void DestroyOnCollision::destroyMonster(geg::event::Collision &e) {
     auto &monsters = getComponents<component::Monster>();
+    auto &bosses = getComponents<component::Boss>();
     auto &bullets = getComponents<component::Bullet>();
     auto &transforms = getComponents<gengine::component::Transform2D>();
 
@@ -48,10 +57,13 @@ void DestroyOnCollision::destroyMonster(geg::event::Collision &e) {
                     spawnExplosion(entity_monster);
                 if (monster.lives > 1) {
                     monster.lives--;
+                    updateBossSprite(entity_monster, monster.lives);
                     return;
                 }
 
                 claimScore(entity_monster, bullet.from.c_str());
+                if (bosses.contains(entity_monster))
+                    publishEvent(event::NextStage());
                 killEntity(entity_monster);
                 return;
             }

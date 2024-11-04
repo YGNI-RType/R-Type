@@ -93,8 +93,8 @@ void BossManager::spawn(const Monster &monster) {
     boss.velocity.y *= monster.speedFactor;
 
     gengine::Entity entity =
-        spawnEntity(component::Boss(monster.mobName), component::Monster(monster.numberOfLifes), boss.transform,
-                    boss.velocity, boss.sprite, geg::component::io::Drawable(1), boss.hitbox,
+        spawnEntity(component::Boss(monster.mobName, monster.numberOfLives), component::Monster(monster.numberOfLives),
+                    boss.transform, boss.velocity, boss.sprite, geg::component::io::Drawable(1), boss.hitbox,
                     geg::component::network::NetSend(), component::Score(monster.scoreGain));
 
     if (!boss.animation.trackName.empty())

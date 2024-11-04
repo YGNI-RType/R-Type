@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "GEngine/interface/components/RemoteLocal.hpp"
 #include "GEngine/libdev/Components.hpp"
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/Native.hpp"
@@ -25,7 +26,7 @@ class MobManager
     : public gengine::System<MobManager, component::Monster, component::Score, component::Bounding, component::Flapping,
                              geg::component::io::Sprite, geg::component::io::Animation, geg::component::io::Drawable,
                              geg::component::HitBoxSquare2D, geg::component::Transform2D, geg::component::Velocity2D,
-                             geg::component::network::NetSend>,
+                             geg::component::network::NetSend, gengine::interface::component::RemoteLocal>,
       public gengine::RemoteSystem {
 public:
     MobManager(const std::string &);
@@ -33,6 +34,8 @@ public:
 
     void onStartEngine(gengine::system::event::StartEngine &);
 
+    void determineVelocity(const geg::component::Transform2D &, const geg::component::io::Sprite &,
+                           geg::component::Velocity2D &);
     void setMotionComponent(gengine::Entity entity, TypeOfMotion type);
     void spawn(const Monster &, std::vector<Ammo> &);
     void spawn(event::BossSpawnWave &);

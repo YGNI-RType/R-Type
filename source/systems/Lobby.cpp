@@ -81,7 +81,7 @@ void Lobby::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {
     m_playersInLobby.emplace(e.uuid, false);
     if (m_started)
         return;
-    spawnPlayer(e.uuid, m_playersInLobby.size(), 3);
+    spawnPlayer(e.uuid, m_playersInLobby.size() - 1, 3);
 }
 
 void Lobby::spawnPlayer(const uuids::uuid &remoteUUID, size_t playerNb, size_t lifes) {
