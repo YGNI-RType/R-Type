@@ -134,6 +134,7 @@ void StageManager::initStage(std::size_t stageNbr) {
         publishEvent(event::GameOver(true));
         return;
     }
+
     m_clock = 0;
     clearEntities();
 
