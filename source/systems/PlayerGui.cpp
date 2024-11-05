@@ -44,9 +44,10 @@ void PlayerGui::displayLife(gengine::system::event::GameLoop &e) {
             continue;
 
         for (; m_lifes.size() + 1 < player.lifes;) {
-            m_lifes.push(spawnEntity(component::Life(), geg::component::Transform2D({10 + (m_lifes.size()) * 66.f, 726}, {1, 1}, 0),
-                        geg::component::io::Drawable(1),
-                        geg::component::io::Sprite("spaceships.gif", Rectangle{66, 0, 33, 17}, WHITE)));
+            m_lifes.push(spawnEntity(component::Life(),
+                                     geg::component::Transform2D({10 + (m_lifes.size()) * 66.f, 726}, {1, 1}, 0),
+                                     geg::component::io::Drawable(1),
+                                     geg::component::io::Sprite("spaceships.gif", Rectangle{66, 0, 33, 17}, WHITE)));
         }
 
         while (m_lifes.size() + 1 > player.lifes) {

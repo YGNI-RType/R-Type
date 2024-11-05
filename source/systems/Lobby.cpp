@@ -53,10 +53,9 @@ void Lobby::checkPlayersReady(gengine::system::event::GameLoop &e) {
         return;
 
     auto &states = getComponents<component::GameState>();
-    for (auto &[e, state] : states) {
+    for (auto &[e, state] : states)
         if (state == component::GameState::LOBBY)
             respawnPlayers(3);
-    }
     for (auto &[uuid, infos] : m_playersInLobby)
         if (!infos.second)
             return;
@@ -88,7 +87,7 @@ void Lobby::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {
     m_playersInLobby.emplace(e.uuid, std::make_pair(playerNb, false));
     if (m_started)
         return;
-    spawnPlayer(e.uuid, playerNb, 4);
+    spawnPlayer(e.uuid, playerNb, 3);
 }
 
 void Lobby::spawnPlayer(const uuids::uuid &remoteUUID, size_t playerNb, size_t lifes) {
