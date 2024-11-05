@@ -18,14 +18,13 @@
 #include "events/Shoot.hpp"
 
 namespace rtype::system {
-class PlayerShoot : public gengine::System<PlayerShoot, gengine::interface::component::RemoteLocal,
-                                           geg::component::Transform2D, geg::system::io::SoundManager> {
+class PlayerShoot
+    : public gengine::System<PlayerShoot, gengine::interface::component::RemoteLocal, geg::component::Transform2D> {
 public:
     void init(void) override;
     void newShooter(gengine::interface::event::NewRemoteLocal &);
     void deleteShooter(gengine::interface::event::DeleteRemoteLocal &);
     void shoot(gengine::interface::event::SharedEvent<event::Shoot> &);
-    void bulletSound(geg::event::io::KeySpaceEvent &);
 
 private:
     void shootBullet(const uuids::uuid &from);

@@ -11,6 +11,7 @@
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
 #include "GEngine/libdev/systems/events/Native.hpp"
+#include "GEngine/libdev/systems/events/driver/output/Sound.hpp"
 
 #include "Types.hpp"
 #include "components/Background.hpp"

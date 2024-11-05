@@ -38,6 +38,8 @@ void GEngineDeclareComponents(Registry *r) {
     r->registerComponent<geg::component::io::Sprite>();
     r->registerComponent<geg::component::io::Text>();
     r->registerComponent<geg::component::io::Rectangle>();
+    r->registerComponent<gengine::component::driver::output::Sound>();
+    r->registerComponent<gengine::component::driver::output::Music>();
 
     r->registerComponent<gengine::component::gui::SceneMember>();
     r->registerComponent<gengine::component::gui::Button>();

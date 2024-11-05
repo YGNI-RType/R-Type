@@ -4,6 +4,7 @@
     "bulletManager": "../assets/bullets",
     "fontManager": "../assets/fonts",
     "mobManager": "../assets/mobs",
+    "musicManager": "../assets/musics",
     "soundManager": "../assets/sounds",
     "stageManager": "../assets/stages",
     "textureManager": "../assets/textures"

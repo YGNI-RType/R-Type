@@ -147,6 +147,8 @@ void StageManager::initStage(std::size_t stageNbr) {
 
     spawnEntity(component::Background(), transform2, m_currentStage.background.velocity,
                 geg::component::io::Drawable(0), m_currentStage.background.sprite, geg::component::network::NetSend());
+
+    publishEvent(gengine::system::event::driver::output::Music("stage" + std::to_string(stageNbr + 1) + ".mp3"));
 }
 
 void StageManager::onStartEngine(gengine::system::event::StartEngine &e) {

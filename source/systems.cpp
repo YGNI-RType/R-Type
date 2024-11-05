@@ -11,10 +11,10 @@
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
 #include "GEngine/libdev/systems/driver/input/VoIPAudioCatcher.hpp"
 #include "GEngine/libdev/systems/driver/output/Animate.hpp"
+#include "GEngine/libdev/systems/driver/output/AudioManager.hpp"
 #include "GEngine/libdev/systems/driver/output/Draw.hpp"
 #include "GEngine/libdev/systems/driver/output/FontManager.hpp"
 #include "GEngine/libdev/systems/driver/output/RenderWindow.hpp"
-#include "GEngine/libdev/systems/driver/output/SoundManager.hpp"
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 #include "GEngine/libdev/systems/driver/output/VoIPAudio.hpp"
 #include "GEngine/libdev/systems/gui/SceneManager.hpp"
@@ -69,8 +69,11 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::system::driver::output::FontManager>(rm.getManagerPath("fontManager"));
     r->registerSystem<gengine::system::driver::input::MouseCatcher>();
     r->registerSystem<gengine::system::driver::input::KeyboardCatcher>();
+    r->registerSystem<gengine::system::driver::output::AudioManagerLocal>(rm.getManagerPath("soundManager"),
+                                                                          rm.getManagerPath("musicManager"));
+    r->registerSystem<gengine::system::driver::output::AudioManagerRemote>(rm.getManagerPath("soundManager"),
+                                                                           rm.getManagerPath("musicManager"));
     r->registerSystem<gengine::system::driver::input::VoIPAudioCatcher>();
-    r->registerSystem<gengine::system::driver::output::SoundManager>(rm.getManagerPath("soundManager"));
     r->registerSystem<geg::system::io::AnimationManager>(rm.getManagerPath("animationManager"));
     r->registerSystem<rtype::system::MobManager>(rm.getManagerPath("mobManager"));
     r->registerSystem<rtype::system::BossManager>(rm.getManagerPath("bossManager"));
@@ -118,13 +121,14 @@ void GEngineDeclareSystems(Registry *r) {
 
     r->registerSystem<gengine::interface::network::system::ClientEventPublisher<
         rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot,
-        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible>>();
+        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible,
+        gengine::system::event::driver::output::SoundPlayed>>();
     r->registerSystem<gengine::interface::network::system::ServerEventReceiver<
         rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot,
-        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible>>();
+        gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible,
+        gengine::system::event::driver::output::SoundPlayed>>();
 
     r->registerSystem<gengine::interface::network::system::RecordManager>();
     r->registerSystem<gengine::interface::network::system::VoIPManager>();
     r->registerSystem<gengine::interface::network::system::NetworkWatcher>();
-    // TODO auto register ↓
 }
