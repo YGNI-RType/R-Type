@@ -52,13 +52,15 @@ void Lobby::checkPlayersReady(gengine::system::event::GameLoop &e) {
     if (m_started || !m_playersInLobby.size())
         return;
 
-    respawnPlayers(3);
+    auto &states = getComponents<component::GameState>();
+    for (auto &[e, state] : states)
+        if (state == component::GameState::LOBBY)
+            respawnPlayers(3);
     for (auto &[uuid, infos] : m_playersInLobby)
         if (!infos.second)
             return;
-    publishEvent(event::StartGame());
-    auto &states = getComponents<component::GameState>();
     auto &netsends = getComponents<geg::component::network::NetSend>();
+    publishEvent(event::StartGame());
     for (auto [e, state, netsend] : gengine::Zip(states, netsends)) {
         state = component::GameState::GAME;
         netsend.update();
@@ -67,10 +69,8 @@ void Lobby::checkPlayersReady(gengine::system::event::GameLoop &e) {
 }
 
 void Lobby::onGameOver(event::GameOver &e) {
-    if (!m_started) {
-        respawnPlayers(3);
+    if (!m_started)
         return;
-    }
     m_started = false;
     for (auto &[uuid, infos] : m_playersInLobby)
         infos.second = false;

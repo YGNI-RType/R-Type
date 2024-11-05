@@ -43,20 +43,19 @@ void PlayerGui::displayLife(gengine::system::event::GameLoop &e) {
         if (m_me != remote.getUUIDBytes())
             continue;
 
-        for (; m_life < player.lifes; m_life++) {
-            spawnEntity(component::Life(), geg::component::Transform2D({150 - m_life * 66.f, 726}, {1, 1}, 0),
-                        geg::component::io::Drawable(1),
-                        geg::component::io::Sprite("spaceships.gif", Rectangle{66, 0, 33, 17}, WHITE));
+        for (; m_lifes.size() + 1 < player.lifes;) {
+            m_lifes.push(spawnEntity(component::Life(),
+                                     geg::component::Transform2D({10 + (m_lifes.size()) * 66.f, 726}, {1, 1}, 0),
+                                     geg::component::io::Drawable(1),
+                                     geg::component::io::Sprite("spaceships.gif", Rectangle{66, 0, 33, 17}, WHITE)));
         }
 
-        for (auto &[entity, life] : lifes) {
-            if (m_life <= player.lifes)
-                continue;
-            killEntity(entity);
-            if (m_life > 1)
-                m_life--;
+        while (m_lifes.size() + 1 > player.lifes) {
+            killEntity(m_lifes.top());
+            m_lifes.pop();
         }
         m_dead = false;
+        return;
     }
 }
 
