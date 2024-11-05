@@ -20,7 +20,7 @@
             "mobName": "barrierBStatic.json",
             "spawnFactor": {
                 "x": 0.7,
-                "y": 0.5
+                "y": 0.84
             },
             "spawnDelay": 0,
             "scoreGain": 4242,
