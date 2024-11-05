@@ -45,7 +45,7 @@ public:
     void onNextStage(event::NextStage &);
 
 private:
-    std::unordered_map<uuids::uuid, bool> m_playersInLobby;
+    std::unordered_map<uuids::uuid, std::pair<size_t, bool>> m_playersInLobby;
     void spawnPlayer(const uuids::uuid &remoteUUID, size_t playerNb, size_t lifes);
 
     bool m_started = false;
