@@ -41,16 +41,17 @@ void Scoreboard::loadScores(gengine::system::event::StartEngine &) {
 }
 
 void Scoreboard::saveScore(event::GameOver &e) {
+    if (!e.win)
+        return;
+
     auto &scores = getComponents<component::Score>();
     auto &players = getComponents<gengine::interface::component::RemoteLocal>();
 
     int totalScore = 0;
-
     for (auto [entity, score, player] : gengine::Zip(scores, players))
         totalScore += score.score;
 
     m_scores.emplace(std::make_pair(totalScore, currentDateTimeString()));
-
     saveScoresToFile();
 }
 
