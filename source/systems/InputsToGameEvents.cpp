@@ -7,6 +7,9 @@
 
 #include "systems/InputsToGameEvents.hpp"
 
+#include "GEngine/interface/network/events/Record.hpp"
+#include "GEngine/libdev/systems/events/driver/input/VoIP.hpp"
+
 namespace rtype::system {
 void InputsToGameEvents::init(void) {
     subscribeToEvent<gengine::system::event::GameLoop>(&InputsToGameEvents::sendEvents);
@@ -16,6 +19,8 @@ void InputsToGameEvents::init(void) {
     subscribeToEvent<event::in::Right>(&InputsToGameEvents::moveRight);
     subscribeToEvent<event::in::Shoot>(&InputsToGameEvents::shoot);
     subscribeToEvent<event::in::Cheat>(&InputsToGameEvents::becomeInvincible);
+    subscribeToEvent<event::in::VoiceChat>(&InputsToGameEvents::voiceChat);
+    subscribeToEvent<event::in::Record>(&InputsToGameEvents::record);
 }
 
 void InputsToGameEvents::sendEvents(gengine::system::event::GameLoop &e) {
@@ -145,5 +150,22 @@ void InputsToGameEvents::becomeInvincible(event::in::Cheat &e) {
     default:
         break;
     }
+}
+
+void InputsToGameEvents::voiceChat(event::in::VoiceChat &e) {
+    switch (e.state) {
+    case geg::event::io::InputState::PRESSED:
+        publishEvent(gengine::system::event::driver::input::StartVoIP());
+        break;
+    case geg::event::io::InputState::RELEASE:
+        publishEvent(gengine::system::event::driver::input::EndVoIP());
+        break;
+    default:
+        break;
+    }
+}
+void InputsToGameEvents::record(event::in::Record &e) {
+    if (e.state == geg::event::io::InputState::PRESSED)
+        publishEvent(gengine::interface::network::event::ToogleRecord());
 }
 } // namespace rtype::system

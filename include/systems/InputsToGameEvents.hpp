@@ -32,6 +32,9 @@ public:
 
     void becomeInvincible(event::in::Cheat &e);
 
+    void voiceChat(event::in::VoiceChat &e);
+    void record(event::in::Record &e);
+
 private:
     event::Shoot::State m_shootState;
     bool m_isInvincible = false;
