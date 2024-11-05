@@ -75,6 +75,7 @@ struct Monster {
 };
 
 struct Stage {
+    unsigned int id;
     Background background;
     std::vector<Monster> monsters;
     Monster boss;

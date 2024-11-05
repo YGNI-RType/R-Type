@@ -26,6 +26,8 @@
 #include "systems/BulletManager.hpp"
 #include "systems/MobManager.hpp"
 
+#include <set>
+
 namespace rtype::system {
 class StageManager
     : public gengine::System<StageManager, MobManager, BulletManager, BossManager, component::Background,
@@ -40,9 +42,9 @@ public:
     void onGameLoop(gengine::system::event::GameLoop &);
     void onStartEngine(gengine::system::event::StartEngine &);
     void onStartGame(event::StartGame &);
-    void onGameOver(event::GameOver &);
 
     void goToNextStage(event::NextStage &);
+    void goToLobby(event::GoToLobby &);
 
 private:
     void loadStages(void);
@@ -55,10 +57,14 @@ private:
 
     std::string m_folder;
     Stage m_currentStage;
+
+    struct CompareByStageId {
+        bool operator()(const Stage &a, const Stage &b) const {
+            return a.id < b.id;
+        }
+    };
     std::vector<Stage> m_stages;
     std::size_t m_currentStageIdx;
     unsigned int m_clock;
-
-    bool m_started;
 };
 } // namespace rtype::system

@@ -1,0 +1,46 @@
+{
+    "id": 0,
+    "background": {
+        "sprite": {
+            "txtPath": "background0.png",
+            "src": {
+                "width": 376,
+                "height": 224
+            }
+        },
+        "transform": {
+            "scale": {
+                "x": 3.3,
+                "y": 3.3
+            }
+        }
+    },
+    "monsters": [
+        {
+            "mobName": "barrierBStatic.json",
+            "spawnFactor": {
+                "x": 0.7,
+                "y": 0.84
+            },
+            "spawnDelay": 0,
+            "scoreGain": 4242,
+            "numberOfLives": 4242
+
+        },
+        {
+            "mobName": "barrierLStatic.json",
+            "spawnFactor": {
+                "x": 0.5,
+                "y": 0.979
+            },
+            "spawnDelay": 0,
+            "scoreGain": 4242,
+            "numberOfLives": 4242
+        }
+    ],
+    "boss": {
+        "spawnFactor": {},
+        "mobName": "",
+        "spawnDelay": -1
+    }
+}

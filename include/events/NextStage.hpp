@@ -14,4 +14,9 @@ struct NextStage : public gengine::Event {
     NextStage() {
     }
 };
+
+struct GoToLobby : public gengine::Event {
+    GoToLobby() {
+    }
+};
 } // namespace rtype::event
