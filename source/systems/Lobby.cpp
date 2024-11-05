@@ -92,7 +92,8 @@ void Lobby::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {
 
 void Lobby::spawnPlayer(const uuids::uuid &remoteUUID, size_t playerNb, size_t lifes) {
     spawnEntity(
-        component::Player(5.f, lifes), geg::component::Transform2D({10 + playerNb * 100.f, WINDOW_HEIGHT - 90}, {3, 3}, 0),
+        component::Player(5.f, lifes),
+        geg::component::Transform2D({10 + playerNb * 100.f, WINDOW_HEIGHT - 90}, {3, 3}, 0),
         geg::component::Velocity2D(0, 0), geg::component::io::Drawable(1),
         geg::component::io::Sprite("spaceships.gif", Rectangle{66, 17.f * (playerNb % 4), 33, 17}),
         geg::component::HitBoxSquare2D(33, 17), gengine::interface::component::RemoteLocal(remoteUUID),
