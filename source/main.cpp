@@ -9,6 +9,9 @@
 #include "GEngine/interface/network/Networked.hpp"
 #include "GEngine/interface/network/Replay.hpp"
 
+#include "exceptions/Base.hpp"
+#include "GEngine/net/net_socket_error.hpp"
+
 int main(int argc, const char **argv) {
     std::string replayFile;
     for (int i = 0; i < argc; i++) {
@@ -16,6 +19,7 @@ int main(int argc, const char **argv) {
             replayFile = argv[i + 1];
     }
 
+    try {
     GEngine::init(argc, argv);
     if (replayFile.empty()) {
         gengine::interface::network::Networked interface(GEngine::getLocal(), GEngine::getRemote());
@@ -23,6 +27,15 @@ int main(int argc, const char **argv) {
     } else {
         gengine::interface::network::Replay interface(GEngine::getLocal(), GEngine::getRemote(), replayFile);
         interface.run();
+    }
+    } catch (gengine::Exception &e) {
+        std::cout << e.what() << std::endl;
+    } catch (Network::SocketException &e) {
+        std::cout << e.what() << std::endl;
+    } catch (Network::NetException &e) {
+        std::cout << e.what() << std::endl;
+    } catch (std::exception &e) {
+        std::cout << e.what() << std::endl;
     }
 
 }
