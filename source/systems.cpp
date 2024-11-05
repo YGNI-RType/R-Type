@@ -8,14 +8,15 @@
 #include "GEngine/libdev/Systems.hpp"
 #include "GEngine/GEngine.hpp"
 
-#include "GEngine/interface/network/systems/ClientServer.hpp"
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
+#include "GEngine/libdev/systems/driver/input/VoIPAudioCatcher.hpp"
 #include "GEngine/libdev/systems/driver/output/Animate.hpp"
 #include "GEngine/libdev/systems/driver/output/Draw.hpp"
 #include "GEngine/libdev/systems/driver/output/FontManager.hpp"
 #include "GEngine/libdev/systems/driver/output/RenderWindow.hpp"
 #include "GEngine/libdev/systems/driver/output/SoundManager.hpp"
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
+#include "GEngine/libdev/systems/driver/output/VoIPAudio.hpp"
 #include "GEngine/libdev/systems/gui/SceneManager.hpp"
 #include "GEngine/libdev/systems/gui/Widgets.hpp"
 
@@ -44,7 +45,11 @@
 #include "systems/UpdateScoreText.hpp"
 
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
+#include "GEngine/interface/network/systems/ClientServer.hpp"
+#include "GEngine/interface/network/systems/NetworkWatcher.hpp"
+#include "GEngine/interface/network/systems/RecordManager.hpp"
 #include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
+#include "GEngine/interface/network/systems/VoIPManager.hpp"
 
 #include "GEngine/interface/events/RemoteLocal.hpp"
 #include "GEngine/interface/systems/RemoteLocal.hpp"
@@ -58,11 +63,13 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::system::driver::output::DrawSprite>();
     r->registerSystem<gengine::system::driver::output::DrawText>();
     r->registerSystem<gengine::system::driver::output::DrawRectangle>();
+    r->registerSystem<gengine::system::driver::output::VoIPAudio>();
 
     r->registerSystem<gengine::system::driver::output::TextureManager>(rm.getManagerPath("textureManager"));
     r->registerSystem<gengine::system::driver::output::FontManager>(rm.getManagerPath("fontManager"));
     r->registerSystem<gengine::system::driver::input::MouseCatcher>();
     r->registerSystem<gengine::system::driver::input::KeyboardCatcher>();
+    r->registerSystem<gengine::system::driver::input::VoIPAudioCatcher>();
     r->registerSystem<gengine::system::driver::output::SoundManager>(rm.getManagerPath("soundManager"));
     r->registerSystem<geg::system::io::AnimationManager>(rm.getManagerPath("animationManager"));
     r->registerSystem<rtype::system::MobManager>(rm.getManagerPath("mobManager"));
@@ -116,5 +123,8 @@ void GEngineDeclareSystems(Registry *r) {
         rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot,
         gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible>>();
 
+    r->registerSystem<gengine::interface::network::system::RecordManager>();
+    r->registerSystem<gengine::interface::network::system::VoIPManager>();
+    r->registerSystem<gengine::interface::network::system::NetworkWatcher>();
     // TODO auto register ↓
 }

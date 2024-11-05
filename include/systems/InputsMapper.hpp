@@ -31,6 +31,8 @@ private:
     int m_downKey = KEY_DOWN;
     int m_rightKey = KEY_RIGHT;
     int m_shootKey = KEY_SPACE;
+    int m_voiceKey = KEY_V;
+    int m_recordKey = KEY_P;
     int m_cheatKey = KEY_LEFT_SHIFT;
 };
 
