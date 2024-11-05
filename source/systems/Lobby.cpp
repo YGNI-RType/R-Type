@@ -98,10 +98,19 @@ void Lobby::spawnPlayer(const uuids::uuid &remoteUUID, size_t playerNb, size_t l
 void Lobby::onDeleteRemoteLocal(gengine::interface::event::DeleteRemoteLocal &e) {
     auto &remotes = getComponents<gengine::interface::component::RemoteLocal>();
 
+    m_playersInLobby.erase(e.uuid);
+    if (!m_playersInLobby.size()) {
+        auto &states = getComponents<component::GameState>();
+        auto &netsends = getComponents<geg::component::network::NetSend>();
+        for (auto [e, state, netsend] : gengine::Zip(states, netsends)) {
+            state = component::GameState::LOBBY;
+            netsend.update();
+        }
+        m_started = false;
+    }
     for (auto &[entity, remote] : remotes) {
         if (remote.getUUIDBytes() == e.uuid) {
             killEntity(entity);
-            m_playersInLobby.erase(e.uuid);
             return;
         }
     }

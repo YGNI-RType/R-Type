@@ -104,24 +104,22 @@ void DestroyOnCollision::destroyPlayer(geg::event::Collision &e) {
         for (auto [entityMonster, monster] : monsters) {
             if ((e.entity1 == entityPlayer || e.entity2 == entityPlayer) &&
                 (e.entity1 == entityMonster || e.entity2 == entityMonster)) {
-                playerHit(entityPlayer, player, transform);
+                playerHit(entityPlayer, player, transform, players.size());
                 return;
             }
         }
         for (auto [entityBulletEnemy, bulletEnemy] : bulletsEnemy) {
             if ((e.entity1 == entityPlayer || e.entity2 == entityPlayer) &&
                 (e.entity1 == entityBulletEnemy || e.entity2 == entityBulletEnemy)) {
-                playerHit(entityPlayer, player, transform);
+                playerHit(entityPlayer, player, transform, players.size());
                 return;
             }
         }
     }
-    if (!players.size())
-        publishEvent(event::GameOver(false));
 }
 
 void DestroyOnCollision::playerHit(gengine::Entity entity, component::Player &player,
-                                   gengine::component::Transform2D &transform) {
+                                   gengine::component::Transform2D &transform, size_t nbAlive) {
     spawnEntity(gengine::component::Transform2D(transform.pos, {3, 3}), gengine::component::driver::output::Drawable(3),
                 gengine::component::driver::output::Sprite("effects.gif", {67, 342, 33, 30}),
                 gengine::component::driver::output::Animation("effects.json/playerdeath", 0.06f),
@@ -135,6 +133,8 @@ void DestroyOnCollision::playerHit(gengine::Entity entity, component::Player &pl
         transform.pos = {0, WINDOW_HEIGHT / 2 - (sprites.get(entity).src.height * transform.scale.y) / 2.0f};
     } else {
         killEntity(entity);
+        if (nbAlive - 1 == 0)
+            publishEvent(event::GameOver(false));
     }
 }
 } // namespace rtype::system

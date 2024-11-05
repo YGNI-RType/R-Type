@@ -40,6 +40,6 @@ private:
     void spawnExplosion(gengine::Entity);
     void claimScore(gengine::Entity, const char *);
     void updateBossSprite(gengine::Entity, unsigned int);
-    void playerHit(gengine::Entity, component::Player &, gengine::component::Transform2D &);
+    void playerHit(gengine::Entity, component::Player &, gengine::component::Transform2D &, size_t);
 };
 } // namespace rtype::system
