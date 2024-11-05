@@ -38,7 +38,8 @@ void BossManager::onGameLoop(gengine::system::event::GameLoop &e) {
          gengine::Zip(motions, transforms, sprites, bosses, netsends)) {
         const auto &boss = get(bossComp.bossName.c_str());
 
-        std::uniform_int_distribution<> randomIndexMob(0, boss.wavesName.size() - 1);
+        std::size_t wavesNameSize = boss.wavesName.size() == 0 ? 0 : boss.wavesName.size() - 1;
+        std::uniform_int_distribution<> randomIndexMob(0, wavesNameSize);
         bossComp.waveSpawnInSec -= e.deltaTime;
         if (bossComp.waveSpawnInSec < 0) {
             bossComp.waveSpawnInSec = boss.waveCooldown;
@@ -46,7 +47,8 @@ void BossManager::onGameLoop(gengine::system::event::GameLoop &e) {
         }
 
         std::uniform_int_distribution<> speed(boss.minVelocity, boss.maxVelocity);
-        std::uniform_int_distribution<> randomIndexBullet(0, boss.ammoName.size() - 1);
+        std::size_t ammoNameSize = boss.ammoName.size() == 0 ? 0 : boss.ammoName.size() - 1;
+        std::uniform_int_distribution<> randomIndexBullet(0, ammoNameSize);
         if (transform.pos.y < boss.borderMargin * WINDOW_HEIGHT - (sprite.src.height * transform.scale.y) / 2.0f) {
             motion.y = speed(gen);
             netsend.update();
