@@ -39,6 +39,7 @@
 #include "systems/PlayerMotion.hpp"
 #include "systems/PlayerShoot.hpp"
 #include "systems/Scenes.hpp"
+#include "systems/Scoreboard.hpp"
 #include "systems/StageManager.hpp"
 #include "systems/TextSizeModifier.hpp"
 #include "systems/UpdateScoreText.hpp"
@@ -69,6 +70,7 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<rtype::system::BossManager>(rm.getManagerPath("bossManager"));
     r->registerSystem<rtype::system::BulletManager>(rm.getManagerPath("bulletManager"));
     r->registerSystem<rtype::system::StageManager>(rm.getManagerPath("stageManager"));
+    r->registerSystem<rtype::system::Scoreboard>(rm.getManagerPath("scoreFile"));
     r->registerSystem<gengine::system::driver::output::Animate>();
 
     r->registerSystem<rtype::system::InputsMapper>();

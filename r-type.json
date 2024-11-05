@@ -6,5 +6,6 @@
     "mobManager": "../assets/mobs",
     "soundManager": "../assets/sounds",
     "stageManager": "../assets/stages",
-    "textureManager": "../assets/textures"
+    "textureManager": "../assets/textures",
+    "scoreFile": "../score.txt"
 }
