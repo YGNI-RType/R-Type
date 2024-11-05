@@ -12,8 +12,17 @@
 #include "events/StartGame.hpp"
 
 namespace rtype::system::gui {
-MainMenu::MainMenu()
-    : gengine::system::gui::BaseScene(MAINMENU) {
+void MainMenu::init(void) {
+    subscribeToEvent<gengine::system::event::StartEngine>(&MainMenu::onStartEngine);
+    subscribeToEvent<gengine::system::event::gui::ClearScene>(&MainMenu::onClear);
+    subscribeToEvent<gengine::system::event::gui::SpawnScene>(&MainMenu::onSpawn);
+}
+
+void MainMenu::onStartEngine(gengine::system::event::StartEngine &e) {
+    for (auto p = e.params.begin(); p != e.params.end(); p++) {
+        if (*p == "--replay" && (p + 1) != e.params.end())
+            publishEvent(gengine::system::event::gui::SwitchScene(RTYPE));
+    }
 }
 
 void MainMenu::onSpawn(gengine::system::event::gui::SpawnScene &e) {
@@ -32,6 +41,21 @@ void MainMenu::onSpawn(gengine::system::event::gui::SpawnScene &e) {
         geg::component::io::Drawable(10), geg::component::Transform2D({WINDOW_WIDTH / 2 - 160, 500}, {5, 5}),
         gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(),
         gengine::component::gui::onClick([this] { publishEvent(gengine::system::event::gui::SwitchScene(SETTINGS)); }));
+}
+
+void MainMenu::onClear(gengine::system::event::gui::ClearScene &e) {
+    if (e.sceneId != m_sceneId)
+        return;
+    auto &members = getComponents<gengine::component::gui::SceneMember>();
+    std::queue<ecs::entity::Entity> toKill;
+
+    for (auto &[entity, member] : members)
+        if (m_sceneId == member.sceneId)
+            toKill.push(entity);
+    while (!toKill.empty()) {
+        killEntity(toKill.front());
+        toKill.pop();
+    }
 }
 
 Settings::Settings()
@@ -180,10 +204,8 @@ void Servers::onUpdate(geg::event::GameLoop &e) {
                         geg::component::Transform2D(
                             {330.f + 380.f * (m_servers.size() % 3), 470.f + m_servers.size() / 3 * 180.f}, {0.3, 0.3}),
                         gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(WHITE, GRAY, RED),
-                        gengine::component::gui::onClick([this] {
-                            if (m_ip.empty())
-                                return;
-                            publishEvent(gengine::interface::network::event::ConnectToServer(m_ip, 4243));
+                        gengine::component::gui::onClick([this, info] {
+                            publishEvent(gengine::interface::network::event::ConnectToServer(info.ip, info.port));
                             publishEvent(gengine::system::event::gui::SwitchScene(GAMELOBBY));
                         }));
         std::vector<gengine::Entity> entities = {bg, text, play};

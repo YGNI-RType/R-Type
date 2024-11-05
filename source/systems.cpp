@@ -43,6 +43,7 @@
 
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
 #include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
+#include "GEngine/interface/network/systems/RecordManager.hpp"
 
 #include "GEngine/interface/events/RemoteLocal.hpp"
 #include "GEngine/interface/systems/RemoteLocal.hpp"
@@ -113,5 +114,6 @@ void GEngineDeclareSystems(Registry *r) {
         rtype::event::IAmReady, rtype::event::Movement, rtype::event::Shoot,
         gengine::interface::event::GetRemoteLocalWhoIAm, rtype::event::BecomeInvincible>>();
 
+    r->registerSystem<gengine::interface::network::system::RecordManager>();
     // TODO auto register ↓
 }
