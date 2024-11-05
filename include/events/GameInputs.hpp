@@ -13,7 +13,7 @@
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
 
 namespace rtype::event::in {
-enum Input { UP, LEFT, DOWN, RIGHT, SHOOT, CHEAT };
+enum Input { UP, LEFT, DOWN, RIGHT, SHOOT, CHEAT, VOICE, RECORD };
 using InputState = geg::event::io::InputState;
 struct GameInput : public gengine::Event {
     InputState state;
@@ -48,6 +48,16 @@ struct Shoot : public GameInput {
 };
 struct Cheat : public GameInput {
     Cheat(InputState state)
+        : GameInput(state) {
+    }
+};
+struct VoiceChat : public GameInput {
+    VoiceChat(InputState state)
+        : GameInput(state) {
+    }
+};
+struct Record : public GameInput {
+    Record(InputState state)
         : GameInput(state) {
     }
 };

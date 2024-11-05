@@ -27,6 +27,10 @@ void InputsMapper::handleKeyPressed(geg::event::io::KeyPressedEvent &e) {
         publishEvent(event::in::Shoot(event::in::InputState::PRESSED));
     if (e.key == m_cheatKey)
         publishEvent(event::in::Cheat(event::in::InputState::PRESSED));
+    if (e.key == m_voiceKey)
+        publishEvent(event::in::VoiceChat(event::in::InputState::PRESSED));
+    if (e.key == m_recordKey)
+        publishEvent(event::in::Record(event::in::InputState::PRESSED));
 }
 
 void InputsMapper::handleKeyReleased(geg::event::io::KeyReleasedEvent &e) {
@@ -42,6 +46,10 @@ void InputsMapper::handleKeyReleased(geg::event::io::KeyReleasedEvent &e) {
         publishEvent(event::in::Shoot(event::in::InputState::RELEASE));
     if (e.key == m_cheatKey)
         publishEvent(event::in::Cheat(event::in::InputState::RELEASE));
+    if (e.key == m_voiceKey)
+        publishEvent(event::in::VoiceChat(event::in::InputState::RELEASE));
+    if (e.key == m_recordKey)
+        publishEvent(event::in::Record(event::in::InputState::RELEASE));
 }
 
 void InputsMapper::changeInputKey(event::in::ChangeInputKey &e) {
@@ -63,6 +71,12 @@ void InputsMapper::changeInputKey(event::in::ChangeInputKey &e) {
         break;
     case event::in::Input::CHEAT:
         m_cheatKey = e.newKey;
+        break;
+    case event::in::Input::VOICE:
+        m_voiceKey = e.newKey;
+        break;
+    case event::in::Input::RECORD:
+        m_recordKey = e.newKey;
         break;
     default:
         break;
