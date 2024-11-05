@@ -7,6 +7,8 @@ vcpkg_from_github(
     SHA512 0768ba7133ee2d1f771fce66fc05f76a3ce0a751c8443f181acdcf7b86cd627415bb7aec9d28f35a50fc21c1e660577d71a198862d34fd42446b737104215b3d
 )
 
+set(ENV{NOT_INSTALL_VCPKG} true)
+
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
 )

@@ -31,7 +31,8 @@ void BulletManager::determineVelocity(const geg::component::Transform2D &mobTran
 
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(1, players.size());
+    std::size_t playersSize = players.size() == 0 ? 1 : players.size();
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(1, playersSize);
     int randomPlayer = dist6(rng);
 
     for (auto [entity, player, playerTransform, playerSprite] : gengine::Zip(players, transforms, sprites)) {
