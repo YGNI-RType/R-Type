@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <stack>
+
 #include "GEngine/libdev/Components.hpp"
 #include "components/Invincible.hpp"
 #include "components/Life.hpp"
@@ -40,7 +42,8 @@ private:
 
     gengine::Entity m_bar;
 
-    size_t m_life = 1;
+    // size_t m_life = 1;
+    std::stack<gengine::Entity> m_lifes;
     bool m_dead = true;
 };
 } // namespace rtype::system
