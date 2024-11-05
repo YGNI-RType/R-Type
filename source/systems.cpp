@@ -11,10 +11,10 @@
 #include "GEngine/interface/network/systems/ClientServer.hpp"
 #include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
 #include "GEngine/libdev/systems/driver/output/Animate.hpp"
+#include "GEngine/libdev/systems/driver/output/AudioManager.hpp"
 #include "GEngine/libdev/systems/driver/output/Draw.hpp"
 #include "GEngine/libdev/systems/driver/output/FontManager.hpp"
 #include "GEngine/libdev/systems/driver/output/RenderWindow.hpp"
-#include "GEngine/libdev/systems/driver/output/SoundManager.hpp"
 #include "GEngine/libdev/systems/driver/output/TextureManager.hpp"
 #include "GEngine/libdev/systems/gui/SceneManager.hpp"
 #include "GEngine/libdev/systems/gui/Widgets.hpp"
@@ -63,8 +63,10 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<gengine::system::driver::output::FontManager>(rm.getManagerPath("fontManager"));
     r->registerSystem<gengine::system::driver::input::MouseCatcher>();
     r->registerSystem<gengine::system::driver::input::KeyboardCatcher>();
-    r->registerSystem<gengine::system::driver::output::SoundManagerLocal>(rm.getManagerPath("soundManager"));
-    r->registerSystem<gengine::system ::driver::output::SoundManagerRemote>(rm.getManagerPath("soundManager"));
+    r->registerSystem<gengine::system::driver::output::AudioManagerLocal>(rm.getManagerPath("soundManager"),
+                                                                          rm.getManagerPath("musicManager"));
+    r->registerSystem<gengine::system::driver::output::AudioManagerRemote>(rm.getManagerPath("soundManager"),
+                                                                           rm.getManagerPath("musicManager"));
     r->registerSystem<geg::system::io::AnimationManager>(rm.getManagerPath("animationManager"));
     r->registerSystem<rtype::system::MobManager>(rm.getManagerPath("mobManager"));
     r->registerSystem<rtype::system::BossManager>(rm.getManagerPath("bossManager"));

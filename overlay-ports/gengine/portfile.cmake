@@ -3,8 +3,8 @@ vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO YGNI-RType/GEngine
-    REF v0.3.1
-    SHA512 07964da3e307f2cd735264b8abc5cde547c2314a09d9a3121ddd318d5aa860227db751cae7608204b907126bff257ccc97be240c4ba29f12ff2b61bb92931a98
+    REF v0.4.1
+    SHA512 85dbb23639b9d9520fe8a2d910fc50c90c6f7d30cc5b793332ea02eaa90c1e26281a2d7d14e59bd8a532cb6f25d0c0b78ed828bf06aed01218c0a518fdf9577d
 )
 
 vcpkg_cmake_configure(

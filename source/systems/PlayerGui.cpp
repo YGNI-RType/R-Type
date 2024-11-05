@@ -70,12 +70,12 @@ void PlayerGui::beamCharge(event::Shoot &e) {
         return;
     }
     switch (e.state) {
-    case geg::event::io::InputState::PRESSED:
+    case event::Shoot::REST:
+        rect.width = 0;
+        break;
+    case event::Shoot::CHARGING:
         if (rect.width < 390)
             rect.width += 5;
-        break;
-    case geg::event::io::InputState::RELEASE:
-        rect.width = 0;
         break;
     default:
         break;
