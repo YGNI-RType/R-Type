@@ -52,6 +52,7 @@ void Lobby::checkPlayersReady(gengine::system::event::GameLoop &e) {
     if (m_started || !m_playersInLobby.size())
         return;
 
+    respawnPlayers(3);
     for (auto &[uuid, infos] : m_playersInLobby)
         if (!infos.second)
             return;
@@ -66,6 +67,10 @@ void Lobby::checkPlayersReady(gengine::system::event::GameLoop &e) {
 }
 
 void Lobby::onGameOver(event::GameOver &e) {
+    if (!m_started) {
+        respawnPlayers(3);
+        return;
+    }
     m_started = false;
     for (auto &[uuid, infos] : m_playersInLobby)
         infos.second = false;
@@ -87,12 +92,12 @@ void Lobby::onNewRemoteLocal(gengine::interface::event::NewRemoteLocal &e) {
 
 void Lobby::spawnPlayer(const uuids::uuid &remoteUUID, size_t playerNb, size_t lifes) {
     spawnEntity(
-        component::Player(5.f, lifes), geg::component::Transform2D({0, WINDOW_HEIGHT / 2 - (17 * 3) / 2.0f}, {3, 3}, 0),
+        component::Player(5.f, lifes), geg::component::Transform2D({10 + playerNb * 100.f, WINDOW_HEIGHT - 90}, {3, 3}, 0),
         geg::component::Velocity2D(0, 0), geg::component::io::Drawable(1),
         geg::component::io::Sprite("spaceships.gif", Rectangle{66, 17.f * (playerNb % 4), 33, 17}),
         geg::component::HitBoxSquare2D(33, 17), gengine::interface::component::RemoteLocal(remoteUUID),
         geg::component::io::Animation("spaceships.json/fly", 0.1f, geg::component::io::AnimationTrack::Idling, 2),
-        component::Score(0), geg::component::network::NetSend());
+        component::Score(0), component::Invincible(500), geg::component::network::NetSend());
 }
 
 void Lobby::onDeleteRemoteLocal(gengine::interface::event::DeleteRemoteLocal &e) {
@@ -106,6 +111,7 @@ void Lobby::onDeleteRemoteLocal(gengine::interface::event::DeleteRemoteLocal &e)
             state = component::GameState::LOBBY;
             netsend.update();
         }
+        publishEvent(event::GoToLobby());
         m_started = false;
     }
     for (auto &[entity, remote] : remotes) {

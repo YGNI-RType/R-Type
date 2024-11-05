@@ -15,14 +15,12 @@ namespace rtype::system {
 StageManager::StageManager(const std::string &folder)
     : m_folder(folder)
     , m_currentStageIdx(0)
-    , m_clock(0)
-    , m_started(false) {
+    , m_clock(0) {
 }
 
 void StageManager::init(void) {
     subscribeToEvent<gengine::system::event::StartEngine>(&StageManager::onStartEngine);
     subscribeToEvent<event::StartGame>(&StageManager::onStartGame);
-    subscribeToEvent<event::GameOver>(&StageManager::onGameOver);
     subscribeToEvent<gengine::system::event::GameLoop>(&StageManager::onGameLoop);
     subscribeToEvent<event::NextStage>(&StageManager::goToNextStage);
 }
@@ -62,24 +60,16 @@ void StageManager::updateBossSpawn(void) {
 }
 
 void StageManager::onStartGame(event::StartGame &) {
-    m_started = true;
-
-    m_currentStageIdx = 0;
+    m_currentStageIdx = 1;
     initStage(m_currentStageIdx);
 }
 
 void StageManager::onGameLoop(gengine::system::event::GameLoop &e) {
-    if (!m_started)
-        return;
     m_clock += e.deltaTime;
 
     updateMonstersSpawn();
     updateBossSpawn();
     updateAmmoSpawn();
-}
-
-void StageManager::onGameOver(event::GameOver &) {
-    m_started = false;
 }
 
 void StageManager::loadStages(void) {
@@ -100,6 +90,7 @@ void StageManager::loadStages(void) {
 
         m_stages.push_back(stage);
     }
+    std::sort(m_stages.begin(), m_stages.end(), CompareByStageId());
 }
 
 void StageManager::clearEntities(void) {
@@ -156,5 +147,10 @@ void StageManager::onStartEngine(gengine::system::event::StartEngine &e) {
 
 void StageManager::goToNextStage(event::NextStage &e) {
     initStage(++m_currentStageIdx);
+}
+
+void StageManager::goToLobby(event::GoToLobby &e) {
+    m_currentStageIdx = 0;
+    initStage(m_currentStageIdx);
 }
 } // namespace rtype::system

@@ -122,10 +122,11 @@ void from_json(const nlohmann::json &j, Monster &m) {
 }
 
 void to_json(nlohmann::json &j, const Stage &s) {
-    j = nlohmann::json{{"background", s.background}, {"monsters", s.monsters}, {"boss", s.boss}};
+    j = nlohmann::json{{"id", s.id}, {"background", s.background}, {"monsters", s.monsters}, {"boss", s.boss}};
 }
 
 void from_json(const nlohmann::json &j, Stage &s) {
+    j.at("id").get_to(s.id);
     j.at("background").get_to(s.background);
     j.contains("monsters") ? j.at("monsters").get_to(s.monsters) : s.monsters = std::vector<Monster>();
     j.at("boss").get_to(s.boss);
