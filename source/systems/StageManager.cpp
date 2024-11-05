@@ -23,6 +23,7 @@ void StageManager::init(void) {
     subscribeToEvent<event::StartGame>(&StageManager::onStartGame);
     subscribeToEvent<gengine::system::event::GameLoop>(&StageManager::onGameLoop);
     subscribeToEvent<event::NextStage>(&StageManager::goToNextStage);
+    subscribeToEvent<event::GoToLobby>(&StageManager::goToLobby);
 }
 
 void StageManager::updateAmmoSpawn(void) {
