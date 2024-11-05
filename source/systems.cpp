@@ -42,8 +42,8 @@
 #include "systems/UpdateScoreText.hpp"
 
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
-#include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
 #include "GEngine/interface/network/systems/RecordManager.hpp"
+#include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
 
 #include "GEngine/interface/events/RemoteLocal.hpp"
 #include "GEngine/interface/systems/RemoteLocal.hpp"

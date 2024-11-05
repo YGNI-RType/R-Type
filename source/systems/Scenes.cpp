@@ -19,10 +19,9 @@ void MainMenu::init(void) {
 }
 
 void MainMenu::onStartEngine(gengine::system::event::StartEngine &e) {
-    for (auto p = e.params.begin(); p != e.params.end(); p++) {
+    for (auto p = e.params.begin(); p != e.params.end(); p++)
         if (*p == "--replay" && (p + 1) != e.params.end())
             publishEvent(gengine::system::event::gui::SwitchScene(RTYPE));
-    }
 }
 
 void MainMenu::onSpawn(gengine::system::event::gui::SpawnScene &e) {
