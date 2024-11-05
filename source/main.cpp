@@ -27,13 +27,9 @@ int main(int argc, const char **argv) {
             gengine::interface::network::Replay interface(GEngine::getLocal(), GEngine::getRemote(), replayFile);
             interface.run();
         }
-    } catch (gengine::Exception &e) {
-        std::cout << e.what() << std::endl;
-    } catch (Network::SocketException &e) {
-        std::cout << e.what() << std::endl;
-    } catch (Network::NetException &e) {
-        std::cout << e.what() << std::endl;
     } catch (std::exception &e) {
         std::cout << e.what() << std::endl;
+        return 1;
     }
+    return 0;
 }
