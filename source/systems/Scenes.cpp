@@ -10,6 +10,7 @@
 #include "components/InputBoxMapper.hpp"
 #include "events/GameInputs.hpp"
 #include "events/StartGame.hpp"
+#include "events/TextSize.hpp"
 
 namespace rtype::system::gui {
 void MainMenu::init(void) {
@@ -135,20 +136,31 @@ void Servers::onSpawn(gengine::system::event::gui::SpawnScene &e) {
     gengine::Entity text = spawnEntity(
         gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Text("arcade.ttf", m_ip, WHITE),
         geg::component::io::Drawable(11), geg::component::Transform2D({WINDOW_WIDTH / 2 - 480 + 10, 215}, {3, 3}));
-    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/InputBox.png"),
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/InputBoxBig.png"),
                 geg::component::io::Drawable(10), geg::component::Transform2D({WINDOW_WIDTH / 2 - 480, 200}, {3, 3}),
                 gengine::component::gui::SelectButton(),
                 gengine::component::gui::ButtonSpriteTint(RAYWHITE, WHITE, GRAY), geg::component::Box<1>({text}),
-                gengine::component::gui::InputBox(m_ip));
+                gengine::component::gui::InputBox(m_ip, 16));
+
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Text("arcade.ttf", "Port", WHITE),
+                geg::component::io::Drawable(10), geg::component::Transform2D({WINDOW_WIDTH / 2, 180}, {2, 2}));
+    text = spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
+                       geg::component::io::Text("arcade.ttf", m_port, WHITE), geg::component::io::Drawable(11),
+                       geg::component::Transform2D({WINDOW_WIDTH / 2 + 10, 215}, {3, 3}));
+    spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/InputBoxSmall.png"),
+                geg::component::io::Drawable(10), geg::component::Transform2D({WINDOW_WIDTH / 2, 200}, {3, 3}),
+                gengine::component::gui::SelectButton(),
+                gengine::component::gui::ButtonSpriteTint(RAYWHITE, WHITE, GRAY), geg::component::Box<1>({text}),
+                gengine::component::gui::InputBox(m_port, 6));
 
     spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/Play.png"),
                 geg::component::io::Drawable(10),
-                geg::component::Transform2D({WINDOW_WIDTH / 2 + 140, 200}, {0.3, 0.3}),
+                geg::component::Transform2D({WINDOW_WIDTH / 2 + 200, 200}, {0.3, 0.3}),
                 gengine::component::gui::Button(), gengine::component::gui::ButtonSpriteTint(WHITE, GRAY, RED),
                 gengine::component::gui::onClick([this] {
                     if (m_ip.empty())
                         return;
-                    publishEvent(gengine::interface::network::event::ConnectToServer(m_ip, 4243));
+                    publishEvent(gengine::interface::network::event::ConnectToServer(m_ip, std::atoi(m_port.c_str())));
                     publishEvent(gengine::system::event::gui::SwitchScene(GAMELOBBY));
                 }));
     spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
@@ -276,59 +288,6 @@ void GameLobby::onClear(gengine::system::event::gui::ClearScene &e) {
     m_update = false;
 }
 
-void GameOver::init(void) {
-    subscribeToEvent<geg::event::GameLoop>(&GameOver::onUpdate);
-    subscribeToEvent<gengine::system::event::gui::SpawnScene>(&GameOver::onSpawn);
-    subscribeToEvent<gengine::system::event::gui::ClearScene>(&GameOver::onClear);
-}
-
-void GameOver::onUpdate(geg::event::GameLoop &e) {
-    if (!m_update)
-        return;
-
-    auto &buttons = getComponents<geg::component::gui::SelectButton>();
-
-    bool ready = buttons.get(m_restartButton).state == geg::component::gui::SelectButton::PRESSED ? true : false;
-
-    publishEvent(event::IAmReady(ready));
-
-    auto &states = getComponents<component::GameState>();
-}
-
-void GameOver::onSpawn(gengine::system::event::gui::SpawnScene &e) {
-    if (e.sceneId != m_sceneId)
-        return;
-
-    spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
-                gengine::component::Transform2D({WINDOW_WIDTH / 2 - 350, WINDOW_HEIGHT / 2 - 100}, {8, 8}),
-                gengine::component::driver::output::Drawable(2),
-                gengine::component::driver::output::Text("arcade.ttf", "GAME OVER", YELLOW));
-    m_restartButton =
-        spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/Restart.png"),
-                    geg::component::io::Drawable(10),
-                    geg::component::Transform2D({WINDOW_WIDTH / 2 - 160, WINDOW_HEIGHT / 2 + 100}, {5, 5}),
-                    gengine::component::gui::SelectButton(), gengine::component::gui::ButtonSpriteTint());
-
-    m_update = true;
-}
-
-void GameOver::onClear(gengine::system::event::gui::ClearScene &e) {
-    if (e.sceneId != m_sceneId)
-        return;
-    auto &members = getComponents<gengine::component::gui::SceneMember>();
-    std::queue<ecs::entity::Entity> toKill;
-
-    for (auto &[entity, member] : members)
-        if (m_sceneId == member.sceneId)
-            toKill.push(entity);
-    while (!toKill.empty()) {
-        killEntity(toKill.front());
-        toKill.pop();
-    }
-
-    m_update = false;
-}
-
 void GameStateHandler::onEvent(geg::event::GameLoop &e) {
     auto &states = getComponents<component::GameState>();
     for (auto [entity, state] : states) {
@@ -344,17 +303,13 @@ void GameStateHandler::onEvent(geg::event::GameLoop &e) {
         case component::GameState::GAMEOVER:
             publishEvent(gengine::system::event::gui::SwitchScene(GAMEOVER));
             break;
+        case component::GameState::WIN:
+            publishEvent(gengine::system::event::gui::SwitchScene(WIN));
+            break;
         default:
             break;
         }
         m_currentState = state.state;
     }
-}
-
-void TextSizeModifier::onEvent(event::ChangeTextSize &e) {
-    auto &texts = getComponents<geg::component::io::Text>();
-
-    for (auto &[entity, text] : texts)
-        text.fontSize += e.diff;
 }
 } // namespace rtype::system::gui

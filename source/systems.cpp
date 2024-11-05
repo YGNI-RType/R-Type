@@ -28,6 +28,7 @@
 #include "systems/ClearEntities.hpp"
 #include "systems/DestroyOnCollision.hpp"
 #include "systems/FlappingMotion.hpp"
+#include "systems/GameOverScenes.hpp"
 #include "systems/InputsMapper.hpp"
 #include "systems/InputsToGameEvents.hpp"
 #include "systems/Invincibility.hpp"
@@ -39,6 +40,7 @@
 #include "systems/PlayerShoot.hpp"
 #include "systems/Scenes.hpp"
 #include "systems/StageManager.hpp"
+#include "systems/TextSizeModifier.hpp"
 #include "systems/UpdateScoreText.hpp"
 
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
@@ -84,6 +86,7 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<rtype::system::gui::Settings>();
     r->registerSystem<rtype::system::gui::GameLobby>();
     r->registerSystem<rtype::system::gui::GameOver>();
+    r->registerSystem<rtype::system::gui::WinScreen>();
     r->registerSystem<rtype::system::gui::GameStateHandler>();
 
     r->registerSystem<gengine::system::Motion2D>();

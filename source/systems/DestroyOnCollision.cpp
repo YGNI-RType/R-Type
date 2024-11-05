@@ -117,7 +117,7 @@ void DestroyOnCollision::destroyPlayer(geg::event::Collision &e) {
         }
     }
     if (!players.size())
-        publishEvent(event::GameOver());
+        publishEvent(event::GameOver(false));
 }
 
 void DestroyOnCollision::playerHit(gengine::Entity entity, component::Player &player,
