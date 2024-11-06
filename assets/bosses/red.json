@@ -1,0 +1,33 @@
+{
+    "sprite": {
+        "txtPath": "boss-red.png",
+        "src": {
+            "width": 55,
+            "height": 58
+        }
+    },
+    "animation": {
+        "trackName": "boss.json/idle",
+        "frameDuration": 0.25
+    },
+    "transform": {
+        "scale": {
+            "x": 2,
+            "y": 2
+        }
+    },
+    "velocity": {
+        "y": 3
+    },
+    "hitbox": {
+        "width": 55,
+        "height": 12
+    },
+    "wavesName": ["planeHorde.json"],
+    "waveCooldown": 5000,
+    "ammoName": ["boss-ball.json"],
+    "bulletSpeed": 2,
+    "minVelocity": 3,
+    "maxVelocity": 6,
+    "borderMargin": 0.2
+}

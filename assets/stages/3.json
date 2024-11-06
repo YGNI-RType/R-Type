@@ -1,0 +1,338 @@
+{
+    "id": 3,
+    "background": {
+        "sprite": {
+            "txtPath": "background3.png",
+            "src": {
+                "width": 385,
+                "height": 207
+            }
+        },
+        "transform": {
+            "scale": {
+                "x": 3.48,
+                "y": 3.48
+            }
+        },
+        "velocity": {
+            "x": -3
+        }
+    },
+    "monsters": [
+        {
+            "mobName": "robotHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.2
+            },
+            "spawnDelay": 2500,
+            "scoreGain": 150,
+            "numberOfLives": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 3000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 3000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.2
+            },
+            "spawnDelay": 3500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 4000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "robotHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0
+            },
+            "spawnDelay": 5500,
+            "scoreGain": 150,
+            "numberOfLives": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 6000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 6000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.3
+            },
+            "spawnDelay": 6500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.7
+            },
+            "spawnDelay": 7000,
+            "scoreGain": 100
+        },
+
+        {
+            "mobName": "robotHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 8500,
+            "scoreGain": 150,
+            "numberOfLives": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 9000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 9000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.2
+            },
+            "spawnDelay": 9500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 10000,
+            "scoreGain": 100
+        },
+
+        {
+            "mobName": "robotHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.2
+            },
+            "spawnDelay": 12500,
+            "scoreGain": 250,
+            "numberOfLives": 4,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "robotHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0
+            },
+            "spawnDelay": 14000,
+            "scoreGain": 250,
+            "numberOfLives": 4,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "robotHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 15500,
+            "scoreGain": 250,
+            "numberOfLives": 4,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 18000,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 18250,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 18500,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.7
+            },
+            "spawnDelay": 18750,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.3
+            },
+            "spawnDelay": 19000,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.8
+            },
+            "spawnDelay": 19250,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.2
+            },
+            "spawnDelay": 19500,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.7
+            },
+            "spawnDelay": 19750,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.3
+            },
+            "spawnDelay": 20000,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 20250,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 20500,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        },
+        {
+            "mobName": "robot.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 20750,
+            "scoreGain": 250,
+            "numberOfLives": 2,
+            "speedFactor": 1.5
+        }
+    ],
+    "boss": {
+        "mobName": "orange.json",
+        "spawnFactor": {
+            "x": 0.9,
+            "y": 0.5
+        },
+        "spawnDelay": 25750,
+        "scoreGain": 3000,
+        "numberOfLives": 40
+    }
+}

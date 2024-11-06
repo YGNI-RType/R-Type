@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "GEngine/interface/components/RemoteDriver.hpp"
+#include "GEngine/interface/components/RemoteLocal.hpp"
 #include "GEngine/libdev/System.hpp"
 #include "GEngine/libdev/components/driver/output/Text.hpp"
 #include "GEngine/libdev/systems/events/GameLoop.hpp"
@@ -17,7 +17,7 @@
 namespace rtype::system {
 class UpdateScoreText
     : public gengine::System<UpdateScoreText, component::Score, component::ScoreText,
-                             gengine::component::driver::output::Text, gengine::interface::component::RemoteDriver> {
+                             gengine::component::driver::output::Text, gengine::interface::component::RemoteLocal> {
 public:
     void init(void) override;
     void onGameLoop(gengine::system::event::GameLoop &);

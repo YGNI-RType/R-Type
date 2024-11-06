@@ -1,0 +1,362 @@
+{
+    "id": 2,
+    "background": {
+        "sprite": {
+            "txtPath": "background2.png",
+            "src": {
+                "width": 511,
+                "height": 207
+            }
+        },
+        "transform": {
+            "scale": {
+                "x": 3.48,
+                "y": 3.48
+            }
+        },
+        "velocity": {
+            "x": -3
+        }
+    },
+    "monsters": [
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 2000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 2000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 2250,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 3500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 3500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.2
+            },
+            "spawnDelay": 4000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 4000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 5000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 5000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 5500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.8
+            },
+            "spawnDelay": 5500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 8000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 8000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 9000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 9000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 10000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 10000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 11000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 11000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 12000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 12000,
+            "scoreGain": 200,
+            "numberOfLives": 2,
+            "scaleFactor": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 15000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 15000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 16000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 16000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "caterpillarDHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 17000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "caterpillarUHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 17000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 18000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.3
+            },
+            "spawnDelay": 18500,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.7
+            },
+            "spawnDelay": 18500,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 19000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.3
+            },
+            "spawnDelay": 19500,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.7
+            },
+            "spawnDelay": 19500,
+            "scoreGain": 200,
+            "speedFactor": 2
+        }
+    ],
+    "boss": {
+        "mobName": "yellow.json",
+        "spawnFactor": {
+            "x": 0.9,
+            "y": 0.5
+        },
+        "spawnDelay": 24500,
+        "scoreGain": 2000,
+        "numberOfLives": 30
+    }
+}

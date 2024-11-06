@@ -7,14 +7,20 @@
 
 #include "systems/InputsToGameEvents.hpp"
 
+#include "GEngine/interface/network/events/Record.hpp"
+#include "GEngine/libdev/systems/events/driver/input/VoIP.hpp"
+
 namespace rtype::system {
 void InputsToGameEvents::init(void) {
     subscribeToEvent<gengine::system::event::GameLoop>(&InputsToGameEvents::sendEvents);
-    subscribeToEvent<gengine::system::driver::input::KeyUpEvent>(&InputsToGameEvents::moveUp);
-    subscribeToEvent<gengine::system::driver::input::KeyLeftEvent>(&InputsToGameEvents::moveLeft);
-    subscribeToEvent<gengine::system::driver::input::KeyDownEvent>(&InputsToGameEvents::moveDown);
-    subscribeToEvent<gengine::system::driver::input::KeyRightEvent>(&InputsToGameEvents::moveRight);
-    subscribeToEvent<gengine::system::driver::input::KeySpaceEvent>(&InputsToGameEvents::shoot);
+    subscribeToEvent<event::in::Up>(&InputsToGameEvents::moveUp);
+    subscribeToEvent<event::in::Left>(&InputsToGameEvents::moveLeft);
+    subscribeToEvent<event::in::Down>(&InputsToGameEvents::moveDown);
+    subscribeToEvent<event::in::Right>(&InputsToGameEvents::moveRight);
+    subscribeToEvent<event::in::Shoot>(&InputsToGameEvents::shoot);
+    subscribeToEvent<event::in::Cheat>(&InputsToGameEvents::becomeInvincible);
+    subscribeToEvent<event::in::VoiceChat>(&InputsToGameEvents::voiceChat);
+    subscribeToEvent<event::in::Record>(&InputsToGameEvents::record);
 }
 
 void InputsToGameEvents::sendEvents(gengine::system::event::GameLoop &e) {
@@ -22,48 +28,48 @@ void InputsToGameEvents::sendEvents(gengine::system::event::GameLoop &e) {
     publishEvent<event::Shoot>(m_shootState);
 }
 
-void InputsToGameEvents::moveUp(gengine::system::driver::input::KeyUpEvent &e) {
+void InputsToGameEvents::moveUp(event::in::Up &e) {
     switch (e.state) {
-    case gengine::system::driver::input::InputState::PRESSED:
+    case geg::event::io::InputState::PRESSED:
         updateDirectionBitmask(event::Movement::UP, true);
         break;
-    case gengine::system::driver::input::InputState::RELEASE:
+    case geg::event::io::InputState::RELEASE:
         updateDirectionBitmask(event::Movement::UP, false);
         break;
     default:
         break;
     }
 }
-void InputsToGameEvents::moveLeft(gengine::system::driver::input::KeyLeftEvent &e) {
+void InputsToGameEvents::moveLeft(event::in::Left &e) {
     switch (e.state) {
-    case gengine::system::driver::input::InputState::PRESSED:
+    case geg::event::io::InputState::PRESSED:
         updateDirectionBitmask(event::Movement::LEFT, true);
         break;
-    case gengine::system::driver::input::InputState::RELEASE:
+    case geg::event::io::InputState::RELEASE:
         updateDirectionBitmask(event::Movement::LEFT, false);
         break;
     default:
         break;
     }
 }
-void InputsToGameEvents::moveDown(gengine::system::driver::input::KeyDownEvent &e) {
+void InputsToGameEvents::moveDown(event::in::Down &e) {
     switch (e.state) {
-    case gengine::system::driver::input::InputState::PRESSED:
+    case geg::event::io::InputState::PRESSED:
         updateDirectionBitmask(event::Movement::DOWN, true);
         break;
-    case gengine::system::driver::input::InputState::RELEASE:
+    case geg::event::io::InputState::RELEASE:
         updateDirectionBitmask(event::Movement::DOWN, false);
         break;
     default:
         break;
     }
 }
-void InputsToGameEvents::moveRight(gengine::system::driver::input::KeyRightEvent &e) {
+void InputsToGameEvents::moveRight(event::in::Right &e) {
     switch (e.state) {
-    case gengine::system::driver::input::InputState::PRESSED:
+    case geg::event::io::InputState::PRESSED:
         updateDirectionBitmask(event::Movement::RIGHT, true);
         break;
-    case gengine::system::driver::input::InputState::RELEASE:
+    case geg::event::io::InputState::RELEASE:
         updateDirectionBitmask(event::Movement::RIGHT, false);
         break;
     default:
@@ -71,12 +77,12 @@ void InputsToGameEvents::moveRight(gengine::system::driver::input::KeyRightEvent
     }
 }
 
-void InputsToGameEvents::shoot(gengine::system::driver::input::KeySpaceEvent &e) {
+void InputsToGameEvents::shoot(event::in::Shoot &e) {
     switch (e.state) {
-    case gengine::system::driver::input::InputState::PRESSED:
+    case geg::event::io::InputState::PRESSED:
         m_shootState = event::Shoot::CHARGING;
         break;
-    case gengine::system::driver::input::InputState::RELEASE:
+    case geg::event::io::InputState::RELEASE:
         m_shootState = event::Shoot::REST;
         break;
     default:
@@ -131,5 +137,35 @@ event::Movement::State InputsToGameEvents::getMovementState(void) {
     default:
         return event::Movement::STANDING;
     }
+}
+
+void InputsToGameEvents::becomeInvincible(event::in::Cheat &e) {
+    switch (e.state) {
+    case geg::event::io::InputState::PRESSED:
+        publishEvent(event::BecomeInvincible(true));
+        break;
+    case geg::event::io::InputState::RELEASE:
+        publishEvent(event::BecomeInvincible(false));
+        break;
+    default:
+        break;
+    }
+}
+
+void InputsToGameEvents::voiceChat(event::in::VoiceChat &e) {
+    switch (e.state) {
+    case geg::event::io::InputState::PRESSED:
+        publishEvent(gengine::system::event::driver::input::StartVoIP());
+        break;
+    case geg::event::io::InputState::RELEASE:
+        publishEvent(gengine::system::event::driver::input::EndVoIP());
+        break;
+    default:
+        break;
+    }
+}
+void InputsToGameEvents::record(event::in::Record &e) {
+    if (e.state == geg::event::io::InputState::PRESSED)
+        publishEvent(gengine::interface::network::event::ToogleRecord());
 }
 } // namespace rtype::system

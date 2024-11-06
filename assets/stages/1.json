@@ -1,0 +1,234 @@
+{
+    "id": 1,
+    "background": {
+        "sprite": {
+            "txtPath": "background1.png",
+            "src": {
+                "width": 1120,
+                "height": 207
+            }
+        },
+        "transform": {
+            "scale": {
+                "x": 3.48,
+                "y": 3.48
+            }
+        },
+        "velocity": {
+            "x": -3
+        }
+    },
+    "monsters": [
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.75
+            },
+            "spawnDelay": 2000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.55
+            },
+            "spawnDelay": 2750,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.35
+            },
+            "spawnDelay": 3500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.8
+            },
+            "spawnDelay": 5000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 6500,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.2
+            },
+            "spawnDelay": 7500,
+            "scoreGain": 300,
+            "speedFactor": 3
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.35
+            },
+            "spawnDelay": 10000,
+            "scoreGain": 200,
+            "scaleFactor": 2,
+            "numberOfLives": 3
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.65
+            },
+            "spawnDelay": 11500,
+            "scoreGain": 200,
+            "scaleFactor": 2,
+            "numberOfLives": 3
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 13000,
+            "scoreGain": 200,
+            "scaleFactor": 2,
+            "numberOfLives": 3
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.1
+            },
+            "spawnDelay": 16000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.3
+            },
+            "spawnDelay": 16250,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 16500,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.7
+            },
+            "spawnDelay": 16750,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "plane.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.9
+            },
+            "spawnDelay": 17000,
+            "scoreGain": 200,
+            "speedFactor": 2
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.2
+            },
+            "spawnDelay": 19000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.4
+            },
+            "spawnDelay": 19000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.6
+            },
+            "spawnDelay": 19000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.8
+            },
+            "spawnDelay": 19000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.3
+            },
+            "spawnDelay": 20000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.5
+            },
+            "spawnDelay": 20000,
+            "scoreGain": 100
+        },
+        {
+            "mobName": "planeHorde.json",
+            "spawnFactor": {
+                "x": 1.05,
+                "y": 0.7
+            },
+            "spawnDelay": 20000,
+            "scoreGain": 100
+        }
+    ],
+    "boss": {
+        "mobName": "red.json",
+        "spawnFactor": {
+            "x": 0.9,
+            "y": 0.5
+        },
+        "spawnDelay": 25000,
+        "scoreGain": 1000,
+        "numberOfLives": 20
+    }
+}

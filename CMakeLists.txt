@@ -13,13 +13,12 @@ include_directories(include)
 
 file(GLOB_RECURSE SOURCES source/*.cpp)
 
-add_executable(r_type-server ${SOURCES})
-add_executable(r_type-client ${SOURCES})
-
+add_executable(r-type_server ${SOURCES})
+add_executable(r-type_client ${SOURCES})
 
 find_package(GEngine CONFIG REQUIRED)
-target_link_libraries(r_type-server PRIVATE GEngine)
-target_link_libraries(r_type-client PRIVATE GEngine)
+target_link_libraries(r-type_server PRIVATE GEngine)
+target_link_libraries(r-type_client PRIVATE GEngine)
 
-target_compile_definitions(r_type-server PRIVATE Server)
-target_compile_definitions(r_type-client PRIVATE Client)
+target_compile_definitions(r-type_server PRIVATE GEngine_Server)
+target_compile_definitions(r-type_client PRIVATE GEngine_Client)

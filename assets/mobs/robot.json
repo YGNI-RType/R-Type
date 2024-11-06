@@ -1,0 +1,36 @@
+[
+    {
+        "sprite": {
+            "txtPath": "robot.gif",
+            "src": {
+                "width": 33,
+                "height": 34
+            }
+        },
+        "animation": {
+            "trackName": "robot.json/moove",
+            "frameDuration": 0.15
+        },
+        "transform": {
+            "scale": {
+                "x": 2,
+                "y": 2
+            }
+        },
+        "velocity": {
+            "x": 6,
+            "y": 6
+        },
+        "typeOfMotion": 2,
+        "ammo": [
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 500
+            },
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 2000
+            }
+        ]
+    }
+]

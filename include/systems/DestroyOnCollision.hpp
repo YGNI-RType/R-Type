@@ -9,36 +9,37 @@
 
 #include "ecs/entity/Entity.hpp"
 
-#include "GEngine/interface/components/RemoteDriver.hpp"
+#include "GEngine/interface/components/RemoteLocal.hpp"
+#include "GEngine/libdev/Components.hpp"
+#include "GEngine/libdev/Events.hpp"
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/components/Transforms.hpp"
-#include "GEngine/libdev/components/driver/output/Drawable.hpp"
-#include "GEngine/libdev/components/driver/output/Text.hpp"
-#include "GEngine/libdev/systems/events/game/Collision.hpp"
+#include "GEngine/libdev/Systems.hpp"
 
-#include "GEngine/libdev/components/Transforms.hpp"
+#include "components/Boss.hpp"
 #include "components/Bullet.hpp"
+#include "components/BulletEnemy.hpp"
+#include "components/Invincible.hpp"
 #include "components/Life.hpp"
 #include "components/Monster.hpp"
 #include "components/Player.hpp"
 #include "components/Score.hpp"
 
-#include "ecs/entity/Entity.hpp"
-
 namespace rtype::system {
 class DestroyOnCollision
-    : public gengine::System<DestroyOnCollision, component::Bullet, component::Monster, component::Life,
-                             component::Player, gengine::interface::component::RemoteDriver,
-                             gengine::component::Transform2D, component::Score,
-                             gengine::component::driver::output::Drawable, gengine::component::driver::output::Text> {
+    : public gengine::System<DestroyOnCollision, component::Bullet, component::BulletEnemy, component::Monster,
+                             component::Boss, component::Score, component::Life, component::Player,
+                             component::Invincible, geg::component::io::Sprite,
+                             gengine::interface::component::RemoteLocal, geg::component::Transform2D,
+                             geg::component::io::Drawable, geg::component::HitBoxSquare2D, geg::component::io::Text> {
 public:
     void init(void) override;
-    void destroyMonster(gengine::system::event::Collsion &);
-    void destroyPlayer(gengine::system::event::Collsion &);
+    void destroyMonster(geg::event::Collision &);
+    void destroyPlayer(geg::event::Collision &);
 
 private:
-    void claimScore(ecs::entity::Entity entity, const char *forPlayerUuid);
-    void playerHit(ecs::entity::Entity, component::Player &, gengine::component::Transform2D &);
-    void removeLife(void);
+    void spawnExplosion(gengine::Entity);
+    void claimScore(gengine::Entity, const char *);
+    void updateBossSprite(gengine::Entity, unsigned int);
+    void playerHit(gengine::Entity, component::Player &, gengine::component::Transform2D &, size_t);
 };
 } // namespace rtype::system

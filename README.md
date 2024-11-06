@@ -36,13 +36,13 @@ This process uses vcpkg to install the required dependencies and CMake to handle
 Once compiled, the game requires both a server and a client to run. To start the server, and then the client, use the following commands in the build folder:
 
 ```bash
-./r_type-server
+./r-type_server
 ```
 
 In an other terminal:
 
 ```bash
-./r_type-server
+./r-type_server
 ```
 
 Alternatively, you can use the run.sh script located at the root of the repository to automatically start both the server and the client in one terminal session:

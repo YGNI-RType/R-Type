@@ -7,28 +7,37 @@
 
 #pragma once
 
+#include "GEngine/libdev/Events.hpp"
 #include "GEngine/libdev/System.hpp"
-#include "GEngine/libdev/systems/driver/input/KeyboardCatcher.hpp"
-#include "GEngine/libdev/systems/events/GameLoop.hpp"
+#include "GEngine/libdev/Systems.hpp"
 
+#include "events/BecomeInvincible.hpp"
+#include "events/GameInputs.hpp"
 #include "events/Movement.hpp"
 #include "events/Shoot.hpp"
 
 namespace rtype::system {
-class InputsToGameEvents : public gengine::System<InputsToGameEvents, gengine::system::driver::input::KeyboardCatcher> {
+class InputsToGameEvents : public gengine::System<InputsToGameEvents, geg::system::io::KeyboardCatcher>,
+                           public gengine::LocalSystem {
 public:
     void init(void) override;
-    void sendEvents(gengine::system::event::GameLoop &e);
+    void sendEvents(geg::event::GameLoop &e);
 
-    void moveUp(gengine::system::driver::input::KeyUpEvent &e);
-    void moveLeft(gengine::system::driver::input::KeyLeftEvent &e);
-    void moveDown(gengine::system::driver::input::KeyDownEvent &e);
-    void moveRight(gengine::system::driver::input::KeyRightEvent &e);
+    void moveUp(event::in::Up &e);
+    void moveLeft(event::in::Left &e);
+    void moveDown(event::in::Down &e);
+    void moveRight(event::in::Right &e);
 
-    void shoot(gengine::system::driver::input::KeySpaceEvent &e);
+    void shoot(event::in::Shoot &e);
+
+    void becomeInvincible(event::in::Cheat &e);
+
+    void voiceChat(event::in::VoiceChat &e);
+    void record(event::in::Record &e);
 
 private:
     event::Shoot::State m_shootState;
+    bool m_isInvincible = false;
 
     char m_directionBitmask = 0;
     static const char UP_MASK = 1 << 0;    // 0b0001

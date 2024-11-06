@@ -8,22 +8,16 @@
 #pragma once
 
 #include "GEngine/libdev/Component.hpp"
-#include <string>
 
-#define DEFAULT_MONSTER_SPEED 0.05     // Speed multiplicator (default = 1)
-#define DEFAULT_MONSTER_ATTACK_SPEED 3 // Shoot per second
+#define DEFAULT_MONSTER_LIVES 1
 
 namespace rtype::component {
 struct Monster : public gengine::Component<Monster> {
-    // char name[32] = {0};
-    float speed;
-    float attackSpeed;
-
-    Monster(float newSpeed = DEFAULT_MONSTER_SPEED, float newAttackSpeed = DEFAULT_MONSTER_ATTACK_SPEED)
-        : speed(newSpeed)
-        , attackSpeed(newAttackSpeed) {
-        // std::strncpy(name, newName.c_str(), newName.size());
+    Monster(unsigned int lives = DEFAULT_MONSTER_LIVES)
+        : lives(lives) {
     }
-};
 
+    unsigned int lives;
+    bool operator==(const Monster &) const = default;
+};
 } // namespace rtype::component

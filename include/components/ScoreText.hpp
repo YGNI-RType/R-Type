@@ -10,5 +10,10 @@
 #include "GEngine/libdev/Component.hpp"
 
 namespace rtype::component {
-struct ScoreText : public gengine::Component<ScoreText> {};
+struct ScoreText : public gengine::Component<ScoreText> {
+    ScoreText() {
+    }
+
+    bool operator==(const ScoreText &) const = default;
+};
 } // namespace rtype::component

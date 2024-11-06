@@ -7,17 +7,16 @@
 
 #include "systems/PlayerMotion.hpp"
 
+#include "GEngine/libdev/Component.hpp"
 #include "GEngine/libdev/components/Velocities.hpp"
 #include "GEngine/libdev/components/driver/output/Animation.hpp"
-
-#include "GEngine/libdev/Component.hpp" // gengine::Zip
 
 #include <random>
 
 namespace rtype::system {
 void PlayerMotion::init(void) {
     subscribeToEvent<gengine::system::event::GameLoop>(&PlayerMotion::onGameLoop);
-    subscribeToEvent<gengine::interface::network::event::RemoteEvent<event::Movement>>(&PlayerMotion::movePlayer);
+    subscribeToEvent<gengine::interface::event::SharedEvent<event::Movement>>(&PlayerMotion::movePlayer);
 }
 
 void PlayerMotion::onGameLoop(gengine::system::event::GameLoop &e) {
@@ -44,13 +43,13 @@ void PlayerMotion::onGameLoop(gengine::system::event::GameLoop &e) {
     }
 }
 
-void PlayerMotion::movePlayer(gengine::interface::network::event::RemoteEvent<event::Movement> &e) {
+void PlayerMotion::movePlayer(gengine::interface::event::SharedEvent<event::Movement> &e) {
     auto &velocities = getComponents<gengine::component::Velocity2D>();
     auto &players = getComponents<component::Player>();
-    auto &remotes = getComponents<gengine::interface::component::RemoteDriver>();
+    auto &remotes = getComponents<gengine::interface::component::RemoteLocal>();
 
     for (auto [entity, remote, player, velocity] : gengine::Zip(remotes, players, velocities)) {
-        if (remote != e.remote) // check if its the same remote (zip)
+        if (remote.getUUIDBytes() != e.remoteUUID) // check if its the same remote (zip)
             continue;
         switch (e->state) {
         case event::Movement::LEFT:

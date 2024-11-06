@@ -1,0 +1,136 @@
+[
+    {
+        "sprite": {
+            "txtPath": "plane.gif",
+            "src": {
+                "width": 33,
+                "height": 36
+            }
+        },
+        "animation": {
+            "trackName": "plane.json/fly",
+            "frameDuration": 0.075
+        },
+        "transform": {
+            "scale": {
+                "x": 2,
+                "y": 2
+            }
+        },
+        "velocity": {
+            "x": -5
+        },
+        "typeOfMotion": 0,
+        "ammo": [
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 1500
+            }
+        ]
+    },
+    {
+        "sprite": {
+            "txtPath": "plane.gif",
+            "src": {
+                "x": 33,
+                "width": 33,
+                "height": 36
+            }
+        },
+        "animation": {
+            "trackName": "plane.json/fly",
+            "frameDuration": 0.075,
+            "startingFrame": 1
+        },
+        "transform": {
+            "position": {
+                "x": 0.05,
+                "y": -0.1
+            },
+            "scale": {
+                "x": 2,
+                "y": 2
+            }
+        },
+        "velocity": {
+            "x": -5
+        },
+        "typeOfMotion": 0,
+        "ammo": [
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 1500
+            }
+        ]
+    },
+    {
+        "sprite": {
+            "txtPath": "plane.gif",
+            "src": {
+                "x": 66,
+                "width": 33,
+                "height": 36
+            }
+        },
+        "animation": {
+            "trackName": "plane.json/fly",
+            "frameDuration": 0.075,
+            "startingFrame": 2
+        },
+        "transform": {
+            "position": {
+                "x": 0.11,
+                "y": 0.02
+            },
+            "scale": {
+                "x": 2,
+                "y": 2
+            }
+        },
+        "velocity": {
+            "x": -5
+        },
+        "typeOfMotion": 0,
+        "ammo": [
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 1500
+            }
+        ]
+    },
+    {
+        "sprite": {
+            "txtPath": "plane.gif",
+            "src": {
+                "x": 99,
+                "width": 33,
+                "height": 36
+            }
+        },
+        "animation": {
+            "trackName": "plane.json/fly",
+            "frameDuration": 0.075,
+            "startingFrame": 3
+        },
+        "transform": {
+            "position": {
+                "x": 0.15,
+                "y": -0.04
+            },
+            "scale": {
+                "x": 2,
+                "y": 2
+            }
+        },
+        "velocity": {
+            "x": -5
+        },
+        "typeOfMotion": 0,
+        "ammo": [
+            {
+                "bulletName": "small.json",
+                "spawnDelay": 1500
+            }
+        ]
+    }
+]

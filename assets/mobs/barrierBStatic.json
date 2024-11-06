@@ -1,0 +1,17 @@
+[
+    {
+        "sprite": {
+            "txtPath": "barrier2.png",
+            "src": {
+                "width": 48,
+                "height": 40
+            }
+        },
+        "transform": {
+            "scale": {
+                "x": 4.44,
+                "y": 4.44
+            }
+        }
+    }
+]

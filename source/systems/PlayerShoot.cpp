@@ -10,90 +10,75 @@
 
 // Spawn entity
 #include "GEngine/libdev/Component.hpp" // gengine::Zip
-#include "GEngine/libdev/components/SpanLife.hpp"
-#include "GEngine/libdev/components/Velocities.hpp"
-#include "GEngine/libdev/components/driver/output/Animation.hpp"
-#include "GEngine/libdev/components/driver/output/Drawable.hpp"
-#include "GEngine/libdev/components/driver/output/Shape.hpp"
-#include "GEngine/libdev/components/driver/output/Sprite.hpp"
+#include "GEngine/libdev/Components.hpp"
 
-#define BULLET_SPEED 10
+#define BULLET_SPEED 25
 
 namespace rtype::system {
 void PlayerShoot::init(void) {
-    subscribeToEvent<gengine::interface::network::event::RemoteEvent<event::Shoot>>(&PlayerShoot::shoot);
-    subscribeToEvent<gengine::interface::event::NewRemoteDriver>(&PlayerShoot::newShooter);
-    subscribeToEvent<gengine::interface::event::DeleteRemoteDriver>(&PlayerShoot::deleteShooter);
-    subscribeToEvent<gengine::system::driver::input::KeySpaceEvent>(&PlayerShoot::bulletSound);
+    subscribeToEvent<gengine::interface::event::SharedEvent<event::Shoot>>(&PlayerShoot::shoot);
+    subscribeToEvent<gengine::interface::event::NewRemoteLocal>(&PlayerShoot::newShooter);
+    subscribeToEvent<gengine::interface::event::DeleteRemoteLocal>(&PlayerShoot::deleteShooter);
 }
 
-void PlayerShoot::newShooter(gengine::interface::event::NewRemoteDriver &e) {
-    m_shooterMap.insert({e.remote, shoot_infos_t()});
+void PlayerShoot::newShooter(gengine::interface::event::NewRemoteLocal &e) {
+    m_shooterMap.insert({e.uuid, shoot_infos_t()});
 }
-void PlayerShoot::deleteShooter(gengine::interface::event::DeleteRemoteDriver &e) {
-    m_shooterMap.erase(e.remote);
+void PlayerShoot::deleteShooter(gengine::interface::event::DeleteRemoteLocal &e) {
+    m_shooterMap.erase(e.uuid);
 }
 
-void PlayerShoot::shoot(gengine::interface::network::event::RemoteEvent<event::Shoot> &e) {
-    auto it = m_shooterMap.find(e.remote);
+void PlayerShoot::shoot(gengine::interface::event::SharedEvent<event::Shoot> &e) {
+    auto it = m_shooterMap.find(e.remoteUUID);
 
     if (it == m_shooterMap.end())
         return;
     auto &[state, lastCharge] = it->second;
     if (e->state == event::Shoot::REST && state == event::Shoot::CHARGING) {
         state = event::Shoot::REST;
-        if (getChargeDuration(lastCharge) > 500)
-            shootBeam(e.remote, (getChargeDuration(lastCharge) - 500) / 100);
+        if (getChargeDuration(lastCharge) > 300)
+            shootBeam(e.remoteUUID, (getChargeDuration(lastCharge) - 500) / 200);
         return;
     }
     if (e->state == event::Shoot::CHARGING && state == event::Shoot::REST) {
         lastCharge = std::chrono::system_clock::now();
         state = event::Shoot::CHARGING;
-        // spawnEntity(
-        //     gengine::component::Transform2D({0, 0}, {2, 2}), gengine::component::Velocity2D(0, 0),
-        //     gengine::component::driver::output::Drawable(2),
-        //     gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{0, 51, 32, 32}, WHITE),
-        //     gengine::component::driver::output::Animation(
-        //         "r-typesheet1.json/charging", 0.1f, gengine::component::driver::output::AnimationTrack::Forward, 2));
-        shootBullet(e.remote);
+        shootBullet(e.remoteUUID);
     }
 }
 
-void PlayerShoot::bulletSound(gengine::system::driver::input::KeySpaceEvent &e) {
-    auto &soundMan = getSystem<gengine::system::driver::output::SoundManager>();
-    if (e.state == gengine::system::driver::input::InputState::PRESSED)
-        PlaySound(soundMan.get("shoot.mp3"));
-}
-
-void PlayerShoot::shootBullet(const gengine::interface::component::RemoteDriver &from) {
-    auto &players = getComponents<gengine::interface::component::RemoteDriver>();
-    auto &transforms = getComponents<gengine::component::Transform2D>();
+void PlayerShoot::shootBullet(const uuids::uuid &from) {
+    auto &players = getComponents<gengine::interface::component::RemoteLocal>();
+    auto &transforms = getComponents<geg::component::Transform2D>();
 
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
-        if (player != from)
+        if (player.getUUIDBytes() != from)
             continue;
-        spawnEntity(component::Bullet(from.getUUIDString()),
-                    gengine::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
-                    gengine::component::Velocity2D(BULLET_SPEED, 0),
-                    gengine::component::driver::output::Sprite("r-typesheet1.gif", Rectangle{248, 85, 17, 12}, WHITE),
-                    gengine::component::driver::output::Drawable(1), gengine::component::HitBoxSquare2D(17, 12));
+        publishEvent(gengine::system::event::driver::output::Sound("shoot.wav"));
+        spawnEntity(component::Bullet(player.getUUIDString()),
+                    geg::component::Transform2D({transform.pos.x + 93, transform.pos.y + 22}, {2, 2}, 0),
+                    geg::component::Velocity2D(BULLET_SPEED, 0),
+                    geg::component::io::Sprite("effects.gif", Rectangle{248, 85, 17, 12}, WHITE),
+                    geg::component::io::Drawable(1), gengine::component::HitBoxSquare2D(17, 12),
+                    geg::component::network::NetSend());
         return;
     }
 }
 
-void PlayerShoot::shootBeam(const gengine::interface::component::RemoteDriver &from, int bulletScale) {
-    auto &players = getComponents<gengine::interface::component::RemoteDriver>();
-    auto &transforms = getComponents<gengine::component::Transform2D>();
+void PlayerShoot::shootBeam(const uuids::uuid &from, int bulletScale) {
+    auto &players = getComponents<gengine::interface::component::RemoteLocal>();
+    auto &transforms = getComponents<geg::component::Transform2D>();
 
     for (auto [entity, player, transform] : gengine::Zip(players, transforms)) {
-        if (player != from)
+        if (player.getUUIDBytes() != from)
             continue;
+        publishEvent(gengine::system::event::driver::output::Sound("beam.wav"));
         spawnBeam(transform.pos, player.getUUIDString(), bulletScale);
         return;
     }
 }
 
-void PlayerShoot::spawnBeam(const gengine::component::Transform2D &tr, const std::string &from, int bulletScale) {
+void PlayerShoot::spawnBeam(const geg::component::Transform2D &tr, const std::string &from, int bulletScale) {
     Rectangle rect;
     gengine::Vect2 pos({tr.pos.x + 50, tr.pos.y + 22});
 
@@ -103,7 +88,7 @@ void PlayerShoot::spawnBeam(const gengine::component::Transform2D &tr, const std
         break;
     case 1:
 
-        rect = {199, 180, 33, 12};
+        rect = {199, 120, 33, 12};
         break;
     case 2:
         rect = {167, 136, 49, 14};
@@ -116,12 +101,11 @@ void PlayerShoot::spawnBeam(const gengine::component::Transform2D &tr, const std
         break;
     }
 
-    spawnEntity(component::Bullet(from, true), gengine::component::Transform2D(pos, {2, 2}),
-                gengine::component::Velocity2D(BULLET_SPEED * 2, 0),
-                gengine::component::HitBoxSquare2D(rect.width, rect.height),
-                gengine::component::driver::output::Sprite("r-typesheet1.gif", rect),
-                gengine::component::driver::output::Animation("r-typesheet1.json/beam", 0.06f),
-                gengine::component::driver::output::Drawable(1));
+    spawnEntity(
+        component::Bullet(from, true), geg::component::Transform2D(pos, {2, 2}),
+        geg::component::Velocity2D(BULLET_SPEED * 1.5, 0), geg::component::HitBoxSquare2D(rect.width, rect.height),
+        geg::component::io::Sprite("effects.gif", rect), geg::component::io::Animation("effects.json/beam", 0.06f),
+        geg::component::io::Drawable(1), geg::component::network::NetSend());
 }
 
 long PlayerShoot::getChargeDuration(const std::chrono::time_point<std::chrono::system_clock> &lastCharge) {
