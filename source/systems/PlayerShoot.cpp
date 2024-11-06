@@ -12,7 +12,7 @@
 #include "GEngine/libdev/Component.hpp" // gengine::Zip
 #include "GEngine/libdev/Components.hpp"
 
-#define BULLET_SPEED 10
+#define BULLET_SPEED 25
 
 namespace rtype::system {
 void PlayerShoot::init(void) {
@@ -103,7 +103,7 @@ void PlayerShoot::spawnBeam(const geg::component::Transform2D &tr, const std::st
 
     spawnEntity(
         component::Bullet(from, true), geg::component::Transform2D(pos, {2, 2}),
-        geg::component::Velocity2D(BULLET_SPEED * 2, 0), geg::component::HitBoxSquare2D(rect.width, rect.height),
+        geg::component::Velocity2D(BULLET_SPEED * 1.5, 0), geg::component::HitBoxSquare2D(rect.width, rect.height),
         geg::component::io::Sprite("effects.gif", rect), geg::component::io::Animation("effects.json/beam", 0.06f),
         geg::component::io::Drawable(1), geg::component::network::NetSend());
 }
