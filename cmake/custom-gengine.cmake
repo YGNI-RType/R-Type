@@ -25,7 +25,9 @@ endif()
 
 include(cmake/automate-vcpkg.cmake)
 vcpkg_bootstrap()
-vcpkg_install_packages(stduuid nlohmann-json)
+vcpkg_install_packages(raylib stduuid nlohmann-json)
 
 find_package(stduuid CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(raylib CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
