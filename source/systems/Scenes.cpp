@@ -191,7 +191,9 @@ void Servers::onUpdate(geg::event::GameLoop &e) {
 
     auto &server = getSystem<gengine::interface::network::system::ClientServer>();
     for (auto info : server.getPingInfos()) {
-        if (m_servers.find(info.ip) != m_servers.end())
+        std::string strPort = std::to_string(info.port);
+        std::string serverKey = info.ip + strPort;
+        if (m_servers.find(serverKey) != m_servers.end())
             continue;
 
         gengine::Entity bg =
@@ -202,7 +204,7 @@ void Servers::onUpdate(geg::event::GameLoop &e) {
 
         gengine::Entity text = spawnEntity(
             gengine::component::gui::SceneMember(m_sceneId),
-            geg::component::io::Text("arcade.ttf", info.ip + "\n\n\t:" + std::to_string(info.port) +
+            geg::component::io::Text("arcade.ttf", info.ip + "\n\n\t:" + strPort +
                                                        "\n\n\nPlayers:\n\n\t" + std::to_string(info.currentPlayers) +
                                                        '/' + std::to_string(info.maxPlayers)),
             geg::component::io::Drawable(10),
@@ -220,7 +222,7 @@ void Servers::onUpdate(geg::event::GameLoop &e) {
                             publishEvent(gengine::system::event::gui::SwitchScene(GAMELOBBY));
                         }));
         std::vector<gengine::Entity> entities = {bg, text, play};
-        m_servers.emplace(info.ip, entities);
+        m_servers.emplace(serverKey, entities);
     }
 }
 

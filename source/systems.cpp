@@ -45,8 +45,10 @@
 #include "systems/TextSizeModifier.hpp"
 #include "systems/UpdateScoreText.hpp"
 
+#include "GEngine/libdev/systems/CLI.hpp"
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
 #include "GEngine/interface/network/systems/ClientServer.hpp"
+#include "GEngine/interface/network/systems/CommandManager.hpp"
 #include "GEngine/interface/network/systems/NetworkWatcher.hpp"
 #include "GEngine/interface/network/systems/RecordManager.hpp"
 #include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
@@ -86,6 +88,10 @@ void GEngineDeclareSystems(Registry *r) {
     r->registerSystem<rtype::system::InputsMapper>();
     r->registerSystem<rtype::system::InputBoxMapperHandler>();
     r->registerSystem<rtype::system::gui::TextSizeModifier>();
+
+    r->registerSystem<geg::system::CLI>();
+    r->registerSystem<gengine::interface::network::system::CLCommandManager>();
+    r->registerSystem<gengine::interface::network::system::SVCommandManager>("../config/net.json");
 
     r->registerSystem<gengine::system::gui::SceneManager>(rtype::system::gui::MAINMENU);
     r->registerSystem<gengine::system::gui::ButtonHandler>();
