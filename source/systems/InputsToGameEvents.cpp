@@ -166,6 +166,6 @@ void InputsToGameEvents::voiceChat(event::in::VoiceChat &e) {
 }
 void InputsToGameEvents::record(event::in::Record &e) {
     if (e.state == geg::event::io::InputState::PRESSED)
-        publishEvent(gengine::interface::network::event::ToogleRecord());
+        publishEvent(gengine::interface::network::event::ToggleRecord());
 }
 } // namespace rtype::system

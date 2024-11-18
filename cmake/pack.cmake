@@ -1,0 +1,55 @@
+## Package Information ##
+
+set(CPACK_PACKAGE_NAME "R-Type")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Multiplayer R-Type game using the GEngine")
+set(CPACK_PACKAGE_VENDOR "YGNI-RType")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+
+## Libs ##
+
+if (WIN32)
+    set(VCPKG_LIB_DIR ${VCPKG_ROOT}/installed/${VCPKG_TRIPLET}/bin)
+    file(GLOB VCPKG_SHARED_LIBS "${VCPKG_LIB_DIR}/*.dll")
+elseif (APPLE)
+    set(VCPKG_LIB_DIR ${VCPKG_ROOT}/installed/${VCPKG_TRIPLET}/lib)
+    file(GLOB VCPKG_SHARED_LIBS_SYMLINKS "${VCPKG_LIB_DIR}/*.dylib")
+    foreach(SYMLINK ${VCPKG_SHARED_LIBS_SYMLINKS})
+        get_filename_component(REALPATH ${SYMLINK} REALPATH)
+        list(APPEND VCPKG_SHARED_LIBS ${REALPATH})
+    endforeach()
+else()
+    set(VCPKG_LIB_DIR ${VCPKG_ROOT}/installed/${VCPKG_TRIPLET}/lib)
+    file(GLOB VCPKG_SHARED_LIBS_SYMLINKS "${VCPKG_LIB_DIR}/*.so")
+    foreach(SYMLINK ${VCPKG_SHARED_LIBS_SYMLINKS})
+        get_filename_component(REALPATH ${SYMLINK} REALPATH)
+        list(APPEND VCPKG_SHARED_LIBS ${REALPATH})
+    endforeach()
+endif()
+
+install(FILES ${VCPKG_SHARED_LIBS} DESTINATION bin)
+
+## Package Type ##
+
+if (WIN32)
+    set(CPACK_GENERATOR "NSIS")
+    set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION}")
+    set(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
+    set(CPACK_NSIS_BRANDING_TEXT "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION}")
+    set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.ico")
+    set(CPACK_NSIS_DEFINES "RequestExecutionLevel user")
+elseif (APPLE)
+    set(CPACK_GENERATOR "Bundle")
+    set(CPACK_BUNDLE_NAME "${CPACK_PACKAGE_NAME}")
+    set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist")
+    set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.icns")
+elseif (UNIX)
+    set(CPACK_GENERATOR "TGZ")
+endif()
+
+set(CPACK_SOURCE_GENERATOR "ZIP;TGZ")
+
+##########
+
+include(CPack)

@@ -9,6 +9,9 @@ build_includes
 r-type_client
 r-type_server
 
+## Score
+score.txt
+
 ## Config
 .editorconfig
 

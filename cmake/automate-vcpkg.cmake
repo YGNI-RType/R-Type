@@ -1,7 +1,5 @@
 cmake_minimum_required (VERSION 3.12)
 
-include(cmake/define-compilers.cmake)
-
 if(WIN32)
     set(VCPKG_FALLBACK_ROOT ${CMAKE_CURRENT_BINARY_DIR}/vcpkg CACHE STRING "vcpkg configuration directory to use if vcpkg was not installed on the system before")
 else()
@@ -67,15 +65,16 @@ macro(_install_or_update_vcpkg)
     endif()
 endmacro()
 
-macro(vcpkg_install_gengine)
-    message(STATUS "Installing/Updating the gengine")
+# Installs the list of packages given as parameters using Vcpkg
+macro(vcpkg_install_packages)
+    message(STATUS "Installing/Updating the following vcpkg-packages: ${PACKAGES_LIST_STR}")
 
     if (VCPKG_TRIPLET)
         set(ENV{VCPKG_DEFAULT_TRIPLET} "${VCPKG_TRIPLET}")
     endif()
 
     execute_process(
-        COMMAND ${VCPKG_EXEC} install gengine --allow-unsupported --overlay-ports=${CMAKE_CURRENT_SOURCE_DIR}/overlay-ports --head
+        COMMAND ${VCPKG_EXEC} install ${ARGN} --allow-unsupported
         WORKING_DIRECTORY ${VCPKG_ROOT}
     )
 endmacro()

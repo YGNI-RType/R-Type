@@ -22,8 +22,13 @@ void Scoreboard::init(void) {
 
 void Scoreboard::loadScores(gengine::system::event::StartEngine &) {
     std::ifstream scoreFile(m_saveFile);
-    if (!scoreFile)
-        THROW_WARNING("File: " + m_saveFile + " does not exist");
+    if (!scoreFile) {
+        std::ofstream newFile(m_saveFile);
+        if (!newFile)
+            THROW_WARNING("File: " + m_saveFile + " could not be created");
+        newFile.close();
+        return;
+    }
 
     std::string line;
     while (std::getline(scoreFile, line)) {
