@@ -202,14 +202,14 @@ void Servers::onUpdate(geg::event::GameLoop &e) {
                         geg::component::Transform2D(
                             {50.f + 380.f * (m_servers.size() % 3), 380.f + m_servers.size() / 3 * 180.f}, {3.7, 3.7}));
 
-        gengine::Entity text = spawnEntity(
-            gengine::component::gui::SceneMember(m_sceneId),
-            geg::component::io::Text("arcade.ttf", info.ip + "\n\n\t:" + strPort +
-                                                       "\n\n\nPlayers:\n\n\t" + std::to_string(info.currentPlayers) +
-                                                       '/' + std::to_string(info.maxPlayers)),
-            geg::component::io::Drawable(10),
-            geg::component::Transform2D({75.f + 380.f * (m_servers.size() % 3), 405.f + m_servers.size() / 3 * 180.f},
-                                        {2, 2}));
+        gengine::Entity text =
+            spawnEntity(gengine::component::gui::SceneMember(m_sceneId),
+                        geg::component::io::Text("arcade.ttf", info.ip + "\n\n\t:" + strPort + "\n\n\nPlayers:\n\n\t" +
+                                                                   std::to_string(info.currentPlayers) + '/' +
+                                                                   std::to_string(info.maxPlayers)),
+                        geg::component::io::Drawable(10),
+                        geg::component::Transform2D(
+                            {75.f + 380.f * (m_servers.size() % 3), 405.f + m_servers.size() / 3 * 180.f}, {2, 2}));
 
         gengine::Entity play =
             spawnEntity(gengine::component::gui::SceneMember(m_sceneId), geg::component::io::Sprite("gui/Play.png"),

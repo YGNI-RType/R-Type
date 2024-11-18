@@ -45,7 +45,6 @@
 #include "systems/TextSizeModifier.hpp"
 #include "systems/UpdateScoreText.hpp"
 
-#include "GEngine/libdev/systems/CLI.hpp"
 #include "GEngine/interface/network/systems/ClientEventPublisher.hpp"
 #include "GEngine/interface/network/systems/ClientServer.hpp"
 #include "GEngine/interface/network/systems/CommandManager.hpp"
@@ -53,6 +52,7 @@
 #include "GEngine/interface/network/systems/RecordManager.hpp"
 #include "GEngine/interface/network/systems/ServerEventReceiver.hpp"
 #include "GEngine/interface/network/systems/VoIPManager.hpp"
+#include "GEngine/libdev/systems/CLI.hpp"
 
 #include "GEngine/interface/events/RemoteLocal.hpp"
 #include "GEngine/interface/systems/RemoteLocal.hpp"
